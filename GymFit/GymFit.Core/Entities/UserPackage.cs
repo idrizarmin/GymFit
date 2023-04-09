@@ -2,8 +2,6 @@
 {
     public class UserPackage : BaseEntity 
     {
-      
-        public int PaketId { get; set; }
         public int? PauseDuration { get; set; }
         public bool IsPaused { get; set; }
         public bool Expired { get; set; }
@@ -13,6 +11,8 @@
         public DateTime? ActivateOnDate { get; set; }
 
         public int UserId { get; set; }
-        public User User { get; set; }
+        public User User { get; set; } = null!;
+
+        public ICollection<Arrivals> Arrivals { get; set; } = null!;
     }
 }

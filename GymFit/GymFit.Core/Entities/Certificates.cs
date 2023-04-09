@@ -2,7 +2,9 @@
 {
     public class Certificates :BaseEntity
     {
-        public string Title { get; set; }
-        public string Issuer { get; set; }
+        public string Title { get; set; } = null!;
+        public string Issuer { get; set; } = null!;
+
+        public ICollection<TrainerCertificate> TrainerCertificates { get; set; } = null!;
     }
 }
