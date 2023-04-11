@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymFit.Infrastructure
 {
-    public partial class DatabaseContext :DbContext
+    public partial class DatabaseContext : DbContext
     {
         public DbSet<Arrivals> Arrivals { get; set; } = null!;
         public DbSet<Certificates> Certificates { get; set; } = null!;

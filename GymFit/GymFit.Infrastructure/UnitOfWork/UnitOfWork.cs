@@ -6,6 +6,7 @@ namespace GymFit.Infrastructure
     public class UnitOfWork : IUnitOfWork
     {
         private readonly DatabaseContext _databaseContext;
+
         public readonly IArrivalsRepository ArrivalsRepository;
         public readonly ICertificatesRepository CertificatesRepository;
         public readonly ICitiesRepository CitiesRepository;
