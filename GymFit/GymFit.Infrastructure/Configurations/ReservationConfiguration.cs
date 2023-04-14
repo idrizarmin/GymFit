@@ -34,12 +34,6 @@ namespace GymFit.Infrastructure
             builder.Property(x => x.isUsed)
                 .IsRequired();
 
-            //builder.Property(x => x.TrainerId)
-            //   .IsRequired();
-
-            //builder.Property(x => x.UserId)
-            //  .HasDefaultValue(null);
-
             builder.HasOne(e => e.Gym)
                .WithMany(e => e.Reservations)
                .HasForeignKey(e => e.GymId)
