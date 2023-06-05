@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GymFit.Core\GymFit.Core.csproj" />
+    <ProjectReference Include="..\GymFit.Infrastructure.Interfaces\GymFit.Infrastructure.Interfaces.csproj" />
+    <ProjectReference Include="..\GymFit.Infrastructure\GymFit.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
