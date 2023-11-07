@@ -12,7 +12,7 @@ class TrainerScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(
-            padding: EdgeInsets.only(bottom: defaultPadding / 2),
+            padding: const EdgeInsets.only(bottom: defaultPadding / 2),
             decoration: const BoxDecoration(
               border: Border(
                 bottom: BorderSide(
@@ -21,8 +21,8 @@ class TrainerScreen extends StatelessWidget {
                 ),
               ),
             ),
-            child: Heder(pageTitle: "Treneri")),
-        SizedBox(height: 16.0),
+            child: const Heder(pageTitle: "Treneri")),
+        const SizedBox(height: 16.0),
         Row(children: [
           Expanded(
             child: Container(
@@ -32,8 +32,8 @@ class TrainerScreen extends StatelessWidget {
               ),
               child: DropdownButton<String>(
                 isExpanded: true, // Puni širina dropdowna
-                icon: Icon(Icons.arrow_drop_down),
-                hint: Text('  Teretana'),
+                icon: const Icon(Icons.arrow_drop_down),
+                hint: const Text('  Teretana'),
                 items:
                     <String>['Item 1', 'Item 2', 'Item 3'].map((String value) {
                   return DropdownMenuItem<String>(
@@ -44,11 +44,11 @@ class TrainerScreen extends StatelessWidget {
                 onChanged: (String? newValue) {
                   // Logika za promjenu vrijednosti Dropdown liste
                 },
-                underline: Text(""),
+                underline: const Text(""),
               ),
             ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Expanded(
             child: Container(
               decoration: BoxDecoration(
@@ -57,8 +57,8 @@ class TrainerScreen extends StatelessWidget {
               ),
               child: DropdownButton<String>(
                 isExpanded: true, // Puni širina dropdowna
-                icon: Icon(Icons.arrow_drop_down),
-                hint: Text('  Spol'),
+                icon: const Icon(Icons.arrow_drop_down),
+                hint: const Text('  Spol'),
                 items:
                     <String>['Item 1', 'Item 2', 'Item 3'].map((String value) {
                   return DropdownMenuItem<String>(
@@ -69,11 +69,11 @@ class TrainerScreen extends StatelessWidget {
                 onChanged: (String? newValue) {
                   // Logika za promjenu vrijednosti Dropdown liste
                 },
-                underline: Text(""),
+                underline: const Text(""),
               ),
             ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Expanded(
             child: Container(
               decoration: BoxDecoration(
@@ -87,13 +87,13 @@ class TrainerScreen extends StatelessWidget {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  contentPadding: EdgeInsets.all(10.0),
+                  contentPadding: const EdgeInsets.all(10.0),
                 ),
               ),
             ),
           ),
         ]),
-        SizedBox(height: 16.0),
+        const SizedBox(height: 16.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -123,7 +123,7 @@ class TrainerScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(width: 16.0),
+                const SizedBox(width: 16.0),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
@@ -147,7 +147,7 @@ class TrainerScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(width: 16.0),
+                const SizedBox(width: 16.0),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
@@ -175,7 +175,7 @@ class TrainerScreen extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Expanded(
@@ -193,7 +193,7 @@ class TrainerScreen extends StatelessWidget {
                 child: DataTable(
                   dataRowHeight: 100,
                   dataRowColor: MaterialStateProperty.all(
-                      Color.fromARGB(42, 241, 241, 241)),
+                      const Color.fromARGB(42, 241, 241, 241)),
                   columns: <DataColumn>[
                     DataColumn(
                       label: Checkbox(
@@ -203,25 +203,25 @@ class TrainerScreen extends StatelessWidget {
                         },
                       ),
                     ),
-                    DataColumn(
+                    const DataColumn(
                       label: Text('Redni broj'),
                     ),
-                    DataColumn(
+                    const DataColumn(
                       label: Text('Slika'),
                     ),
-                    DataColumn(
+                    const DataColumn(
                       label: Text('Ime i prezime'),
                     ),
-                    DataColumn(
+                    const DataColumn(
                       label: Text('Teretana'),
                     ),
-                    DataColumn(
+                    const DataColumn(
                       label: Text('Telefon'),
                     ),
-                    DataColumn(
+                    const DataColumn(
                       label: Text('Email'),
                     ),
-                    DataColumn(
+                    const DataColumn(
                       label: Text('Status'),
                     ),
                   ],
@@ -236,12 +236,12 @@ class TrainerScreen extends StatelessWidget {
                             },
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('1'),
                         ),
                         DataCell(
                           Container(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             child: Image.asset(
                               'assets/images/user1.jpg',
                               height: 250,
@@ -249,16 +249,16 @@ class TrainerScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Ime Prezime 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Teretana 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Grupa 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Muški'),
                         ),
                         const DataCell(
@@ -276,12 +276,12 @@ class TrainerScreen extends StatelessWidget {
                             },
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('1'),
                         ),
                         DataCell(
                           Container(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             child: Image.asset(
                               'assets/images/user1.jpg',
                               height: 250,
@@ -289,16 +289,16 @@ class TrainerScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Ime Prezime 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Teretana 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Grupa 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Muški'),
                         ),
                         const DataCell(
@@ -316,12 +316,12 @@ class TrainerScreen extends StatelessWidget {
                             },
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('1'),
                         ),
                         DataCell(
                           Container(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             child: Image.asset(
                               'assets/images/user1.jpg',
                               height: 250,
@@ -329,16 +329,16 @@ class TrainerScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Ime Prezime 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Teretana 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Grupa 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Muški'),
                         ),
                         const DataCell(
@@ -356,12 +356,12 @@ class TrainerScreen extends StatelessWidget {
                             },
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('1'),
                         ),
                         DataCell(
                           Container(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             child: Image.asset(
                               'assets/images/user1.jpg',
                               height: 250,
@@ -369,16 +369,16 @@ class TrainerScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Ime Prezime 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Teretana 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Grupa 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Muški'),
                         ),
                         const DataCell(
@@ -396,12 +396,12 @@ class TrainerScreen extends StatelessWidget {
                             },
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('1'),
                         ),
                         DataCell(
                           Container(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             child: Image.asset(
                               'assets/images/user1.jpg',
                               height: 250,
@@ -409,16 +409,16 @@ class TrainerScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Ime Prezime 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Teretana 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Grupa 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Muški'),
                         ),
                         const DataCell(
@@ -436,12 +436,12 @@ class TrainerScreen extends StatelessWidget {
                             },
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('1'),
                         ),
                         DataCell(
                           Container(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             child: Image.asset(
                               'assets/images/user1.jpg',
                               height: 250,
@@ -449,16 +449,16 @@ class TrainerScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Ime Prezime 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Teretana 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Grupa 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Muški'),
                         ),
                         const DataCell(
@@ -476,12 +476,12 @@ class TrainerScreen extends StatelessWidget {
                             },
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('1'),
                         ),
                         DataCell(
                           Container(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             child: Image.asset(
                               'assets/images/user1.jpg',
                               height: 250,
@@ -489,16 +489,16 @@ class TrainerScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Ime Prezime 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Teretana 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Grupa 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Muški'),
                         ),
                         const DataCell(
@@ -516,12 +516,12 @@ class TrainerScreen extends StatelessWidget {
                             },
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('1'),
                         ),
                         DataCell(
                           Container(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             child: Image.asset(
                               'assets/images/user1.jpg',
                               height: 250,
@@ -529,16 +529,16 @@ class TrainerScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Ime Prezime 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Teretana 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Grupa 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Muški'),
                         ),
                         const DataCell(
@@ -556,12 +556,12 @@ class TrainerScreen extends StatelessWidget {
                             },
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('1'),
                         ),
                         DataCell(
                           Container(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             child: Image.asset(
                               'assets/images/user1.jpg',
                               height: 250,
@@ -569,16 +569,16 @@ class TrainerScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Ime Prezime 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Teretana 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Grupa 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Muški'),
                         ),
                         const DataCell(
@@ -596,12 +596,12 @@ class TrainerScreen extends StatelessWidget {
                             },
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('1'),
                         ),
                         DataCell(
                           Container(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             child: Image.asset(
                               'assets/images/user1.jpg',
                               height: 250,
@@ -609,16 +609,16 @@ class TrainerScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Ime Prezime 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Teretana 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Grupa 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Muški'),
                         ),
                         const DataCell(
@@ -636,12 +636,12 @@ class TrainerScreen extends StatelessWidget {
                             },
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('1'),
                         ),
                         DataCell(
                           Container(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             child: Image.asset(
                               'assets/images/user1.jpg',
                               height: 250,
@@ -649,16 +649,16 @@ class TrainerScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Ime Prezime 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Teretana 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Grupa 1'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Muški'),
                         ),
                         const DataCell(
@@ -676,12 +676,12 @@ class TrainerScreen extends StatelessWidget {
                             },
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('2'),
                         ),
                         DataCell(
                           Container(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             child: Image.asset(
                               'assets/images/user1.jpg',
                               height: 250,
@@ -689,16 +689,16 @@ class TrainerScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Ime Prezime 2'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Teretana 2'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Grupa 2'),
                         ),
-                        DataCell(
+                        const DataCell(
                           Text('Ženski'), // Možete prilagoditi spol
                         ),
                         const DataCell(

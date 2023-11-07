@@ -1,4 +1,5 @@
 ﻿using GymFit.Core;
+using GymFit.Core.Dtos.User;
 
 namespace GymFit.Application
 {
@@ -10,12 +11,12 @@ namespace GymFit.Application
 
             CreateMap<User, UserSensitiveDto>();
 
+            CreateMap<User, UserForSelectionDto>();
 
 
             CreateMap<UserUpsertDto, User>()
-                .ForMember(u => u.Photo, o => o.Ignore())
-                .ForMember(u => u.IsVerified, o => o.MapFrom(_ => false))
-                .ForMember(u => u.IsActive, o => o.MapFrom(_ => true));
+                .ForMember(u => u.Photo, o => o.Ignore());
+                
         }
     }
 }

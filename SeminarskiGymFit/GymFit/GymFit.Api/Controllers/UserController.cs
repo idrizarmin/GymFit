@@ -4,11 +4,12 @@ using GymFit.Application;
 using GymFit.Application.Interfaces;
 using GymFit.Core;
 using GymFit.Infrastructure.Interfaces;
+using GymFit.Infrastructure.Interfaces.SearchObjects;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymFit.Api.Controllers
 {
-    public class UserController : BaseCrudController<UserDto, UserUpsertDto, BaseSearchObject, IUserService>
+    public class UserController : BaseCrudController<UserDto, UserUpsertDto, UserSearchObject, IUserService>
     {
         private readonly IMapper _mapper;
         public UserController(IMapper mapper, IUserService service, ILogger<UserController> logger) : base(service, logger)
@@ -18,7 +19,20 @@ namespace GymFit.Api.Controllers
         [NonAction]
         public override Task<IActionResult> Post(UserUpsertDto upsertDto, CancellationToken cancellationToken = default) => base.Post(upsertDto, cancellationToken);
 
-
+        [HttpGet("GetUsersForSelection")]
+        public async Task<IActionResult> GetUsersForSelection(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var dto= await Service.GetUserForSelectionAsync(cancellationToken);
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Problem with getting resources");
+                return BadRequest();
+            }
+        } 
         [HttpPost]
         public async Task<IActionResult> Post([FromForm] UserUpsertModel model, CancellationToken cancellationToken = default)
         {
@@ -29,7 +43,7 @@ namespace GymFit.Api.Controllers
                 {
                     await using var memoryStream = new MemoryStream();
                     await model.ProfilePhoto.CopyToAsync(memoryStream, cancellationToken);
-                    upsertDto.ProfilePhoto = new PhotoUpsertDto
+                    upsertDto.profilePhoto = new PhotoUpsertDto
                     {
                         Data = memoryStream.ToArray(),
                         ContentType = model.ProfilePhoto.ContentType

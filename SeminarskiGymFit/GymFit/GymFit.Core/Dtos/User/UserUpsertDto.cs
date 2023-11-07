@@ -15,6 +15,6 @@
         public DateTime DateOfBirth { get; set; }
         public Role Role { get; set; }
 
-        public PhotoUpsertDto? ProfilePhoto { get; set; }
+        public PhotoUpsertDto? profilePhoto { get; set; }
     }
 }

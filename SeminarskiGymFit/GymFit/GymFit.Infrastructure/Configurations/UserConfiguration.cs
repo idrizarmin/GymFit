@@ -23,11 +23,10 @@ namespace GymFit.Infrastructure
             builder.Property(x => x.ProfessionalTitle)
                 .IsRequired(false);
 
-            builder.Property(e => e.IsVerified)
-                .HasDefaultValue(true);
+            builder.Property(e => e.IsVerified);
+                
 
-            builder.Property(e => e.IsActive)
-               .HasDefaultValue(true);
+            builder.Property(e => e.IsActive);
 
             builder.Property(e => e.Gender)
                 .IsRequired();
@@ -36,7 +35,8 @@ namespace GymFit.Infrastructure
                 .IsRequired();
 
             builder.Property(e => e.DateOfBirth)
-                .IsRequired();
+                .IsRequired(true);
+               
 
             builder.Property(e => e.Email)
                 .IsRequired();

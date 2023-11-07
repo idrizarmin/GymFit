@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ReportScreen extends StatefulWidget {
+  const ReportScreen({super.key});
+
   @override
   _FinancialReportScreenState createState() => _FinancialReportScreenState();
 }
@@ -30,24 +32,24 @@ class _FinancialReportScreenState extends State<ReportScreen> {
           children: [
             TextField(
               controller: _revenueController,
-              decoration: InputDecoration(labelText: 'Prihod'),
+              decoration: const InputDecoration(labelText: 'Prihod'),
               keyboardType: TextInputType.number,
             ),
             TextField(
               controller: _expensesController,
-              decoration: InputDecoration(labelText: 'Troškovi'),
+              decoration: const InputDecoration(labelText: 'Troškovi'),
               keyboardType: TextInputType.number,
             ),
             ElevatedButton(
               onPressed: calculateProfit,
-              child: Text('Izračunaj Profit'),
+              child: const Text('Izračunaj Profit'),
             ),
             TextField(
               controller: _profitsController,
-              decoration: InputDecoration(labelText: 'Profit'),
+              decoration: const InputDecoration(labelText: 'Profit'),
               readOnly: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 // Ovdje dodajte logiku za spremanje financijskog izvještaja
@@ -58,7 +60,7 @@ class _FinancialReportScreenState extends State<ReportScreen> {
                 // Spremite izvještaj ili posaljite na server
                 // Ili obratite se odgovarajućoj usluzi za spremanje podataka
               },
-              child: Text('Spremi Izvještaj'),
+              child: const Text('Spremi Izvještaj'),
             ),
           ],
         ),

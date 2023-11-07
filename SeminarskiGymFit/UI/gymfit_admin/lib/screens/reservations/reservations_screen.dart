@@ -12,7 +12,7 @@ class ReservationScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(
-            padding: EdgeInsets.only(bottom: defaultPadding / 2),
+            padding: const EdgeInsets.only(bottom: defaultPadding / 2),
             decoration: const BoxDecoration(
               border: Border(
                 bottom: BorderSide(
@@ -21,8 +21,8 @@ class ReservationScreen extends StatelessWidget {
                 ),
               ),
             ),
-            child: Heder(pageTitle: "Termini -rezervacije ")),
-        SizedBox(height: 16.0),
+            child: const Heder(pageTitle: "Termini -rezervacije ")),
+        const SizedBox(height: 16.0),
         Row(children: [
           Expanded(
             child: Container(
@@ -34,27 +34,27 @@ class ReservationScreen extends StatelessWidget {
               child: TextField(
                 decoration: InputDecoration(
                   hintText: "Klijenti",
-                  border: OutlineInputBorder(
+                  border: const OutlineInputBorder(
                     borderSide: BorderSide.none,
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                   suffixIcon: InkWell(
                     onTap: () {},
                     child: Container(
-                        padding: EdgeInsets.all(defaultPadding * 0.75),
+                        padding: const EdgeInsets.all(defaultPadding * 0.75),
                         margin:
-                            EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-                        decoration: BoxDecoration(
+                            const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
+                        decoration: const BoxDecoration(
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
+                              BorderRadius.all(Radius.circular(10)),
                         ),
-                        child: Icon(Icons.search_outlined)),
+                        child: const Icon(Icons.search_outlined)),
                   ),
                 ),
               ),
             ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Expanded(
             child: Container(
               decoration: BoxDecoration(
@@ -65,27 +65,27 @@ class ReservationScreen extends StatelessWidget {
               child: TextField(
                 decoration: InputDecoration(
                   hintText: "Treneri",
-                  border: OutlineInputBorder(
+                  border: const OutlineInputBorder(
                     borderSide: BorderSide.none,
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                   suffixIcon: InkWell(
                     onTap: () {},
                     child: Container(
-                        padding: EdgeInsets.all(defaultPadding * 0.75),
+                        padding: const EdgeInsets.all(defaultPadding * 0.75),
                         margin:
-                            EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-                        decoration: BoxDecoration(
+                            const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
+                        decoration: const BoxDecoration(
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
+                              BorderRadius.all(Radius.circular(10)),
                         ),
-                        child: Icon(Icons.search_outlined)),
+                        child: const Icon(Icons.search_outlined)),
                   ),
                 ),
               ),
             ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Expanded(
             child: Container(
               decoration: BoxDecoration(
@@ -94,8 +94,8 @@ class ReservationScreen extends StatelessWidget {
               ),
               child: DropdownButton<String>(
                 isExpanded: true, // Puni širina dropdowna
-                icon: Icon(Icons.arrow_drop_down),
-                hint: Text('  Spol'),
+                icon: const Icon(Icons.arrow_drop_down),
+                hint: const Text('  Spol'),
                 items:
                     <String>['Item 1', 'Item 2', 'Item 3'].map((String value) {
                   return DropdownMenuItem<String>(
@@ -106,11 +106,11 @@ class ReservationScreen extends StatelessWidget {
                 onChanged: (String? newValue) {
                   // Logika za promjenu vrijednosti Dropdown liste
                 },
-                underline: Text(""),
+                underline: const Text(""),
               ),
             ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Expanded(
             child: Container(
               decoration: BoxDecoration(
@@ -119,8 +119,8 @@ class ReservationScreen extends StatelessWidget {
               ),
               child: DropdownButton<String>(
                 isExpanded: true, // Puni širina dropdowna
-                icon: Icon(Icons.arrow_drop_down),
-                hint: Text('  Grupa'),
+                icon: const Icon(Icons.arrow_drop_down),
+                hint: const Text('  Grupa'),
                 items:
                     <String>['Item 1', 'Item 2', 'Item 3'].map((String value) {
                   return DropdownMenuItem<String>(
@@ -131,12 +131,12 @@ class ReservationScreen extends StatelessWidget {
                 onChanged: (String? newValue) {
                   // Logika za promjenu vrijednosti Dropdown liste
                 },
-                underline: Text(""),
+                underline: const Text(""),
               ),
             ),
           ),
         ]),
-        SizedBox(height: 16.0),
+        const SizedBox(height: 16.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -166,7 +166,7 @@ class ReservationScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(width: 16.0),
+                const SizedBox(width: 16.0),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,

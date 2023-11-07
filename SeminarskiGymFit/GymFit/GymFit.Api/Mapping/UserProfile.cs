@@ -14,8 +14,8 @@ namespace GymFit.Api.Mapping
                 .ForMember(a => a.Role, o => o.MapFrom(s => Role.Korisnik));
 
             CreateMap<UserUpsertModel, UserUpsertDto>()
-            .ForMember(a => a.ProfilePhoto, o => o.Ignore())
-            .ForMember(a => a.Role, o => o.MapFrom(s => Role.Korisnik));
+            .ForMember(a => a.profilePhoto, o => o.Ignore()
+            );
         }
     }
 }

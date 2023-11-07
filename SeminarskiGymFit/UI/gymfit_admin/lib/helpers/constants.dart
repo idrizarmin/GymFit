@@ -12,4 +12,4 @@ const bgColor = Color.fromARGB(186, 37, 46, 83);
 const defaultPadding= 16.0;
 
 Color myButtonColor = const Color.fromRGBO(21, 144, 15, 1);
-Color myButtonDeleteColor = Color.fromARGB(255, 241, 0, 0);
+Color myButtonDeleteColor = const Color.fromARGB(255, 241, 0, 0);

@@ -8,7 +8,7 @@ class BaseScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return 
-      SafeArea(
+      const SafeArea(
           child: SingleChildScrollView(
         padding: EdgeInsets.all(defaultPadding),
         child: Column(

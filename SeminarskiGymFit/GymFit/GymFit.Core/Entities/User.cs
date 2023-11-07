@@ -8,7 +8,7 @@
         public string Email { get; set; } = null!;
         public string? ProfessionalTitle { get; set; }
         public bool IsVerified { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } 
         public Gender Gender { get; set; }
         public DateTime DateOfBirth { get; set; }
         public Role Role  { get; set; }

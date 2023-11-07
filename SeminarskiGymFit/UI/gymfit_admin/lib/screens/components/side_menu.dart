@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gymfit_admin/helpers/constants.dart';
+import 'package:gymfit_admin/screens/cities/cities_screen.dart';
 import 'package:gymfit_admin/screens/clients_screen.dart';
 import 'package:gymfit_admin/screens/components/base_screen.dart';
 import 'package:gymfit_admin/screens/country/country_screen.dart';
 import 'package:gymfit_admin/screens/gyms/gym_screen.dart';
-import 'package:gymfit_admin/screens/notificatios/notification_screen.dart';
+import 'package:gymfit_admin/screens/notificatios/notifications_screen.dart';
 import 'package:gymfit_admin/screens/reports/report_screen.dart';
 import 'package:gymfit_admin/screens/reservations/reservations_screen.dart';
 import 'package:gymfit_admin/screens/trainers/trainer_screen.dart';
+import 'package:gymfit_admin/screens/users/users_screen.dart';
 
 class SideMenu extends StatefulWidget {
   const SideMenu({
@@ -72,56 +74,56 @@ class _SideMenuState extends State<SideMenu> {
                   title: "Dashboard",
                   svgSrc: "assets/icons/dash.svg",
                   press: () {
-                    widget.onMenuItemClicked(BaseScreen());
+                    widget.onMenuItemClicked(const BaseScreen());
                   },
                 ),
                 DrawerListTile(
                   title: "Klijenti",
                   svgSrc: "assets/icons/users.svg",
                   press: () {
-                    widget.onMenuItemClicked(ClientsScreen());
+                    widget.onMenuItemClicked(const UsersScreen());
                   },
                 ),
                 DrawerListTile(
                   title: "Termini",
                   svgSrc: "assets/icons/reservation.svg",
                   press: () {
-                    widget.onMenuItemClicked(ReservationScreen());
+                    widget.onMenuItemClicked(const ReservationScreen());
                   },
                 ),
                 DrawerListTile(
                   title: "Obavijesti",
                   svgSrc: "assets/icons/notification.svg",
                   press: () {
-                    widget.onMenuItemClicked(NotificationScreen());
+                    widget.onMenuItemClicked(const NotificationsScreen());
                   },
                 ),
                 DrawerListTile(
                   title: "Treneri",
                   svgSrc: "assets/icons/trainer.svg",
                   press: () {
-                    widget.onMenuItemClicked(TrainerScreen());
+                    widget.onMenuItemClicked(const TrainerScreen());
                   },
                 ),
                 DrawerListTile(
                   title: "Teretane",
                   svgSrc: "assets/icons/gym.svg",
                   press: () {
-                    widget.onMenuItemClicked(GymScreen());
+                    widget.onMenuItemClicked(const GymScreen());
                   },
                 ),
                 DrawerListTile(
                   title: "Izvještaji",
                   svgSrc: "assets/icons/report.svg",
                   press: () {
-                    widget.onMenuItemClicked(ReportScreen());
+                    widget.onMenuItemClicked(const ReportScreen());
                   },
                 ),
                 DrawerListTile(
                   title: "Računi",
                   svgSrc: "assets/icons/bill.svg",
                   press: () {
-                    widget.onMenuItemClicked(ClientsScreen());
+                    widget.onMenuItemClicked(const ClientsScreen());
                   },
                 ),
                  ExpansionTile(
@@ -131,8 +133,8 @@ class _SideMenuState extends State<SideMenu> {
                     value; 
               });
             },
-            title: Text(
-              "Osnovni podatci",
+            title: const Text(
+              "Osnovni podaci",
               style: TextStyle(color: Colors.white),
             ),
             trailing: Icon(
@@ -146,21 +148,21 @@ class _SideMenuState extends State<SideMenu> {
                 title: "Države",
                 svgSrc: "assets/icons/country.svg",
                 press: () {
-                  widget.onMenuItemClicked(CountryScreen());
+                  widget.onMenuItemClicked(const CountryScreen());
                 },
               ),
               DrawerListTile(
                 title: "Gradovi",
                 svgSrc: "assets/icons/city.svg",
                 press: () {
-                  widget.onMenuItemClicked(ClientsScreen());
+                  widget.onMenuItemClicked(const CityScreen());
                 },
               ),
               DrawerListTile(
                 title: "Languages",
                 svgSrc: "assets/icons/bill.svg",
                 press: () {
-                  widget.onMenuItemClicked(ClientsScreen());
+                  widget.onMenuItemClicked(const UsersScreen());
                 },
               ),
             ],
@@ -192,12 +194,12 @@ class DrawerListTile extends StatelessWidget {
       horizontalTitleGap: 0.0,
       leading: SvgPicture.asset(
         svgSrc,
-        colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
         height: 16,
       ),
       title: Text(
         title,
-        style: TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.white),
       ),
     );
   }

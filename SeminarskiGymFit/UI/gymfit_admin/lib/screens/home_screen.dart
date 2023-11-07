@@ -12,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Widget _currentPage = BaseScreen();
+  Widget _currentPage = const BaseScreen();
 
   void _changePage(Widget page) {
     setState(() {
@@ -27,7 +27,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
+            Container(
+              width: 180,
               child: SideMenu(onMenuItemClicked: _changePage),
             ),
             Expanded(

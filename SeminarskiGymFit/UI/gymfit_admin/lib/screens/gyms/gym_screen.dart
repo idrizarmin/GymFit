@@ -14,7 +14,7 @@ class GymScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: EdgeInsets.only(bottom: defaultPadding / 2),
+              padding: const EdgeInsets.only(bottom: defaultPadding / 2),
               decoration: const BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
@@ -23,9 +23,9 @@ class GymScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              child: Heder(pageTitle: "Teretane"),
+              child: const Heder(pageTitle: "Teretane"),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -55,7 +55,7 @@ class GymScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(width: 16.0),
+                    const SizedBox(width: 16.0),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryColor,
@@ -79,7 +79,7 @@ class GymScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(width: 16.0),
+                    const SizedBox(width: 16.0),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryColor,
@@ -107,7 +107,7 @@ class GymScreen extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
@@ -123,8 +123,8 @@ class GymScreen extends StatelessWidget {
                     child: DataTable(
                       dataRowHeight: 100,
                       dataRowColor: MaterialStateProperty.all(
-                          Color.fromARGB(42, 241, 241, 241)),
-                      columns: <DataColumn>[
+                          const Color.fromARGB(42, 241, 241, 241)),
+                      columns: const <DataColumn>[
                         DataColumn(label: Text('')),
                         DataColumn(label: Text('Ime')),
                         DataColumn(label: Text('Prezime')),
@@ -143,11 +143,11 @@ class GymScreen extends StatelessWidget {
                                 },
                               ),
                             ),
-                            DataCell(Text('Ime 1')),
-                            DataCell(Text('Prezime 1')),
-                            DataCell(Text('Sadržaj 1')),
-                            DataCell(Text('Datum 1')),
-                            DataCell(Icon(Icons.check_circle_outline,
+                            const DataCell(Text('Ime 1')),
+                            const DataCell(Text('Prezime 1')),
+                            const DataCell(Text('Sadržaj 1')),
+                            const DataCell(Text('Datum 1')),
+                            const DataCell(Icon(Icons.check_circle_outline,
                                 color: Colors.green)),
                           ],
                         ),
@@ -161,11 +161,11 @@ class GymScreen extends StatelessWidget {
                                 },
                               ),
                             ),
-                            DataCell(Text('Ime 2')),
-                            DataCell(Text('Prezime 2')),
-                            DataCell(Text('Sadržaj 2')),
-                            DataCell(Text('Datum 2')),
-                            DataCell(Icon(Icons.check_circle_outline,
+                            const DataCell(Text('Ime 2')),
+                            const DataCell(Text('Prezime 2')),
+                            const DataCell(Text('Sadržaj 2')),
+                            const DataCell(Text('Datum 2')),
+                            const DataCell(Icon(Icons.check_circle_outline,
                                 color: Colors.green)),
                           ],
                         ),

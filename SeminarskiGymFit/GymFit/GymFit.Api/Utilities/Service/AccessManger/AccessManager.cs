@@ -52,7 +52,7 @@ namespace GymFit.Api
             {
                 await using var memoryStream = new MemoryStream();
                 await model.ProfilePhoto.CopyToAsync(memoryStream, cancellationToken);
-                upsertDto.ProfilePhoto = new PhotoUpsertDto
+                upsertDto.profilePhoto = new PhotoUpsertDto
                 {
                     Data = memoryStream.ToArray(),
                     ContentType = model.ProfilePhoto.ContentType

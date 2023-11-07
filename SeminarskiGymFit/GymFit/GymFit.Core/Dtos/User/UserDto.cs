@@ -11,7 +11,7 @@
         public bool IsVerified { get; set; }
         public bool IsActive { get; set; }
         public Gender Gender { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; } 
         public Role Role { get; set; }
         
         public int? ProfilePhotoId { get; set; }

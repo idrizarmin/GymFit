@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymfit_admin/helpers/constants.dart';
+import 'package:gymfit_admin/providers/login_provider.dart';
 import 'package:gymfit_admin/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import '../helpers/show_error_dialog.dart';
@@ -14,7 +15,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late UserProvider userProvider;
+  late LoginProvider userProvider;
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
@@ -25,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
 
-    userProvider = context.read<UserProvider>();
+    userProvider = context.read<LoginProvider>();
   }
 
   void login() async {
@@ -85,23 +86,23 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     decoration: InputDecoration(
                       labelText: "Email",
-                      prefixIcon: Icon(Icons.email_outlined,
+                      prefixIcon: const Icon(Icons.email_outlined,
                           color: Color.fromRGBO(41, 209, 32, 1)),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
-                            BorderSide(color: Color.fromRGBO(41, 209, 32, 1)),
+                            const BorderSide(color: Color.fromRGBO(41, 209, 32, 1)),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
-                            BorderSide(color: Color.fromRGBO(41, 209, 32, 1)),
+                            const BorderSide(color: Color.fromRGBO(41, 209, 32, 1)),
                       ),
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: Colors.red),
+                        borderSide: const BorderSide(color: Colors.red),
                       ),
-                      labelStyle: TextStyle(
+                      labelStyle: const TextStyle(
                         color: Color.fromRGBO(41, 209, 32, 1),
                       ),
                     ),
@@ -119,13 +120,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     decoration: InputDecoration(
                       labelText: "Lozinka",
-                      prefixIcon: Icon(Icons.password_outlined,
+                      prefixIcon: const Icon(Icons.password_outlined,
                           color: Color.fromRGBO(41, 209, 32, 1)),
                       suffixIcon: IconButton(
                         icon: _obscurePassword
-                            ? Icon(Icons.visibility_outlined,
+                            ? const Icon(Icons.visibility_outlined,
                                 color: Color.fromRGBO(41, 209, 32, 1))
-                            : Icon(Icons.visibility_off_outlined,
+                            : const Icon(Icons.visibility_off_outlined,
                                 color: Color.fromRGBO(41, 209, 32, 1)),
                         onPressed: () {
                           setState(() {
@@ -136,18 +137,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
-                            BorderSide(color: Color.fromRGBO(41, 209, 32, 1)),
+                            const BorderSide(color: Color.fromRGBO(41, 209, 32, 1)),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide:
-                            BorderSide(color: Color.fromRGBO(41, 209, 32, 1)),
+                            const BorderSide(color: Color.fromRGBO(41, 209, 32, 1)),
                       ),
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: Colors.red),
+                        borderSide: const BorderSide(color: Colors.red),
                       ),
-                      labelStyle: TextStyle(
+                      labelStyle: const TextStyle(
                         color: Color.fromRGBO(41, 209, 32, 1),
                       ),
                     ),
@@ -178,7 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromRGBO(41, 209, 32, 1),
+                          backgroundColor: const Color.fromRGBO(41, 209, 32, 1),
                           minimumSize: const Size.fromHeight(50),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),

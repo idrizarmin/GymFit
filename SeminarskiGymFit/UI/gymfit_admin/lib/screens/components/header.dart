@@ -28,7 +28,7 @@ class Heder extends StatelessWidget {
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
-        ProfileCard(),
+        const ProfileCard(),
       ],
     );
   }
@@ -46,7 +46,7 @@ class ProfileCard extends StatelessWidget {
         const SizedBox(width: 8),
         SvgPicture.asset(
           "assets/icons/notification2.svg",
-          color: Color.fromARGB(255, 255, 167, 43),
+          color: const Color.fromARGB(255, 255, 167, 43),
           width: 35,
           height: 35,
         ),
@@ -59,12 +59,12 @@ class ProfileCard extends StatelessWidget {
             height: 38,
           ),
         ),
-        SizedBox(),
-        Padding(
+        const SizedBox(),
+        const Padding(
           padding: EdgeInsets.symmetric(horizontal: defaultPadding / 2),
           child: Text("Armin Idriz"),
         ),
-        Icon(Icons.keyboard_arrow_down),
+        const Icon(Icons.keyboard_arrow_down),
       ],
     );
   }
@@ -81,18 +81,18 @@ class SearchField extends StatelessWidget {
       decoration: InputDecoration(
           hintText: "Potraži teretanu",
           floatingLabelBehavior: FloatingLabelBehavior.never,
-          fillColor: Color.fromARGB(116, 17, 18, 28),
+          fillColor: const Color.fromARGB(116, 17, 18, 28),
           filled: true,
-          border: OutlineInputBorder(
+          border: const OutlineInputBorder(
             borderSide: BorderSide.none,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
           suffixIcon: InkWell(
             onTap: () {},
             child: Container(
-              padding: EdgeInsets.all(defaultPadding * 0.75),
-              margin: EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.all(defaultPadding * 0.75),
+              margin: const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
+              decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
               child: SvgPicture.asset(

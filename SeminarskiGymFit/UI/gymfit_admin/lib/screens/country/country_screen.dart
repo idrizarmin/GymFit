@@ -33,6 +33,9 @@ class _CountryScreenState extends State<CountryScreen> {
       loadCountries(searchQuery);
     });
   }
+  List<Country> filteredCountries = [];
+
+ 
 
   void loadCountries(String? query) async {
     var params;
@@ -115,81 +118,86 @@ class _CountryScreenState extends State<CountryScreen> {
                       ),
                     ),
                   ),
-                  child: Heder(pageTitle: "Klijenti")),
+                  child: Heder(pageTitle: "Države")),
               Expanded(
-                child: Container(
-                  width: 1100,
-                  child: Column(
-                    children: [
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: 500,
-                            child: Padding(
-                                padding: EdgeInsets.only(
-                                    left: 136,
-                                    top: 8,
-                                    right: 8), // Margine za input polje
-                                child: TextField(
-                                  controller: _searchController,
-                                  decoration: InputDecoration(
-                                    hintText: 'Pretraga',
-                                  ),
-                                )),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                top: 8, right: 146), // Margine za dugme "Dodaj"
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor,
-                              ),
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text('Dodaj državu'),
-                                      content: SingleChildScrollView(
-                                        child: AddCountryForm(),
-                                      ),
-                                      actions: <Widget>[
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: myButtonColor,
-                                          ),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text('Zatvori'),
-                                        ),
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: myButtonColor,
-                                          ),
-                                          onPressed: () {
-                                            if (_formKey.currentState!
-                                                .validate()) {
-                                              InsertCountry();
-                                            }
-                                          },
-                                          child: Text('Spremi'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                              child: Text("Dodaj"),
+                child: Center(
+                  child: Container(
+                    width: 1100,
+                    child: Column(
+                       mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: 500,
+                              child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 136,
+                                      top: 8,
+                                      right: 8), // Margine za input polje
+                                  child: TextField(
+                                   
+                                    controller: _searchController,
+                                    decoration: InputDecoration(
+                                      hintText: 'Pretraga',
+                                    ),
+                                    
+                                  )),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20),
-                      _buildDataListView()
-                    ],
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: 8, right: 146), // Margine za dugme "Dodaj"
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: myButtonColor,
+                                ),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text('Dodaj državu'),
+                                        content: SingleChildScrollView(
+                                          child: AddCountryForm(),
+                                        ),
+                                        actions: <Widget>[
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: myButtonColor,
+                                            ),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text('Zatvori'),
+                                          ),
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: myButtonColor,
+                                            ),
+                                            onPressed: () {
+                                              if (_formKey.currentState!
+                                                  .validate()) {
+                                                InsertCountry();
+                                              }
+                                            },
+                                            child: Text('Spremi'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Text("Dodaj"),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20),
+                        _buildDataListView()
+                      ],
+                    ),
                   ),
                 ),
               ),
