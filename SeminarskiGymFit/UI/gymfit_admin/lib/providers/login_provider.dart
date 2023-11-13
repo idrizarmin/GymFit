@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:gymfit_admin/models/register.dart';
 import 'package:gymfit_admin/models/user_login.dart';
 import 'package:gymfit_admin/providers/base_provider.dart';
@@ -17,7 +18,7 @@ class LoginProvider extends BaseProvider {
   @override
   Future<LoginUser> getById(int id) async {
     var uri = Uri.parse('$apiUrl/User/$id');
-
+    
     var headers = Authorization.createHeaders();
 
     final response = await http.get(uri, headers: headers);
@@ -28,6 +29,13 @@ class LoginProvider extends BaseProvider {
     } else {
       throw Exception('Failed to load data');
     }
+  }
+  
+  int? getUserId() {
+    if (user != null) {
+      return int.parse(user!.Id);
+    }
+    return null; 
   }
 
   Future<LoginUser> loginAsync(String email, String password) async {

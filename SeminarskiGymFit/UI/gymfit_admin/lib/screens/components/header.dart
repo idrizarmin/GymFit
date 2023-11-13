@@ -1,16 +1,30 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:gymfit_admin/helpers/constants.dart';
+import 'package:gymfit_admin/providers/login_provider.dart';
+import 'package:provider/provider.dart';
 
-class Heder extends StatelessWidget {
+class Heder extends StatefulWidget {
   const Heder({
     Key? key,
     required this.pageTitle,
   }) : super(key: key);
 
   final String pageTitle;
+
+  @override
+  _HederState createState() => _HederState();
+}
+
+class _HederState extends State<Heder> {
+  late LoginProvider _loginProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _loginProvider = context.read<LoginProvider>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,20 +38,32 @@ class Heder extends StatelessWidget {
         const SizedBox(width: 8),
         Expanded(
           child: Text(
-            pageTitle,
+            widget.pageTitle,
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
-        const ProfileCard(),
+        ProfileCard(loginProvider: _loginProvider),
       ],
     );
   }
 }
 
-class ProfileCard extends StatelessWidget {
+class ProfileCard extends StatefulWidget {
+  final LoginProvider loginProvider;
+
   const ProfileCard({
-    super.key,
-  });
+    Key? key,
+    required this.loginProvider,
+  }) : super(key: key);
+
+  @override
+  _ProfileCardState createState() => _ProfileCardState();
+}
+
+class _ProfileCardState extends State<ProfileCard> {
+
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -64,43 +90,8 @@ class ProfileCard extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: defaultPadding / 2),
           child: Text("Armin Idriz"),
         ),
-        const Icon(Icons.keyboard_arrow_down),
+        
       ],
-    );
-  }
-}
-
-class SearchField extends StatelessWidget {
-  const SearchField({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      decoration: InputDecoration(
-          hintText: "Potraži teretanu",
-          floatingLabelBehavior: FloatingLabelBehavior.never,
-          fillColor: const Color.fromARGB(116, 17, 18, 28),
-          filled: true,
-          border: const OutlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-          ),
-          suffixIcon: InkWell(
-            onTap: () {},
-            child: Container(
-              padding: const EdgeInsets.all(defaultPadding * 0.75),
-              margin: const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
-              child: SvgPicture.asset(
-                "assets/icons/search.svg",
-                color: Colors.white,
-              ),
-            ),
-          )),
     );
   }
 }

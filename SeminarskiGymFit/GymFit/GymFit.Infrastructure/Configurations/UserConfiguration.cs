@@ -35,7 +35,7 @@ namespace GymFit.Infrastructure
                 .IsRequired();
 
             builder.Property(e => e.DateOfBirth)
-                .IsRequired(true);
+                .IsRequired();
                
 
             builder.Property(e => e.Email)

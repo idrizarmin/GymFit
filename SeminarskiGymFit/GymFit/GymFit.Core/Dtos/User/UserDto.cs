@@ -14,7 +14,7 @@
         public DateTime DateOfBirth { get; set; } 
         public Role Role { get; set; }
         
-        public int? ProfilePhotoId { get; set; }
-        public PhotoDto? ProfilePhoto { get; set; }
+        public int? PhotoId { get; set; }
+        public PhotoDto? Photo { get; set; }
     }
 }

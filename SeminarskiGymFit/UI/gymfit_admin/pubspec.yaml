@@ -45,6 +45,7 @@ dependencies:
   image_picker: ^1.0.4
   dropdown_search: ^5.0.6
   multiple_search_selection: ^2.5.4
+  pagination_flutter: ^0.0.8
 
 dev_dependencies:
   flutter_test:
@@ -73,6 +74,7 @@ flutter:
     - assets/icons/notification.svg
     - assets/icons/notification2.svg
     - assets/icons/users.svg
+    - assets/icons/userProfile.svg
     - assets/icons/trainer.svg
     - assets/icons/reservation.svg
     - assets/icons/entry.svg
@@ -81,6 +83,8 @@ flutter:
     - assets/icons/report.svg
     - assets/icons/city.svg
     - assets/icons/country.svg
+    - assets/icons/logout.svg
+    - assets/icons/admin.svg
 
 
     

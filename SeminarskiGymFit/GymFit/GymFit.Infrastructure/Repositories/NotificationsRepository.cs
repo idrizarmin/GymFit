@@ -15,13 +15,10 @@ namespace GymFit.Infrastructure
 
         public override async Task<PagedList<Notification>> GetPagedAsync(NotificationsSearchObject searchObject, CancellationToken cancellationToken = default)
         {
-
-            return await DbSet.Include(s => s.User)
-                .Where(d => (searchObject.seen == null || d.Read == searchObject.seen)
-                && (searchObject.userId == null || d.UserId == searchObject.userId)
-                && (searchObject.content == null || d.Content.ToLower().Contains(searchObject.content.ToLower())))
-                .ToPagedListAsync(searchObject, cancellationToken);
-
+            return await DbSet.Include(s=>s.User).Where(n => (searchObject.seen == null || n.Read == searchObject.seen)
+                 && (searchObject.userId== null || n.UserId == searchObject.userId)
+                 && (searchObject.content == null || n.Content.ToLower().Contains(searchObject.content.ToLower())))
+                 .ToPagedListAsync(searchObject, cancellationToken);
         }
 
     }

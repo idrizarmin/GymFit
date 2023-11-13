@@ -14,7 +14,6 @@ class NotificationProvider extends BaseProvider {
     var uri = Uri.parse('$apiUrl/Notifications/GetPaged');
     var headers = Authorization.createHeaders();
     final Map<String, String> queryParameters = {};
-
     if (searchObject != null) {
       if (searchObject.content != null) {
         queryParameters['content'] = searchObject.content!;
@@ -27,10 +26,17 @@ class NotificationProvider extends BaseProvider {
       if (searchObject.seen != null) {
         queryParameters['seen'] = searchObject.seen.toString();
       }
+      if (searchObject.PageNumber != null) {
+        queryParameters['PageNumber'] = searchObject.PageNumber.toString();
+      }
+      if (searchObject.PageSize != null) {
+        queryParameters['PageSize'] = searchObject.PageSize.toString();
+      }
     }
-
     uri = uri.replace(queryParameters: queryParameters);
+    print(queryParameters);
     final response = await http.get(uri, headers: headers);
+    print(response);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
       var items = data['items'];
@@ -44,13 +50,8 @@ class NotificationProvider extends BaseProvider {
   Future<dynamic> insert(dynamic resource) async {
     var uri = Uri.parse('$apiUrl/Notifications');
     Map<String, String> headers = Authorization.createHeaders();
-    print('Resource  ${resource}');
-    print('Uri  ${uri}');
-    print('Headers  ${headers}');
     var jsonRequest = jsonEncode(resource);
-    print('Ovo je request ${jsonRequest}');
     var response = await http.post(uri, headers: headers, body: jsonRequest);
-    print('${response.body} ${response.headers}');
     if (response.statusCode == 200) {
       return "OK";
     } else {
@@ -61,9 +62,6 @@ class NotificationProvider extends BaseProvider {
   Future<dynamic> edit(dynamic resource) async {
     var uri = Uri.parse('$apiUrl/Notifications');
     Map<String, String> headers = Authorization.createHeaders();
-    print('Uri  ${uri}');
-    print('Headers  ${headers}');
-
     var jsonRequest = jsonEncode(resource);
     var response = await http.put(uri, headers: headers, body: jsonRequest);
 

@@ -13,14 +13,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class UsersScreen extends StatefulWidget {
-  const UsersScreen({Key? key}) : super(key: key);
+class TrainerScreen extends StatefulWidget {
+  const TrainerScreen({Key? key}) : super(key: key);
 
   @override
-  State<UsersScreen> createState() => _UsersScreenState();
+  State<TrainerScreen> createState() => _TrainerScreenState();
 }
 
-class _UsersScreenState extends State<UsersScreen> {
+class _TrainerScreenState extends State<TrainerScreen> {
   List<User> users = <User>[];
   List<User> selectedUsers = <User>[];
   late UserProvider _userProvider;
@@ -38,7 +38,6 @@ class _UsersScreenState extends State<UsersScreen> {
   String _selectedIsVerified = 'Svi';
   int? selectedGender;
   int? selectedCinemaId;
-  int? selectedRole;
   bool _isActive = false;
   bool _isVerified = false;
   bool isAllSelected = false;
@@ -118,7 +117,7 @@ class _UsersScreenState extends State<UsersScreen> {
         "professionalTitle": null,
         "gender": selectedGender,
         "birthDate": _birthDateController.text,
-        "role": selectedRole,
+        "role": 2,
         "lastSignInAt": DateTime.now().toUtc().toIso8601String(),
         "isVerified": _isVerified,
         "isActive": _isActive,
@@ -152,7 +151,7 @@ class _UsersScreenState extends State<UsersScreen> {
         "professionalTitle": null,
         "gender": selectedGender,
         "birthDate": _birthDateController.text,
-        "role": selectedRole,
+        "role": 2,
         "lastSignInAt": DateTime.now().toUtc().toIso8601String(),
         "isVerified": _isVerified,
         "isActive": _isActive,
@@ -285,8 +284,6 @@ class _UsersScreenState extends State<UsersScreen> {
   }
 
   Row buildFilterDropdowns() {
-    final currentPageUsers = getCurrentPageUsers();
-
     return Row(
       children: [
         Expanded(
@@ -811,7 +808,6 @@ class _UsersScreenState extends State<UsersScreen> {
       _emailController.text = userToEdit.email ?? '';
       _phoneNumberController.text = userToEdit.phoneNumber ?? '';
       _birthDateController.text = userToEdit.birthDate ?? '';
-      selectedRole = userToEdit.role;
       selectedGender = userToEdit.gender;
       _isActive = userToEdit.isActive;
       _isVerified = userToEdit.isVerified;
@@ -823,7 +819,6 @@ class _UsersScreenState extends State<UsersScreen> {
       _emailController.text = '';
       _phoneNumberController.text = '';
       _birthDateController.text = '';
-      selectedRole = null;
       selectedGender = null;
       _isVerified = false;
       _isActive = false;
@@ -1010,37 +1005,6 @@ class _UsersScreenState extends State<UsersScreen> {
                     validator: (value) {
                       if (value == null) {
                         return 'Unesite spol!';
-                      }
-                      return null;
-                    },
-                  ),
-                  DropdownButtonFormField<int>(
-                    value: selectedRole,
-                    onChanged: (newValue) {
-                      setState(() {
-                        selectedRole = newValue!;
-                      });
-                    },
-                    items: [
-                      DropdownMenuItem<int>(
-                        value: null,
-                        child: Text('Odaberi rolu'),
-                      ),
-                      DropdownMenuItem<int>(
-                        value: 0,
-                        child: Text('Korisnik'),
-                      ),
-                      DropdownMenuItem<int>(
-                        value: 1,
-                        child: Text('Administrator'),
-                      ),
-                    ],
-                    decoration: InputDecoration(
-                      labelText: 'Rola',
-                    ),
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Unesite rolu!';
                       }
                       return null;
                     },

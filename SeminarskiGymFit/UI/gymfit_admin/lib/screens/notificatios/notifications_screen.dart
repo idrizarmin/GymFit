@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gymfit_admin/helpers/constants.dart';
 import 'package:gymfit_admin/helpers/show_error_dialog.dart';
-import 'package:gymfit_admin/models/country.dart';
 import 'package:gymfit_admin/models/notification.dart';
 import 'package:gymfit_admin/models/searchObjects/notification_search.dart';
 import 'package:gymfit_admin/models/user_for_selection.dart';
@@ -23,7 +22,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   List<Notifications> notifications = <Notifications>[];
   List<Notifications> selectedNotifications = <Notifications>[];
   List<UserForSelection> users = <UserForSelection>[];
-  List<Country> selevtedCountries = <Country>[];
   List<UserForSelection> selectedUsers = <UserForSelection>[];
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _contentController = TextEditingController();
@@ -36,6 +34,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   late UserProvider _userProvider;
   bool isEditing = false;
   bool isAllSelected = false;
+  int currentPage = 1;
+  int pageSize = 20;
 
   @override
   void initState() {
@@ -44,7 +44,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     _userProvider = UserProvider();
     _seenController = TextEditingController(text: 'Sve');
     _searchController = TextEditingController(text: '');
-    loadNotifications(NotificationsSearchObject());
+    loadNotifications(NotificationsSearchObject(
+      PageNumber: currentPage,
+      PageSize: pageSize,
+    ));
     loadUsers();
     _searchController.addListener(() {
       final searchQuery = _searchController.text;
@@ -52,11 +55,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
       if (seen == 'Pregledane' || seen == 'Nepregledane') {
         loadNotifications(NotificationsSearchObject(
-          seen: seen == 'Pregledane',
-          content: searchQuery,
-        ));
+            seen: seen == 'Pregledane',
+            content: searchQuery,
+            PageNumber: currentPage,
+            PageSize: pageSize));
       } else {
-        loadNotifications(NotificationsSearchObject(content: searchQuery));
+        loadNotifications(NotificationsSearchObject(
+            content: searchQuery, PageNumber: currentPage, PageSize: pageSize));
       }
     });
 
@@ -70,13 +75,21 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       final seen = _seenController.text;
       if (seen == 'Pregledane') {
         loadNotifications(NotificationsSearchObject(
-            seen: true, content: _searchController.text));
+            seen: true,
+            content: _searchController.text,
+            PageNumber: currentPage,
+            PageSize: pageSize));
       } else if (seen == 'Nepregledane') {
         loadNotifications(NotificationsSearchObject(
-            seen: false, content: _searchController.text));
+            seen: false,
+            content: _searchController.text,
+            PageNumber: currentPage,
+            PageSize: pageSize));
       } else {
-        loadNotifications(
-            NotificationsSearchObject(content: _searchController.text));
+        loadNotifications(NotificationsSearchObject(
+            content: _searchController.text,
+            PageNumber: currentPage,
+            PageSize: pageSize));
       }
     });
   }
@@ -117,10 +130,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         "seen": null,
         "userId": id
       };
-      print(newNotification);
       var notification = await _notificationProvider.insert(newNotification);
       if (notification == "OK") {
-        loadNotifications(NotificationsSearchObject());
+        currentPage == 1;
+        loadNotifications(NotificationsSearchObject(
+            PageNumber: currentPage, PageSize: pageSize));
       }
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
@@ -139,10 +153,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         "seen": null,
         "userId": selectedUsers[0].id
       };
-      print(newNotification);
       var change = await _notificationProvider.edit(newNotification);
       if (change == "OK") {
-        loadNotifications(NotificationsSearchObject());
+        currentPage = 1;
+        loadNotifications(NotificationsSearchObject(
+            PageNumber: currentPage, PageSize: pageSize));
       }
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
@@ -153,13 +168,16 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     try {
       var actor = await _notificationProvider.delete(id);
       if (actor == "OK") {
-        //Navigator.of(context).pop();
-        loadNotifications(NotificationsSearchObject());
+        currentPage = 1;
+        loadNotifications(NotificationsSearchObject(
+            PageNumber: currentPage, PageSize: pageSize));
       }
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
     }
   }
+
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -182,336 +200,383 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           const SizedBox(
             height: 16,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          buildButtonsAndFilters(context),
+          SizedBox(
+            height: 16,
+          ),
+          buildDataView(context),
+           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
-                ),
                 onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        backgroundColor: secondaryColor,
-                        title: Text("Kreiraj obavijest"),
-                        content:
-                            SingleChildScrollView(child: AddNotificationForm()),
-                        actions: <Widget>[
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text("Zatvori"),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor),
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                if (selectedUsers.isEmpty) {
-                                  // Ensure at least one user is selected
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                          'Odaberite barem jednog korisnika.'),
-                                    ),
-                                  );
-                                } else {
-                                  // Proceed with notification creation
-                                  for (var user in selectedUsers) {
-                                    InsertNotification(user.id);
-                                  }
-                                  Navigator.of(context).pop();
-                                }
-                              }
-                            },
-                            child: Text("Spremi"),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.add_outlined,
-                      color: Colors.white,
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      'Dodaj',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 16.0),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
-                ),
-                onPressed: () {
-                  if (selectedNotifications.isEmpty) {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("Upozorenje"),
-                            content: Text(
-                                "Morate odabrati jednu obavijest za  uređivanje"),
-                            actions: <Widget>[
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: myButtonColor),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text("OK"),
-                              ),
-                            ],
-                          );
-                        });
-                  } else if (selectedNotifications.length > 1) {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("Upozorenje"),
-                            content: Text(
-                                "Odaberite samo jednu obavjest koju želite urediti"),
-                            actions: <Widget>[
-                              ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: myButtonColor),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text("Ok"))
-                            ],
-                          );
-                        });
-                  } else {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            backgroundColor: secondaryColor,
-                            title: Text("Uredi korisnika"),
-                            content: AddNotificationForm(
-                                isEditing: true,
-                                notificationToEdit: selectedNotifications[0]),
-                            actions: <Widget>[
-                              ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: myButtonColor),
-                                  onPressed: () {
-                                    loadUsers();
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text("Zatvori")),
-                              ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: myButtonColor),
-                                  onPressed: () {
-                                    EditNotification(
-                                        selectedNotifications[0].id);
-                                    Navigator.of(context).pop();
-                                    loadUsers();
-                                  },
-                                  child: Text("Spremi")),
-                            ],
-                          );
-                        });
+                  if (currentPage > 1) {
+                    setState(() {
+                      currentPage--;
+                    });
+                    loadNotifications(NotificationsSearchObject(
+                      PageNumber: currentPage,
+                      PageSize: pageSize,
+                    ));
                   }
                 },
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.edit_outlined,
-                      color: Colors.white,
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      'Izmjeni',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
+                child: Text('Previous'),
               ),
-              const SizedBox(width: 16.0),
+              SizedBox(width: 16),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
-                ),
-                onPressed: selectedNotifications.isEmpty
-                    ? () {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                  title: Text("Upozorenje"),
+                onPressed: () {
+                  setState(() {
+                    currentPage++;
+                  });
+                  loadNotifications(NotificationsSearchObject(
+                    PageNumber: currentPage,
+                    PageSize: pageSize,
+                  ));
+                },
+                child: Text('Next'),
+              ),
+            ],
+          ),
+        ]),
+      ),
+    );
+  }
+
+  Row buildButtonsAndFilters(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: primaryColor,
+          ),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  backgroundColor: secondaryColor,
+                  title: Text("Kreiraj obavijest"),
+                  content: SingleChildScrollView(child: AddNotificationForm()),
+                  actions: <Widget>[
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: myButtonColor),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("Zatvori"),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: myButtonColor,
+                      ),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          if (selectedUsers.isEmpty) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Greška"),
                                   content: Text(
-                                      "Morate odabrati obavijest koju želite obrisati."),
+                                      "Obavezno odabrati barem jednog korisnika."),
                                   actions: <Widget>[
                                     ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: primaryColor,
+                                        backgroundColor: myButtonColor,
                                       ),
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
                                       child: Text("OK"),
                                     ),
-                                  ]);
-                            });
-                      }
-                    : () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text("Izbriši obavijest!"),
-                              content: SingleChildScrollView(
-                                child: Text(
-                                    "Da li ste sigurni da želite obrisati obavijest?"),
-                              ),
-                              actions: <Widget>[
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: primaryColor,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text("Odustani"),
-                                ),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
-                                  ),
-                                  onPressed: () {
-                                    for (Notifications n
-                                        in selectedNotifications) {
-                                      DeleteNotification(n.id);
-                                    }
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text("Obriši"),
-                                ),
-                              ],
+                                  ],
+                                );
+                              },
                             );
-                          },
-                        );
+                          } else {
+                            // Validacija uspješna, nastavite s spremanjem obavijesti
+                            for (var user in selectedUsers) {
+                              InsertNotification(user.id);
+                            }
+                            Navigator.of(context).pop();
+                          }
+                        }
                       },
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.delete_forever_outlined,
-                      color: Colors.white,
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      'Obriši',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
+                      child: Text("Spremi"),
                     ),
                   ],
-                ),
+                );
+              },
+            );
+          },
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.add_outlined,
+                color: Colors.white,
               ),
-              const SizedBox(width: 16.0),
-              Expanded(
-                child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    width: 400, // Adjust the width as needed
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        hintText: "Pretraga",
-                        border: const OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        suffixIcon: InkWell(
-                          onTap: () {},
-                          child: Container(
-                            padding:
-                                const EdgeInsets.all(defaultPadding * 0.75),
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: defaultPadding / 2),
-                            decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                            ),
-                            child: SvgPicture.asset(
-                              "assets/icons/Search.svg",
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )),
-              ),
-              const SizedBox(width: 16.0),
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: DropdownButton<String>(
-                    isExpanded: true,
-                    icon: const Icon(Icons.arrow_drop_down_outlined),
-                    value: _seenController.text,
-                    items: <String>['Sve', 'Pregledane', 'Nepregledane']
-                        .map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(value),
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      _seenController.text = newValue ?? '';
-                      loadNotifications(NotificationsSearchObject(
-                          seen: _seenController.text == 'Pregledane'
-                              ? true
-                              : _seenController.text == 'Nepregledane'
-                                  ? false
-                                  : null));
-                    },
-                    underline: const Text(""),
-                  ),
+              SizedBox(width: 8),
+              Text(
+                'Dodaj',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
                 ),
               ),
             ],
           ),
-          SizedBox(
-            height: 16,
+        ),
+        const SizedBox(width: 16.0),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: primaryColor,
           ),
-          buildDataView(context),
-        ]),
-      ),
+          onPressed: () {
+            if (selectedNotifications.isEmpty) {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("Upozorenje"),
+                      content: Text(
+                          "Morate odabrati jednu obavijest za  uređivanje"),
+                      actions: <Widget>[
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: myButtonColor),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text("OK"),
+                        ),
+                      ],
+                    );
+                  });
+            } else if (selectedNotifications.length > 1) {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("Upozorenje"),
+                      content: Text(
+                          "Odaberite samo jednu obavjest koju želite urediti"),
+                      actions: <Widget>[
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: myButtonColor),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text("Ok"))
+                      ],
+                    );
+                  });
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      backgroundColor: secondaryColor,
+                      title: Text("Uredi obavijest"),
+                      content: AddNotificationForm(
+                          isEditing: true,
+                          notificationToEdit: selectedNotifications[0]),
+                      actions: <Widget>[
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: myButtonColor),
+                            onPressed: () {
+                              loadUsers();
+                              Navigator.of(context).pop();
+                            },
+                            child: Text("Zatvori")),
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: myButtonColor),
+                            onPressed: () {
+                              EditNotification(selectedNotifications[0].id);
+                              Navigator.of(context).pop();
+                              selectedNotifications = [];
+                              loadUsers();
+                            },
+                            child: Text("Spremi")),
+                      ],
+                    );
+                  });
+            }
+          },
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.edit_outlined,
+                color: Colors.white,
+              ),
+              SizedBox(width: 8),
+              Text(
+                'Izmjeni',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 16.0),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: primaryColor,
+          ),
+          onPressed: selectedNotifications.isEmpty
+              ? () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                            title: Text("Upozorenje"),
+                            content: Text(
+                                "Morate odabrati obavijest koju želite obrisati."),
+                            actions: <Widget>[
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: primaryColor,
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("OK"),
+                              ),
+                            ]);
+                      });
+                }
+              : () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("Izbriši obavijest!"),
+                        content: SingleChildScrollView(
+                          child: Text(
+                              "Da li ste sigurni da želite obrisati obavijest?"),
+                        ),
+                        actions: <Widget>[
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: primaryColor,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text("Odustani"),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                            ),
+                            onPressed: () {
+                              for (Notifications n in selectedNotifications) {
+                                DeleteNotification(n.id);
+                              }
+                              Navigator.of(context).pop();
+                            },
+                            child: Text("Obriši"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.delete_forever_outlined,
+                color: Colors.white,
+              ),
+              SizedBox(width: 8),
+              Text(
+                'Obriši',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 16.0),
+        Expanded(
+          child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white),
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              width: 400, // Adjust the width as needed
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: "Pretraga",
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  suffixIcon: InkWell(
+                    onTap: () {},
+                    child: Container(
+                      padding: const EdgeInsets.all(defaultPadding * 0.75),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: defaultPadding / 2),
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: SvgPicture.asset(
+                        "assets/icons/Search.svg",
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              )),
+        ),
+        const SizedBox(width: 16.0),
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.white),
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: DropdownButton<String>(
+              isExpanded: true,
+              icon: const Icon(Icons.arrow_drop_down_outlined),
+              value: _seenController.text,
+              items: <String>['Sve', 'Pregledane', 'Nepregledane']
+                  .map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text(value),
+                  ),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                _seenController.text = newValue ?? '';
+                loadNotifications(NotificationsSearchObject(
+                    seen: _seenController.text == 'Pregledane'
+                        ? true
+                        : _seenController.text == 'Nepregledane'
+                            ? false
+                            : null));
+              },
+              underline: const Text(""),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -525,10 +590,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         orElse: () => UserForSelection(id: 0, firstName: '', lastName: ''),
       );
 
-      selectedUsers = [
-        selectedUser
-      ]; // Ažurirajte selectedUsers umjesto cijele liste users
+      // Postavite odabrane korisnike na korisnika iz obavijesti koju uređujete
+      selectedUsers = [selectedUser];
     } else {
+      selectedUsers = [];
       _contentController.text = '';
       loadUsers();
     }
@@ -561,68 +626,71 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  MultipleSearchSelection<UserForSelection>(
-                    searchFieldBoxDecoration: BoxDecoration(
-                        color: secondaryColor,
-                        border: Border.all(color: Colors.white)),
-                    searchFieldInputDecoration:
-                        const InputDecoration(hintText: ' Odaberi klijente'),
+                  SingleChildScrollView(
+                    child: MultipleSearchSelection<UserForSelection>(
+                      searchFieldBoxDecoration: BoxDecoration(
+                          color: secondaryColor,
+                          border: Border.all(color: Colors.white)),
+                      searchFieldInputDecoration:
+                          const InputDecoration(hintText: ' Odaberi klijente'),
 
-                    items: isEditing ? selectedUsers : users,
-                    onTapSelectAll: () {
-                      selectedUsers = users;
-                    },
-                    onTapClearAll: () {
-                      setState(() {
-                        selectedUsers = [];
-                      });
-                    },
-                    onPickedChange: (List<UserForSelection> items) {
-                      setState(() {
-                        selectedUsers = items;
-                      });
-                    },
-                    pickedItemBuilder: (UserForSelection user) {
-                      return Container(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Text('${user.firstName} ${user.lastName}'),
-                        ),
-                      );
-                    },
-                    onTapShowedItem: () {},
-                    //onPickedChange: (List<Country> items) {},
-                    onItemAdded: (UserForSelection item) {},
-                    onItemRemoved: (UserForSelection item) {},
-                    sortShowedItems: true,
-                    sortPickedItems: true,
-                    fuzzySearch: FuzzySearch.jaro,
-                    itemsVisibility: ShowedItemsVisibility.alwaysOn,
-                    title: Text(
-                      'Odaberite klijente',
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                    ),
-                    showSelectAllButton: true,
-                    maximumShowItemsHeight: 200,
-                    fieldToCheck: (UserForSelection u) {
-                      return u.firstName;
-                    },
-                    itemBuilder: (UserForSelection user, int index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6),
-                          ),
+                      items: isEditing ? selectedUsers : users,
+                      onTapSelectAll: () {
+                        selectedUsers = users;
+                      },
+                      onTapClearAll: () {
+                        setState(() {
+                          selectedUsers = [];
+                        });
+                      },
+                      onPickedChange: (List<UserForSelection> items) {
+                        setState(() {
+                          selectedUsers = items;
+                        });
+                      },
+                      pickedItemBuilder: (UserForSelection user) {
+                        return Container(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(),
+                            padding: const EdgeInsets.all(8),
                             child: Text('${user.firstName} ${user.lastName}'),
                           ),
+                        );
+                      },
+                      onTapShowedItem: () {},
+                      //onPickedChange: (List<Country> items) {},
+                      onItemAdded: (UserForSelection item) {},
+                      onItemRemoved: (UserForSelection item) {},
+                      sortShowedItems: true,
+                      sortPickedItems: true,
+                      fuzzySearch: FuzzySearch.jaro,
+                      itemsVisibility: ShowedItemsVisibility.alwaysOn,
+
+                      title: Text(
+                        'Odaberite klijente',
+                        style: TextStyle(
+                          fontSize: 20,
                         ),
-                      );
-                    },
+                      ),
+                      showSelectAllButton: true,
+                      maximumShowItemsHeight: 200,
+                      fieldToCheck: (UserForSelection u) {
+                        return u.firstName;
+                      },
+                      itemBuilder: (UserForSelection user, int index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(),
+                              child: Text('${user.firstName} ${user.lastName}'),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   )
                 ],
               ),
@@ -637,6 +705,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Expanded buildDataView(BuildContext context) {
+    final visibleNotifications = notifications
+        .skip((currentPage - 1) * pageSize)
+        .take(pageSize)
+        .toList();
+
     return Expanded(
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -664,7 +737,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               });
 
                               if (!isAllSelected) {
-                                // Ako su sve obavijesti odznačene, ispraznite listu selectedNotifications
                                 selectedNotifications.clear();
                               } else {
                                 selectedNotifications =
@@ -677,7 +749,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       child: Text(
                         "Content",
                         style: TextStyle(fontStyle: FontStyle.normal),
-                        
                       ),
                     ),
                   ),
@@ -702,7 +773,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     ),
                   ),
                 ],
-                rows: notifications.map((notificationItem) {
+                rows: visibleNotifications.map((notificationItem) {
                   return DataRow(
                     cells: [
                       DataCell(

@@ -22,7 +22,6 @@ class UserProvider extends BaseProvider {
       uri = uri.replace(queryParameters: {'name': params.values});
     }
     final response = await http.get(uri, headers: headers);
-    print(response.body);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
       var items = data['items'];
@@ -66,7 +65,6 @@ class UserProvider extends BaseProvider {
     }
 
     uri = uri.replace(queryParameters: queryParameters);
-    print(uri);
     final response = await http.get(uri, headers: headers);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
@@ -82,9 +80,7 @@ class UserProvider extends BaseProvider {
     var uri = Uri.parse('$apiUrl/User/GetUsersForSelection');
     var headers = Authorization.createHeaders();
 
-    print(uri);
     var response = await http.get(uri, headers: headers);
-    print('response $response');
 
 if (response.statusCode == 200) {
   var data = json.decode(response.body);
@@ -103,18 +99,10 @@ if (response.statusCode == 200) {
   Future<dynamic> insert(dynamic resource) async {
     var uri = Uri.parse('$apiUrl/User');
     Map<String, String> headers = Authorization.createHeaders();
-    final Map<String, String> queryParameters = {};
-    if (resource != null) {
-      if (resource.firstName != null) {
-        queryParameters['firstName'] = resource.firstName!;
-      }
-    }
+   
 
-    print('Ovo dođe u insert $resource');
     var jsonRequest = jsonEncode(resource);
-    print('Encode od requesta: $jsonRequest');
     var response = await http.post(uri, headers: headers, body: jsonRequest);
-    print('Ovo je response   ${response.body}');
     if (response.statusCode == 200) {
       return "OK";
     } else {

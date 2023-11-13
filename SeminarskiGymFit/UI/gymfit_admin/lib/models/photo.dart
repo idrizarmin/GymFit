@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 class Photo {
   late String data;
   late String contentType;

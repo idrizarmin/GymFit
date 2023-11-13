@@ -20,6 +20,6 @@ namespace GymFit.Api.Models
         public bool IsVerified { get; set; }
         public bool IsActive { get; set; }
 
-        public IFormFile? ProfilePhoto { get; set; }
+        public string? ProfilePhoto { get; set; }
     }
 }

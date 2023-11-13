@@ -86,8 +86,8 @@ namespace GymFit.Api
                 Expires = DateTime.UtcNow.AddMinutes(_jwtTokenConfig.Duration)
             };
 
-            if (user.ProfilePhotoId != null)
-                tokenDescriptor.Subject.AddClaim(new Claim(ClaimNames.ProfilePhotoId, user.ProfilePhotoId.Value.ToString()));
+            if (user.PhotoId != null)
+                tokenDescriptor.Subject.AddClaim(new Claim(ClaimNames.PhotoId, user.PhotoId.Value.ToString()));
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);

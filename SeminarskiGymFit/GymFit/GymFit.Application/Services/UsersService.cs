@@ -23,11 +23,13 @@ namespace GymFit.Application
             var user = await CurrentRepository.GetByEmailAsync(email, cancellationToken);
             return Mapper.Map<UserSensitiveDto>(user);
         }
+
         public async Task<List<UserForSelectionDto>> GetUserForSelectionAsync( CancellationToken cancellationToken = default){
             var users = await CurrentRepository.GetUsersForSelection(cancellationToken);
 
             return Mapper.Map<List<UserForSelectionDto>>(users);
         }
+
         public override async Task<UserDto> AddAsync(UserUpsertDto dto, CancellationToken cancellationToken = default)
         {
             await ValidateAsync(dto, cancellationToken);
@@ -44,6 +46,29 @@ namespace GymFit.Application
             await UnitOfWork.SaveChangesAsync(cancellationToken);
             return Mapper.Map<UserDto>(entity);
         }
+        public override async Task<UserDto> UpdateAsync(UserUpsertDto dto, CancellationToken cancellationToken = default)
+        {
+            var user = await CurrentRepository.GetByIdAsync(dto.Id.Value, cancellationToken);
+            if (user == null)
+                throw new UserNotFoundException();
+
+            Mapper.Map(dto, user);
+
+            if (!string.IsNullOrEmpty(dto.Password))
+            {
+                user.PasswordSalt = _cryptoService.GenerateSalt();
+                user.PasswordHash = _cryptoService.GenerateHash(dto.Password, user.PasswordSalt);
+            }
+
+            if (dto.profilePhoto != null)
+                user.Photo = Mapper.Map<Photo>(dto.profilePhoto);
+
+            CurrentRepository.Update(user);
+            await UnitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Mapper.Map<UserDto>(user);
+        }
+
         public async Task ChangePassword(UserChangePasswordDto dto, CancellationToken cancellationToken)
         {
             var user = await CurrentRepository.GetByIdAsync(dto.Id, cancellationToken);

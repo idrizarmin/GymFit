@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gymfit_admin/helpers/constants.dart';
+import 'package:gymfit_admin/providers/login_provider.dart';
 import 'package:gymfit_admin/screens/cities/cities_screen.dart';
-import 'package:gymfit_admin/screens/clients_screen.dart';
 import 'package:gymfit_admin/screens/components/base_screen.dart';
 import 'package:gymfit_admin/screens/country/country_screen.dart';
 import 'package:gymfit_admin/screens/gyms/gym_screen.dart';
+import 'package:gymfit_admin/screens/login_screen.dart';
 import 'package:gymfit_admin/screens/notificatios/notifications_screen.dart';
 import 'package:gymfit_admin/screens/reports/report_screen.dart';
 import 'package:gymfit_admin/screens/reservations/reservations_screen.dart';
-import 'package:gymfit_admin/screens/trainers/trainer_screen.dart';
+import 'package:gymfit_admin/screens/users/trainer_screen.dart';
+import 'package:gymfit_admin/screens/users/user_profile_screen.dart';
 import 'package:gymfit_admin/screens/users/users_screen.dart';
+import 'package:provider/provider.dart';
 
 class SideMenu extends StatefulWidget {
   const SideMenu({
@@ -25,27 +28,20 @@ class SideMenu extends StatefulWidget {
 }
 
 class _SideMenuState extends State<SideMenu> {
-  // late LoginProvider loginUserProvider;
-  // late LoginUser? loginUser;
   bool isExpanded = false;
+  late LoginProvider _loginProvider;
+
 
   @override
   void initState() {
     super.initState();
+    _loginProvider = context.read<LoginProvider>();
 
-    //loginUserProvider=context.read<LoginProvider>();
   }
 
   @override
   Widget build(BuildContext context) {
-    // loginUser = context.watch<LoginProvider>().loginUser;
-    // if (loginUser == null) {
-    //   WidgetsBinding.instance.addPostFrameCallback((_) {
-    //     Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
-    //   });
-    //   return Container();
-    // }
-
+   
     return Drawer(
       backgroundColor: secondaryColor,
       child: Column(
@@ -68,7 +64,7 @@ class _SideMenuState extends State<SideMenu> {
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(
-                      vertical: 12.0), // Dodajte vertikalnu marginu ovde
+                      vertical: 12.0), 
                 ),
                 DrawerListTile(
                   title: "Dashboard",
@@ -123,7 +119,7 @@ class _SideMenuState extends State<SideMenu> {
                   title: "Računi",
                   svgSrc: "assets/icons/bill.svg",
                   press: () {
-                    widget.onMenuItemClicked(const ClientsScreen());
+                    widget.onMenuItemClicked(const UsersScreen());
                   },
                 ),
                  ExpansionTile(
@@ -145,6 +141,20 @@ class _SideMenuState extends State<SideMenu> {
             ),
             children: <Widget>[
               DrawerListTile(
+                title: "Administratori",
+                svgSrc: "assets/icons/admin.svg",
+                press: () {
+                  widget.onMenuItemClicked(const CountryScreen());
+                },
+              ),
+               DrawerListTile(
+                title: "Korisnički račun",
+                svgSrc: "assets/icons/userProfile.svg",
+                press: () {
+                  widget.onMenuItemClicked(const UserProfileScreen());
+                },
+              ),
+              DrawerListTile(
                 title: "Države",
                 svgSrc: "assets/icons/country.svg",
                 press: () {
@@ -158,21 +168,33 @@ class _SideMenuState extends State<SideMenu> {
                   widget.onMenuItemClicked(const CityScreen());
                 },
               ),
-              DrawerListTile(
-                title: "Languages",
-                svgSrc: "assets/icons/bill.svg",
-                press: () {
-                  widget.onMenuItemClicked(const UsersScreen());
-                },
-              ),
+             
+               
             ],
+            
           ),
+        
               ],
+              
             ),
+
           ),
+      DrawerListTile(
+                  title: "Odjava",
+                  svgSrc: "assets/icons/logout.svg",
+                  press: () {
+                      _loginProvider.logout();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => LoginScreen()));
+                  },
+                ),      
         ],
+        
       ),
+      
     );
+    
   }
 }
 
