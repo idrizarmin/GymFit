@@ -34,7 +34,37 @@ namespace GymFit.Infrastructure
         }
        public async Task<List<User>> GetUsersForSelection(CancellationToken cancellationToken = default)
         {
-            return await DbSet.Where(u=>u.Role == Role.Korisnik).ToListAsync(cancellationToken);
+            return await DbSet.Where(u=>u.Role == Role.Korisnik).ToListAsync(cancellationToken); 
+        }
+        public async Task<List<User>> GetTrainersForSelection(CancellationToken cancellationToken = default)
+        {
+            return await DbSet.Where(u => u.Role == Role.Trener).ToListAsync(cancellationToken); 
+        }
+        public  async Task<PagedList<User>> GetAdminsPagedAsync(UserSearchObject searchObject, CancellationToken cancellationToken = default)
+        {
+            return await DbSet.Include(s => s.Photo)
+                 .Where(u => (searchObject.name == null
+                 || u.FirstName.ToLower().Contains(searchObject.name.ToLower())
+                 || u.LastName.ToLower().Contains(searchObject.name.ToLower()))
+                  && (searchObject.isActive == null || u.IsActive == searchObject.isActive)
+                  && (searchObject.spol == null || u.Gender == searchObject.spol)
+                  && (searchObject.isVerified == null || u.IsVerified == searchObject.isVerified)
+                  &&(u.Role == Role.Administrator))
+                 .ToPagedListAsync(searchObject, cancellationToken);
+
+        }
+        public async Task<PagedList<User>> GetTrainersPagedAsync(UserSearchObject searchObject, CancellationToken cancellationToken = default)
+        {
+            return await DbSet.Include(s => s.Photo)
+                 .Where(u => (searchObject.name == null
+                 || u.FirstName.ToLower().Contains(searchObject.name.ToLower())
+                 || u.LastName.ToLower().Contains(searchObject.name.ToLower()))
+                  && (searchObject.isActive == null || u.IsActive == searchObject.isActive)
+                  && (searchObject.spol == null || u.Gender == searchObject.spol)
+                  && (searchObject.isVerified == null || u.IsVerified == searchObject.isVerified)
+                  &&(u.Role== Role.Trener))
+                 .ToPagedListAsync(searchObject, cancellationToken);
+
         }
 
         public override async Task<PagedList<User>> GetPagedAsync(UserSearchObject searchObject, CancellationToken cancellationToken = default)
@@ -45,7 +75,9 @@ namespace GymFit.Infrastructure
                  || u.LastName.ToLower().Contains(searchObject.name.ToLower()))
                   && (searchObject.isActive == null || u.IsActive == searchObject.isActive)
                   && (searchObject.spol == null ||u.Gender == searchObject.spol)
-                  && (searchObject.isVerified == null || u.IsVerified == searchObject.isVerified)) .ToPagedListAsync(searchObject, cancellationToken);
+                  && (searchObject.isVerified == null || u.IsVerified == searchObject.isVerified)
+                  &&(u.Role== Role.Korisnik))
+                  .ToPagedListAsync(searchObject, cancellationToken);
                 
                  
         }

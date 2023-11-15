@@ -36,6 +36,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   bool isAllSelected = false;
   int currentPage = 1;
   int pageSize = 20;
+  int hasNextPage = 0;
 
   @override
   void initState() {
@@ -112,6 +113,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           await _notificationProvider.getPaged(searchObject: searchObject);
       setState(() {
         notifications = notificationsResponse;
+        hasNextPage = notifications.length;
       });
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
@@ -177,8 +179,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     }
   }
 
- 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -205,10 +205,16 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             height: 16,
           ),
           buildDataView(context),
-           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+           SizedBox(
+            height: 1,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: myButtonColor
+                ),
                 onPressed: () {
                   if (currentPage > 1) {
                     setState(() {
@@ -217,23 +223,30 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     loadNotifications(NotificationsSearchObject(
                       PageNumber: currentPage,
                       PageSize: pageSize,
+                      content: _contentController.text,
                     ));
                   }
                 },
-                child: Text('Previous'),
+                child: const Icon(Icons.arrow_left_outlined),
               ),
               SizedBox(width: 16),
               ElevatedButton(
+                 style: ElevatedButton.styleFrom(backgroundColor: myButtonColor),
                 onPressed: () {
                   setState(() {
+                    if (hasNextPage == pageSize) {
                     currentPage++;
+                    }
                   });
-                  loadNotifications(NotificationsSearchObject(
-                    PageNumber: currentPage,
-                    PageSize: pageSize,
-                  ));
+                  if (hasNextPage == pageSize) {
+                    loadNotifications(NotificationsSearchObject(
+                      PageNumber: currentPage,
+                      PageSize: pageSize,
+                      content: _contentController.text,
+                    ));
+                  }
                 },
-                child: Text('Next'),
+                child: const Icon(Icons.arrow_right_outlined),
               ),
             ],
           ),
@@ -705,11 +718,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Expanded buildDataView(BuildContext context) {
-    final visibleNotifications = notifications
-        .skip((currentPage - 1) * pageSize)
-        .take(pageSize)
-        .toList();
-
     return Expanded(
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -773,7 +781,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     ),
                   ),
                 ],
-                rows: visibleNotifications.map((notificationItem) {
+                rows: notifications.map((notificationItem) {
                   return DataRow(
                     cells: [
                       DataCell(

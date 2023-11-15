@@ -11,6 +11,9 @@ namespace GymFit.Infrastructure.Interfaces
         int getCountOfUsersActive(int cinemaId, CancellationToken cancellationToken = default);
         int getCountOfUsersInactive(int cinemaId, CancellationToken cancellationToken = default);
         Task<List<User?>> GetUsersForSelection(CancellationToken cancellationToken = default);
+        Task<List<User?>> GetTrainersForSelection(CancellationToken cancellationToken = default);
+        Task<PagedList<User>> GetAdminsPagedAsync(UserSearchObject searchObject, CancellationToken cancellationToken = default);
+        Task<PagedList<User>> GetTrainersPagedAsync(UserSearchObject searchObject, CancellationToken cancellationToken = default);
 
     }
 }

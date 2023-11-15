@@ -4,13 +4,20 @@ using GymFit.Application.Interfaces;
 using GymFit.Core;
 using GymFit.Infrastructure;
 using GymFit.Infrastructure.Interfaces;
+using GymFit.Infrastructure.Interfaces.SearchObjects;
 
 namespace GymFit.Application
 {
-    public class ReservationsService : BaseService<Reservation, ReservationDto, ReservationUpsertDto, BaseSearchObject, IReservationsRepository>, IReservationsService
+    public class ReservationsService : BaseService<Reservation, ReservationDto, ReservationUpsertDto, ReservationSearchObject, IReservationsRepository>, IReservationsService
     {
         public ReservationsService(IMapper mapper, IUnitOfWork unitOfWork, IValidator<ReservationUpsertDto> validator) : base(mapper, unitOfWork, validator)
         {
+        }
+        public async Task<List<ReservationDto>> GetAllFilteredAsync(ReservationSearchObject searchObject, CancellationToken cancellationToken)
+        {
+            var reservations = await CurrentRepository.GetAllFiltered(searchObject, cancellationToken);
+
+            return Mapper.Map<List<ReservationDto>>(reservations);
         }
     }
 }

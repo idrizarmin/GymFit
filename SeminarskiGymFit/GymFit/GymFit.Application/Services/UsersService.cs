@@ -29,6 +29,26 @@ namespace GymFit.Application
 
             return Mapper.Map<List<UserForSelectionDto>>(users);
         }
+        public async Task<List<UserForSelectionDto>> GetTrainersForSelectionAsync(CancellationToken cancellationToken = default)
+        {
+            var users = await CurrentRepository.GetTrainersForSelection(cancellationToken);
+
+            return Mapper.Map<List<UserForSelectionDto>>(users);
+        }
+        public async Task<PagedList<UserDto>> GetAdminsPagedAsync(UserSearchObject searchObject, CancellationToken cancellationToken = default)
+        {
+            var users = await CurrentRepository.GetAdminsPagedAsync(searchObject, cancellationToken);
+
+            return Mapper.Map<PagedList<UserDto>>(users);
+        }
+        public async Task<PagedList<UserDto>> GetTrainersPagedAsync(UserSearchObject searchObject,CancellationToken cancellationToken = default)
+        {
+            var users = await CurrentRepository.GetTrainersPagedAsync(searchObject, cancellationToken);
+
+            return Mapper.Map<PagedList<UserDto>>(users);
+
+
+        }
 
         public override async Task<UserDto> AddAsync(UserUpsertDto dto, CancellationToken cancellationToken = default)
         {

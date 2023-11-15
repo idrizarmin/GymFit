@@ -30,6 +30,7 @@ class UserProvider extends BaseProvider {
       throw Exception('Failed to load data');
     }
   }
+
   Future<List<User>> getTrainers() async {
     final users = await get(null); // Dohvatite sve korisnike
     final trainers = users.where((user) => user.role == 2).toList();
@@ -74,6 +75,83 @@ class UserProvider extends BaseProvider {
       throw Exception('Failed to load data');
     }
   }
+Future<List<User>> getAdminsPaged({UserSearchObject? searchObject}) async {
+    var uri = Uri.parse('$apiUrl/User/GetAdminsPaged');
+    var headers = Authorization.createHeaders();
+    final Map<String, String> queryParameters = {};
+
+    if (searchObject != null) {
+      if (searchObject.name != null) {
+        queryParameters['name'] = searchObject.name!;
+      }
+
+      if (searchObject.spol != null) {
+        queryParameters['spol'] = searchObject.spol.toString();
+      }
+
+      if (searchObject.isActive != null) {
+        queryParameters['isActive'] = searchObject.isActive.toString();
+      }
+      if (searchObject.isVerified != null) {
+        queryParameters['isVerified'] = searchObject.isVerified.toString();
+      }
+      if (searchObject.PageNumber != null) {
+        queryParameters['pageNumber'] = searchObject.PageNumber.toString();
+      }
+      if (searchObject.PageSize != null) {
+        queryParameters['pageSize'] = searchObject.PageSize.toString();
+      }
+    }
+
+    uri = uri.replace(queryParameters: queryParameters);
+    final response = await http.get(uri, headers: headers);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      var items = data['items'];
+      return items.map((d) => fromJson(d)).cast<User>().toList();
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+  Future<List<User>> getTrainersPaged({UserSearchObject? searchObject}) async {
+    var uri = Uri.parse('$apiUrl/User/GetTrainersPaged');
+    var headers = Authorization.createHeaders();
+    final Map<String, String> queryParameters = {};
+
+    if (searchObject != null) {
+      if (searchObject.name != null) {
+        queryParameters['name'] = searchObject.name!;
+      }
+
+      if (searchObject.spol != null) {
+        queryParameters['spol'] = searchObject.spol.toString();
+      }
+
+      if (searchObject.isActive != null) {
+        queryParameters['isActive'] = searchObject.isActive.toString();
+      }
+      if (searchObject.isVerified != null) {
+        queryParameters['isVerified'] = searchObject.isVerified.toString();
+      }
+      if (searchObject.PageNumber != null) {
+        queryParameters['pageNumber'] = searchObject.PageNumber.toString();
+      }
+      if (searchObject.PageSize != null) {
+        queryParameters['pageSize'] = searchObject.PageSize.toString();
+      }
+    }
+
+    uri = uri.replace(queryParameters: queryParameters);
+    final response = await http.get(uri, headers: headers);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      var items = data['items'];
+      return items.map((d) => fromJson(d)).cast<User>().toList();
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
 
   Future<List<UserForSelection>> getusersForSelection(
       {UserSearchObject? searchObject}) async {
@@ -82,24 +160,39 @@ class UserProvider extends BaseProvider {
 
     var response = await http.get(uri, headers: headers);
 
-if (response.statusCode == 200) {
-  var data = json.decode(response.body);
-  if (data is List) {
-    return data.map((d) => UserForSelection.fromJson(d)).toList();
-  } else {
-    throw Exception('Invalid data format');
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      if (data is List) {
+        return data.map((d) => UserForSelection.fromJson(d)).toList();
+      } else {
+        throw Exception('Invalid data format');
+      }
+    } else {
+      throw Exception('Failed to load data');
+    }
   }
-} else {
-  throw Exception('Failed to load data');
-}
-    
-  }
+Future<List<UserForSelection>> getTrainersForSelection(
+      {UserSearchObject? searchObject}) async {
+    var uri = Uri.parse('$apiUrl/User/GetTrainersForSelection');
+    var headers = Authorization.createHeaders();
 
+    var response = await http.get(uri, headers: headers);
+
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      if (data is List) {
+        return data.map((d) => UserForSelection.fromJson(d)).toList();
+      } else {
+        throw Exception('Invalid data format');
+      }
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
   @override
   Future<dynamic> insert(dynamic resource) async {
     var uri = Uri.parse('$apiUrl/User');
     Map<String, String> headers = Authorization.createHeaders();
-   
 
     var jsonRequest = jsonEncode(resource);
     var response = await http.post(uri, headers: headers, body: jsonRequest);

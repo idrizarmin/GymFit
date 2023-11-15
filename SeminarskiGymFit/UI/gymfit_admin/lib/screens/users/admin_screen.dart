@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:gymfit_admin/helpers/constants.dart';
 import 'package:gymfit_admin/helpers/show_error_dialog.dart';
 import 'package:gymfit_admin/models/searchObjects/user_search.dart';
@@ -13,14 +12,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class TrainerScreen extends StatefulWidget {
-  const TrainerScreen({Key? key}) : super(key: key);
+class AdminScreen extends StatefulWidget {
+  const AdminScreen({Key? key}) : super(key: key);
 
   @override
-  State<TrainerScreen> createState() => _TrainerScreenState();
+  State<AdminScreen> createState() => _AdminScreenState();
 }
 
-class _TrainerScreenState extends State<TrainerScreen> {
+class _AdminScreenState extends State<AdminScreen> {
   List<User> users = <User>[];
   List<User> selectedUsers = <User>[];
   late UserProvider _userProvider;
@@ -34,8 +33,6 @@ class _TrainerScreenState extends State<TrainerScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
   DateTime selectedDate = DateTime.now();
-  String _selectedIsActive = 'Svi';
-  String _selectedIsVerified = 'Svi';
   int? selectedGender;
   bool _isActive = false;
   bool _isVerified = false;
@@ -52,45 +49,30 @@ class _TrainerScreenState extends State<TrainerScreen> {
     super.initState();
     _userProvider = context.read<UserProvider>();
     loadUsers(
-        UserSearchObject(name: _searchController.text, PageSize: itemsPerPage),
-        _selectedIsActive,
-        _selectedIsVerified);
+        UserSearchObject(name: _searchController.text, PageSize: itemsPerPage));
 
     _searchController.addListener(() {
       final searchQuery = _searchController.text;
-      loadUsers(UserSearchObject(name: searchQuery), _selectedIsActive,
-          _selectedIsVerified);
+      loadUsers(UserSearchObject(name: searchQuery));
     });
   }
 
   Future<void> _pickImage() async {
-  final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
 
-  if (pickedFile != null) {
-    setState(() {
-      _pickedFile = pickedFile;
-      _image = File(pickedFile.path);
-    });
+    if (pickedFile != null) {
+      setState(() {
+        _pickedFile = pickedFile;
+        _image = File(pickedFile.path);
+      });
+    }
   }
-}
 
-  void loadUsers(UserSearchObject searchObject, String selectedIsActive,
-      String selectedIsVerified) async {
-    searchObject.isActive = selectedIsActive == 'Aktivni'
-        ? true
-        : selectedIsActive == 'Neaktivni'
-            ? false
-            : null;
-
-    searchObject.isVerified = selectedIsVerified == 'Verifikovani'
-        ? true
-        : selectedIsVerified == 'Neverifikovani'
-            ? false
-            : null;
-
+  void loadUsers(UserSearchObject searchObject) async {
     try {
       var usersResponse =
-          await _userProvider.getTrainersPaged(searchObject: searchObject);
+          await _userProvider.getAdminsPaged(searchObject: searchObject);
       setState(() {
         users = usersResponse;
       });
@@ -116,7 +98,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
         "professionalTitle": null,
         "gender": selectedGender,
         "birthDate": _birthDateController.text,
-        "role": 2,
+        "role": 0,
         "lastSignInAt": DateTime.now().toUtc().toIso8601String(),
         "isVerified": _isVerified,
         "isActive": _isActive,
@@ -125,8 +107,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
       var user = await _userProvider.insert(newUser);
       if (user == "OK") {
         Navigator.of(context).pop();
-        loadUsers(UserSearchObject(name: _searchController.text),
-            _selectedIsActive, _selectedIsVerified);
+        loadUsers(UserSearchObject(name: _searchController.text));
       }
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
@@ -150,7 +131,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
         "professionalTitle": null,
         "gender": selectedGender,
         "birthDate": _birthDateController.text,
-        "role": 2,
+        "role": 0,
         "lastSignInAt": DateTime.now().toUtc().toIso8601String(),
         "isVerified": _isVerified,
         "isActive": _isActive,
@@ -158,8 +139,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
       };
       var user = await _userProvider.edit(newUser);
       if (user == "OK") {
-        loadUsers(UserSearchObject(name: _searchController.text),
-            _selectedIsActive, _selectedIsVerified);
+        loadUsers(UserSearchObject(name: _searchController.text));
       }
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
@@ -170,8 +150,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
     try {
       var user = await _userProvider.delete(id);
       if (user == "OK") {
-        loadUsers(UserSearchObject(name: _searchController.text),
-            _selectedIsActive, _selectedIsVerified);
+        loadUsers(UserSearchObject(name: _searchController.text));
       }
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
@@ -180,30 +159,15 @@ class _TrainerScreenState extends State<TrainerScreen> {
 
   Widget displayImage(String base64String) {
     if (base64String == null) {
-      return Placeholder(); 
+      return Placeholder();
     } else {
       List<int> bytes = base64Decode(base64String);
 
       return Image.memory(
         Uint8List.fromList(bytes),
-        fit: BoxFit.cover, 
+        fit: BoxFit.cover,
       );
     }
-  }
-
-  void loadUsersByPage(int page, int pageSize) {
-    UserSearchObject searchObject =
-        UserSearchObject(name: _searchController.text);
-
-    searchObject.PageNumber = page;
-    searchObject.PageSize = pageSize;
-    loadUsers(searchObject, _selectedIsActive, _selectedIsVerified);
-  }
-
-  List<User> getCurrentPageUsers() {
-    final startIndex = (currentPage - 1) * itemsPerPage;
-    final endIndex = (currentPage * itemsPerPage).clamp(0, users.length);
-    return users.sublist(startIndex, endIndex);
   }
 
   @override
@@ -223,9 +187,9 @@ class _TrainerScreenState extends State<TrainerScreen> {
                       ),
                     ),
                   ),
-                  child: const Heder(pageTitle: "Treneri")),
+                  child: const Heder(pageTitle: "Administratori")),
               const SizedBox(height: 16.0),
-              BuildFilters(context),
+              buildButtons(context),
               const SizedBox(
                 height: 10,
               ),
@@ -236,110 +200,6 @@ class _TrainerScreenState extends State<TrainerScreen> {
               buildPagination(),
             ])));
   }
-
-  Row BuildFilters(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('  Spol:'),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: DropdownButton<int>(
-                  isExpanded: true,
-                  icon: const Icon(Icons.arrow_drop_down_outlined),
-                  value: selectedGender,
-                  items: <int?>[null, 0, 1].map((int? value) {
-                    return DropdownMenuItem<int>(
-                      value: value,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Text(value == null
-                            ? 'Svi'
-                            : value == 0
-                                ? 'Muški'
-                                : 'Ženski'),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (int? newValue) {
-                    setState(() {
-                      selectedGender = newValue;
-                      loadUsers(
-                          UserSearchObject(
-                              spol: selectedGender,
-                              name: _searchController.text),
-                          _selectedIsActive,
-                          _selectedIsVerified);
-                    });
-                  },
-                  underline: Container(), // Ukloniti donji border
-                ),
-              ),
-              
-            ],
-          ),
-        ),
-        SizedBox(width: 10),
-        Expanded(
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-        
-            children: [
-                Text('  Ime prezime:'),
-        
-              Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  width: 350,
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: "Pretraga",
-                      border: const OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      suffixIcon: InkWell(
-                        onTap: () {},
-                        child: Container(
-                          padding: const EdgeInsets.all(defaultPadding * 0.75),
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: defaultPadding / 2),
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: SvgPicture.asset(
-                            "assets/icons/Search.svg",
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  )),
-            ],
-          ),
-        ),
-        const SizedBox(
-          width: 20,
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 30,0, 0),
-          child: buildButtons(context),
-        ),
-      ],
-    );
-  }
-
-  
 
   Row buildButtons(BuildContext context) {
     return Row(
@@ -467,7 +327,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
                                 backgroundColor: myButtonColor),
                             onPressed: () {
                               EditUser(selectedUsers[0].id);
-                              selectedUsers=[];
+                              selectedUsers = [];
                               Navigator.of(context).pop();
                             },
                             child: Text("Spremi")),
@@ -655,26 +515,28 @@ class _TrainerScreenState extends State<TrainerScreen> {
                               ),
                               DataCell(Text(
                                   ("${userItem.firstName.toString() ?? ""} ${userItem.lastName.toString() ?? ""}"))),
-                             DataCell(Row(
-                              children: [
-                                if (userItem.profilePhoto != null)
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 8.0),
-                                    child: Image.memory(
-                                      Uint8List.fromList(
-                                          base64Decode(userItem.profilePhoto!.data)),
-                                      width: 40,
-                                      height: 40,
+                              DataCell(Row(
+                                children: [
+                                  if (userItem.profilePhoto != null)
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 8.0),
+                                      child: Image.memory(
+                                        Uint8List.fromList(base64Decode(
+                                            userItem.profilePhoto!.data)),
+                                        width: 40,
+                                        height: 40,
+                                      ),
+                                    )
+                                  else
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 8.0),
+                                      child: Image.asset(
+                                          'assets/images/user1.jpg',
+                                          width: 70,
+                                          height: 100),
                                     ),
-                                  )
-                                else
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 8.0),
-                                    child: Image.asset('assets/images/user1.jpg',
-                                        width: 70, height: 100),
-                                  ),
-                              ],
-                            )),
+                                ],
+                              )),
                               DataCell(Center(
                                 child: Text(
                                     userItem.phoneNumber?.toString() ?? ""),
@@ -739,6 +601,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
       _passwordController.text = '';
       _pickedFile = null;
     }
+
 
     return Container(
       height: 450,
@@ -973,7 +836,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
             if (currentPage > 1) {
               setState(() {
                 currentPage--;
-                loadUsersByPage(currentPage, itemsPerPage);
+                loadUsers(UserSearchObject());
               });
             }
           },
@@ -986,7 +849,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
             if (hasNextPage) {
               setState(() {
                 currentPage++;
-                loadUsersByPage(currentPage, itemsPerPage);
+                loadUsers(UserSearchObject());
               });
             }
           },

@@ -21,6 +21,7 @@ namespace GymFit.Api.Controllers
         public override Task<IActionResult> Post(UserUpsertDto upsertDto, CancellationToken cancellationToken = default) => base.Post(upsertDto, cancellationToken);
         [NonAction]
         public override Task<IActionResult> Put(UserUpsertDto upsertDto, CancellationToken cancellationToken = default) => base.Put(upsertDto, cancellationToken);
+       
         [HttpGet("GetUsersForSelection")]
         public async Task<IActionResult> GetUsersForSelection(CancellationToken cancellationToken)
         {
@@ -35,6 +36,53 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
+        [HttpGet("GetTrainersForSelection")]
+        public async Task<IActionResult> GeTrainersForSelection(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var dto = await Service.GetTrainersForSelectionAsync(cancellationToken);
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Problem with getting resources");
+                return BadRequest();
+            }
+        }
+        [HttpGet("GetAdminsPaged")]
+
+        public async Task<IActionResult> GetAdminsPagedAsync([FromQuery] UserSearchObject searchObject, CancellationToken cancellationToken)
+        {
+
+            try
+            {
+                var dto = await Service.GetAdminsPagedAsync(searchObject, cancellationToken);
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Problem with getting resources");
+                return BadRequest();
+            }
+        }
+        [HttpGet("GetTrainersPaged")]
+
+        public async Task<IActionResult> GetTrainersPagedAsync([FromQuery] UserSearchObject searchObject, CancellationToken cancellationToken)
+        {
+
+            try
+            {
+                var dto = await Service.GetTrainersPagedAsync(searchObject, cancellationToken);
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Problem with getting resources");
+                return BadRequest();
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post(UserUpsertModel model, CancellationToken cancellationToken = default)
         {

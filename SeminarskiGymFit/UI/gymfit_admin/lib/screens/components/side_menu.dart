@@ -10,6 +10,7 @@ import 'package:gymfit_admin/screens/login_screen.dart';
 import 'package:gymfit_admin/screens/notificatios/notifications_screen.dart';
 import 'package:gymfit_admin/screens/reports/report_screen.dart';
 import 'package:gymfit_admin/screens/reservations/reservations_screen.dart';
+import 'package:gymfit_admin/screens/users/admin_screen.dart';
 import 'package:gymfit_admin/screens/users/trainer_screen.dart';
 import 'package:gymfit_admin/screens/users/user_profile_screen.dart';
 import 'package:gymfit_admin/screens/users/users_screen.dart';
@@ -102,7 +103,7 @@ class _SideMenuState extends State<SideMenu> {
                   },
                 ),
                 DrawerListTile(
-                  title: "Teretane",
+                  title: "Teretana",
                   svgSrc: "assets/icons/gym.svg",
                   press: () {
                     widget.onMenuItemClicked(const GymScreen());
@@ -144,7 +145,7 @@ class _SideMenuState extends State<SideMenu> {
                 title: "Administratori",
                 svgSrc: "assets/icons/admin.svg",
                 press: () {
-                  widget.onMenuItemClicked(const CountryScreen());
+                  widget.onMenuItemClicked(const AdminScreen());
                 },
               ),
                DrawerListTile(
