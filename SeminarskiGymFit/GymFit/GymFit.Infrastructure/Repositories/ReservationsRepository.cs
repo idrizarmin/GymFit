@@ -13,7 +13,7 @@ namespace GymFit.Infrastructure
       
         public async Task<List<Reservation>> GetAllFiltered(ReservationSearchObject searchObject, CancellationToken cancellationToken)
         {
-            return await DbSet.Include(u => u.User).Include(t => t.Trainer)
+            return await DbSet
                 .Where(n => (searchObject.spol == null || n.User.Gender == searchObject.spol)
                 && (searchObject.userId == null || n.UserId == searchObject.userId)
                 && (searchObject.trainerId == null || n.TrainerId == searchObject.trainerId))

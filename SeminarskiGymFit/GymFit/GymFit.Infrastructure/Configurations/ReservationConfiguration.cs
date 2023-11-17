@@ -23,15 +23,17 @@ namespace GymFit.Infrastructure
                 .IsRequired();
 
             builder.Property(x => x.Duration)
-                .IsRequired();
+                .IsRequired(false);
 
             builder.Property(x => x.PauseDuration)
-                .IsRequired();
+                .IsRequired(false);
 
             builder.Property(x => x.MaxCapacity)
-                .IsRequired();
+                .IsRequired(false);
 
             builder.Property(x => x.isUsed)
+                .IsRequired(false);
+            builder.Property(x => x.Status)
                 .IsRequired();
 
             builder.HasOne(e => e.Gym)
@@ -43,7 +45,7 @@ namespace GymFit.Infrastructure
               .WithMany(e => e.TrainerReservations)
               .HasForeignKey(e => e.TrainerId)
               .OnDelete(DeleteBehavior.NoAction)
-              .IsRequired();
+              .IsRequired(false);
 
             builder.HasOne(e => e.User)
              .WithMany(e => e.UserReservations)

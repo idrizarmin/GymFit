@@ -8,7 +8,7 @@ import '../utils/authorization.dart';
 
 class ReservationProvider extends BaseProvider {
   ReservationProvider() : super('Reservations/GetPaged');
-
+@override
   Future<List<Reservation>> getPaged(
       {ReservationSearchObject? searchObject}) async {
     var uri = Uri.parse('$apiUrl/Reservations/GetPaged');
@@ -38,6 +38,41 @@ class ReservationProvider extends BaseProvider {
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
       var items = data['items'];
+      return items.map((d) => fromJson(d)).cast<Reservation>().toList();
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+   Future<List<Reservation>> getAll(
+      {ReservationSearchObject? searchObject}) async {
+    var uri = Uri.parse('$apiUrl/Reservations/GetAllFiltered');
+    var headers = Authorization.createHeaders();
+    final Map<String, String> queryParameters = {};
+    if (searchObject != null) {
+      if (searchObject.userId != null) {
+        queryParameters['userId'] = searchObject.userId.toString();
+      }
+      if (searchObject.spol != null) {
+        queryParameters['spol'] = searchObject.spol.toString();
+      }
+      if (searchObject.trainerId != null) {
+        queryParameters['trainerId'] = searchObject.trainerId.toString();
+      }
+      if (searchObject.PageNumber != null) {
+        queryParameters['PageNumber'] = searchObject.PageNumber.toString();
+      }
+      if (searchObject.PageSize != null) {
+        queryParameters['PageSize'] = searchObject.PageSize.toString();
+      }
+    }
+    uri = uri.replace(queryParameters: queryParameters);
+    final response = await http.get(uri, headers: headers);
+    print(response.body);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      var items = data;
       return items.map((d) => fromJson(d)).cast<Reservation>().toList();
     } else {
       throw Exception('Failed to load data');

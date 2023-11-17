@@ -2,7 +2,7 @@ import 'package:gymfit_admin/models/user.dart';
 
 class Reservation {
   late int id;
-  late String description;
+  late String? description;
   late DateTime? ReservationDate;
   late DateTime? StartDate;
   late DateTime? EndDate;
@@ -14,12 +14,14 @@ class Reservation {
   late int? GymId;
   late User? user;
   late int? userId;
+  late int? status;
   late User? Trainer;
   late int? TrainerId;
 
   Reservation({
     required this.id,
-    required this.description,
+    this.description,
+    this.status,
     this.ReservationDate,
     this.StartDate,
     this.EndDate,
@@ -49,6 +51,7 @@ class Reservation {
     TrainerId = json['trainerId'];
     GymId = json['gymId'];
     isUsed = json['isUsed'];
+    status = json['status'];
 
    // user = User.fromJson(json['user']);
    // Trainer = User.fromJson(json['trainer']);

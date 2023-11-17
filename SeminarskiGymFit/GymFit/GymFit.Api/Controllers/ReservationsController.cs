@@ -10,7 +10,7 @@ namespace GymFit.Api.Controllers
         public ReservationsController(IReservationsService service, ILogger<ReservationsController> logger) : base(service, logger)
         {
         }
-        [HttpGet("GetAllFitered")]
+        [HttpGet("GetAllFiltered")]
         public async Task<IActionResult> GetAllFilteredAsync([FromQuery] ReservationSearchObject reservationSearchObject , CancellationToken cancellationToken)
         {
             try
