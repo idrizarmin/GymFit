@@ -23,7 +23,7 @@ class GymScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              child: const Heder(pageTitle: "Teretane"),
+              child: const Header(pageTitle: "Teretane"),
             ),
             const SizedBox(height: 20),
             Row(

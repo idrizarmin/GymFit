@@ -197,7 +197,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                   ),
                 ),
               ),
-              child: const Heder(pageTitle: "Termini -rezervacije "),
+              child: const Header(pageTitle: "Termini -rezervacije "),
             ),
             const SizedBox(height: 16.0),
             Row(

@@ -223,7 +223,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
                       ),
                     ),
                   ),
-                  child: const Heder(pageTitle: "Treneri")),
+                  child: const Header(pageTitle: "Treneri")),
               const SizedBox(height: 16.0),
               BuildFilters(context),
               const SizedBox(

@@ -3,9 +3,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gymfit_admin/helpers/constants.dart';
 import 'package:gymfit_admin/providers/login_provider.dart';
 import 'package:gymfit_admin/screens/cities/cities_screen.dart';
-import 'package:gymfit_admin/screens/components/base_screen.dart';
 import 'package:gymfit_admin/screens/country/country_screen.dart';
+import 'package:gymfit_admin/screens/dashboard/dashboard_screen.dart';
 import 'package:gymfit_admin/screens/gyms/gym_screen.dart';
+import 'package:gymfit_admin/screens/home_screen.dart';
 import 'package:gymfit_admin/screens/login_screen.dart';
 import 'package:gymfit_admin/screens/notificatios/notifications_screen.dart';
 import 'package:gymfit_admin/screens/reports/report_screen.dart';
@@ -71,7 +72,7 @@ class _SideMenuState extends State<SideMenu> {
                   title: "Dashboard",
                   svgSrc: "assets/icons/dash.svg",
                   press: () {
-                    widget.onMenuItemClicked(const BaseScreen());
+                    widget.onMenuItemClicked(const DashboardScreen());
                   },
                 ),
                 DrawerListTile(

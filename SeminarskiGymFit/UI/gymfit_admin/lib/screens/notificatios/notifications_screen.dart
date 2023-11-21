@@ -195,7 +195,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 ),
               ),
             ),
-            child: const Heder(pageTitle: "Obavjesti"),
+            child: const Header(pageTitle: "Obavjesti"),
           ),
           const SizedBox(
             height: 16,

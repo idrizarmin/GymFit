@@ -187,7 +187,7 @@ class _AdminScreenState extends State<AdminScreen> {
                       ),
                     ),
                   ),
-                  child: const Heder(pageTitle: "Administratori")),
+                  child: const Header(pageTitle: "Administratori")),
               const SizedBox(height: 16.0),
               buildButtons(context),
               const SizedBox(

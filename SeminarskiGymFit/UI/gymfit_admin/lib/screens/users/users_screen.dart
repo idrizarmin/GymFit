@@ -211,7 +211,7 @@ class _UsersScreenState extends State<UsersScreen> {
                       ),
                     ),
                   ),
-                  child: const Heder(pageTitle: "Klijenti")),
+                  child: const Header(pageTitle: "Klijenti")),
               const SizedBox(height: 16.0),
               buildFilterDropdowns(),
               const SizedBox(height: 16.0),

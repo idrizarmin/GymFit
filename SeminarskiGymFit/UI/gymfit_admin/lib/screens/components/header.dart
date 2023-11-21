@@ -5,8 +5,8 @@ import 'package:gymfit_admin/helpers/constants.dart';
 import 'package:gymfit_admin/providers/login_provider.dart';
 import 'package:provider/provider.dart';
 
-class Heder extends StatefulWidget {
-  const Heder({
+class Header extends StatefulWidget {
+  const Header({
     Key? key,
     required this.pageTitle,
   }) : super(key: key);
@@ -17,7 +17,7 @@ class Heder extends StatefulWidget {
   _HederState createState() => _HederState();
 }
 
-class _HederState extends State<Heder> {
+class _HederState extends State<Header> {
   late LoginProvider _loginProvider;
 
   @override

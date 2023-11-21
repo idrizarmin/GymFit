@@ -181,7 +181,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     ),
                   ),
                 ),
-                child: const Heder(pageTitle: "Korisnički račun")),
+                child: const Header(pageTitle: "Korisnički račun")),
             SizedBox(
               height: 20,
             ),

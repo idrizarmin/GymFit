@@ -9,6 +9,9 @@ namespace GymFit.Application.Interfaces
     {
         Task<UserSensitiveDto?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
         Task ChangePassword(UserChangePasswordDto dto, CancellationToken cancellationToken);
+        Task<int> getCountOfUsersAsync(CancellationToken cancellationToken = default);
+        Task<int> getCountOfUsersActiveAsync(CancellationToken cancellationToken = default);
+        Task<int> getCountOfUsersInactiveAsync(CancellationToken cancellationToken = default);
         Task<List<UserForSelectionDto?>> GetUserForSelectionAsync(CancellationToken cancellationToken = default);
         Task<List<UserForSelectionDto?>> GetTrainersForSelectionAsync(CancellationToken cancellationToken = default);
 

@@ -140,7 +140,7 @@ class _CityScreenState extends State<CityScreen> {
                       ),
                     ),
                   ),
-                  child: const Heder(pageTitle: "Gradovi")),
+                  child: const Header(pageTitle: "Gradovi")),
               Expanded(
                 child: Center(
                   child: SizedBox(

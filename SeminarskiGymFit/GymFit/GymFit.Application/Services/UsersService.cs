@@ -23,6 +23,21 @@ namespace GymFit.Application
             var user = await CurrentRepository.GetByEmailAsync(email, cancellationToken);
             return Mapper.Map<UserSensitiveDto>(user);
         }
+        public async Task<int> getCountOfUsersAsync(CancellationToken cancellationToken)
+        {
+
+          return  CurrentRepository.getCountOfUsersAsync(cancellationToken);
+        }
+        public async Task<int> getCountOfUsersActiveAsync(CancellationToken cancellationToken)
+        {
+
+            return CurrentRepository.getCountOfUsersActiveAsync(cancellationToken);
+        }
+        public async Task<int> getCountOfUsersInactiveAsync(CancellationToken cancellationToken)
+        {
+
+            return CurrentRepository.getCountOfUsersInactiveAsync(cancellationToken);
+        }
 
         public async Task<List<UserForSelectionDto>> GetUserForSelectionAsync( CancellationToken cancellationToken = default){
             var users = await CurrentRepository.GetUsersForSelection(cancellationToken);

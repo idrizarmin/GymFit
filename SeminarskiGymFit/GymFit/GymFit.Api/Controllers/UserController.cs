@@ -21,7 +21,49 @@ namespace GymFit.Api.Controllers
         public override Task<IActionResult> Post(UserUpsertDto upsertDto, CancellationToken cancellationToken = default) => base.Post(upsertDto, cancellationToken);
         [NonAction]
         public override Task<IActionResult> Put(UserUpsertDto upsertDto, CancellationToken cancellationToken = default) => base.Put(upsertDto, cancellationToken);
-       
+
+        [HttpGet("GetCountUsers")]
+        public async Task<IActionResult> GetCountOfUsers(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await Service.getCountOfUsersAsync(cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Problem with getting resources");
+                return BadRequest();
+            }
+        }
+        [HttpGet("GetCountActiveUsers")]
+        public async Task<IActionResult> GetCountOfActiveUsers(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await Service.getCountOfUsersActiveAsync(cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Problem with getting resources");
+                return BadRequest();
+            }
+        }
+        [HttpGet("GetCountInactiveUsers")]
+        public async Task<IActionResult> GetCountOfInActiveUsers(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await Service.getCountOfUsersInactiveAsync(cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Problem with getting resources");
+                return BadRequest();
+            }
+        }
         [HttpGet("GetUsersForSelection")]
         public async Task<IActionResult> GetUsersForSelection(CancellationToken cancellationToken)
         {

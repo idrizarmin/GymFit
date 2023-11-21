@@ -48,6 +48,7 @@ dependencies:
   pagination_flutter: ^0.0.8
   syncfusion_flutter_calendar: ^23.1.44
   search_choices: ^2.2.7
+  fl_chart: ^0.64.0
 
 dev_dependencies:
   flutter_test:
@@ -87,6 +88,10 @@ flutter:
     - assets/icons/country.svg
     - assets/icons/logout.svg
     - assets/icons/admin.svg
+    - assets/icons/calendar.svg
+    - assets/icons/activeUser.svg
+    - assets/icons/unactiveUser.svg
+    - assets/icons/users1.svg
 
 
     

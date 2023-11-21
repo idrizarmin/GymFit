@@ -16,22 +16,23 @@ namespace GymFit.Infrastructure
         {
             return await DbSet.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
         }
-        public int getCountOfUsers(CancellationToken cancellationToken = default)
+        public int getCountOfUsersAsync(CancellationToken cancellationToken = default)
         {
             return DbSet.AsNoTracking().Count();
         }
 
-        public int getCountOfUsersActive(int cinemaId, CancellationToken cancellationToken = default)
+        public int getCountOfUsersActiveAsync(CancellationToken cancellationToken = default)
         {
             return DbSet.Where(s => s.IsActive == true).AsNoTracking().Count();
 
         }
         
 
-        public int getCountOfUsersInactive(int cinemaId, CancellationToken cancellationToken = default)
+        public int getCountOfUsersInactiveAsync(CancellationToken cancellationToken = default)
         {
             return DbSet.Where(s => s.IsActive == false).AsNoTracking().Count();
         }
+
        public async Task<List<User>> GetUsersForSelection(CancellationToken cancellationToken = default)
         {
             return await DbSet.Where(u=>u.Role == Role.Korisnik).ToListAsync(cancellationToken); 
