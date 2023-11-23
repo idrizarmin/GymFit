@@ -31,6 +31,41 @@ class UserProvider extends BaseProvider {
     }
   }
 
+  Future<int> getCountOfUsers() async {
+    var uri = Uri.parse('$apiUrl/User/GetCountUsers');
+    var headers = Authorization.createHeaders();
+    
+    final response = await http.get(uri, headers: headers);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+        return data;      
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+Future<int> getCountOfUsersActive() async {
+    var uri = Uri.parse('$apiUrl/User/GetCountActiveUsers');
+    var headers = Authorization.createHeaders();
+    
+    final response = await http.get(uri, headers: headers);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+        return data;      
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }Future<int> getCountOfUsersInactive() async {
+    var uri = Uri.parse('$apiUrl/User/GetCountInactiveUsers');
+    var headers = Authorization.createHeaders();
+    
+    final response = await http.get(uri, headers: headers);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+        return data;      
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
   Future<List<User>> getTrainers() async {
     final users = await get(null); // Dohvatite sve korisnike
     final trainers = users.where((user) => user.role == 2).toList();

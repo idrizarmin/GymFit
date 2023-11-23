@@ -11,7 +11,7 @@ namespace GymFit.Infrastructure
         {
         }
       
-        public async Task<List<Reservation>> GetAllFiltered(ReservationSearchObject searchObject, CancellationToken cancellationToken)
+        public async Task<List<Reservation>> GetAllFiltered(ReservationSearchObject searchObject, CancellationToken cancellationToken = default)
         {
             return await DbSet
                 .Where(n => (searchObject.spol == null || n.User.Gender == searchObject.spol)
@@ -19,5 +19,36 @@ namespace GymFit.Infrastructure
                 && (searchObject.trainerId == null || n.TrainerId == searchObject.trainerId))
                 .ToListAsync(cancellationToken);
         }
+        public int getCountCurrentMonthReservations(CancellationToken cancellationToken = default)
+        {
+            var currentDate = DateTime.Now;
+            return  DbSet.Where(s =>(s.ReservationDate.Month== currentDate.Month)
+            && (s.ReservationDate.Year == currentDate.Year)).AsNoTracking().Count();
+        }
+        public async Task<List<int>> GetCountByMonth(ReservationBarChartSearchObject searchObject, CancellationToken cancellationToken = default)
+        {
+
+            var counts = await DbSet
+                .Where(r => r.ReservationDate.Year == searchObject.year)
+                .GroupBy(r => r.ReservationDate.Month)
+                .Select(group => new
+                {
+                    Month = group.Key,
+                    Count = group.Count()
+                })
+                .OrderBy(result => result.Month)
+                .ToListAsync(cancellationToken);
+
+            List<int> result = new List<int>();
+
+            for (int month = 1; month <= 12; month++)
+            {
+                var count = counts.FirstOrDefault(c => c.Month == month)?.Count ?? 0;
+                result.Add(count);
+            }
+
+            return result;
+        }
+
     }
 }

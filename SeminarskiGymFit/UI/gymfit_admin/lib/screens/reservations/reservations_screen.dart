@@ -7,6 +7,7 @@ import 'package:gymfit_admin/models/user_for_selection.dart';
 import 'package:gymfit_admin/providers/reservation_provider.dart';
 import 'package:gymfit_admin/providers/user_provider.dart';
 import 'package:gymfit_admin/screens/components/header.dart';
+import 'package:gymfit_admin/widgets/legend_widget.dart';
 import 'package:search_choices/search_choices.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -103,13 +104,12 @@ class _ReservationScreenState extends State<ReservationScreen> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text("Greška"),
-              content:
-                  Text("Odabrani datum nije validan."),
+              content: Text("Odabrani datum nije validan."),
               actions: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                      ),
+                    backgroundColor: primaryColor,
+                  ),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -119,19 +119,19 @@ class _ReservationScreenState extends State<ReservationScreen> {
             );
           },
         );
-      }else if(selectedStartHour>selectedEndHour || selectedStartHour == selectedEndHour){
+      } else if (selectedStartHour > selectedEndHour ||
+          selectedStartHour == selectedEndHour) {
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text("Greška"),
-              content:
-                  Text("Nepravilno odabrano vrijeme treninga."),
+              content: Text("Nepravilno odabrano vrijeme treninga."),
               actions: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                      ),
+                    backgroundColor: primaryColor,
+                  ),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -141,8 +141,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
             );
           },
         );
-      }
-       else {
+      } else {
         startDate = DateTime(selectedDate.year, selectedDate.month,
             selectedDate.day, (selectedStartHour + 1));
         endDate = DateTime(selectedDate.year, selectedDate.month,
@@ -200,252 +199,28 @@ class _ReservationScreenState extends State<ReservationScreen> {
               child: const Header(pageTitle: "Termini -rezervacije "),
             ),
             const SizedBox(height: 16.0),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('  Klijent:'),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: SearchChoices.single(
-                          hint: Text("Odaberite klijenta"),
-                          items: users
-                              .map((user) => DropdownMenuItem(
-                                    value: user,
-                                    child: Text(
-                                        '${user.firstName} ${user.lastName}'),
-                                  ))
-                              .toList(),
-                          value: selectedUser,
-                          isExpanded: true,
-                          onChanged: (selectedItem) {
-                            setState(() {
-                              selectedUser = selectedItem as UserForSelection?;
-                            });
-                            loadReservations();
-                          },
-                          closeButton: 'Zatvori',
-                          searchHint: 'Pretraži korisnike',
-                          underline: Container(),
-                          padding: const EdgeInsets.fromLTRB(20, 6, 0, 0),
-                          displayClearIcon: true,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('  Trener:'),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: SearchChoices.single(
-                          hint: Text("Odaberite trenera"),
-                          isExpanded: true,
-                          items: trainers
-                              .map((user) => DropdownMenuItem(
-                                    value: user,
-                                    child: Text(
-                                        '${user.firstName} ${user.lastName}'),
-                                  ))
-                              .toList(),
-                          value: selectedTrainer,
-                          onChanged: (selectedItem) {
-                            setState(() {
-                              selectedTrainer =
-                                  selectedItem as UserForSelection?;
-                            });
-                            loadReservations();
-                          },
-                          closeButton: 'Zatvori',
-                          searchHint: 'Pretraži trenere',
-                          underline: Container(),
-                          padding: const EdgeInsets.fromLTRB(10, 6, 0, 0),
-                          displayClearIcon: true,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('  Spol:'),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: DropdownButton<int>(
-                          isExpanded: true,
-                          icon: const Icon(Icons.arrow_drop_down_outlined),
-                          value: selectedGender,
-                          items: <int?>[null, 0, 1].map((int? value) {
-                            return DropdownMenuItem<int>(
-                              value: value,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Text(value == null
-                                    ? 'Svi'
-                                    : value == 0
-                                        ? 'Muški'
-                                        : 'Ženski'),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (int? newValue) {
-                            setState(() {
-                              selectedGender = newValue;
-                              loadReservations();
-                            });
-                          },
-                          underline: Container(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            buildFilters(),
             const SizedBox(height: 16.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                      ),
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                backgroundColor: secondaryColor,
-                                title: Text("Dodaj rezervaciju"),
-                                content: SingleChildScrollView(
-                                  child: AddReservationForm(),
-                                ),
-                                actions: <Widget>[
-                                  ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: primaryColor,
-                                      ),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text("Zatvori")),
-                                  ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: primaryColor,
-                                      ),
-                                      onPressed: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          InsertReservation();
-                                        }
-                                      },
-                                      child: Text("Spremi"))
-                                ],
-                              );
-                            });
-                      },
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.add_outlined,
-                            color: Colors.white,
-                          ),
-                          SizedBox(width: 8),
-                          Text(
-                            'Dodaj',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 16.0),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                      ),
-                      onPressed: () {},
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.refresh_outlined,
-                            color: Colors.white,
-                          ),
-                          SizedBox(width: 8),
-                          Text(
-                            'Osvježi',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            buildButtons(context),
             const SizedBox(height: 10.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Container(
-                  width: 16,
-                  height: 16,
-                  color: Colors.brown, // Boja za status 1
+                LegendsListWidget(
+                  legends: [
+                    Legend('Kreirane', Colors.brown), // Boja za status 1
+                    Legend(
+                      'Potvrđene',
+                      Colors.green,
+                    ), // Boja za status 2
+                    Legend(
+                      'Nepotvrđene',
+                      Colors.orange,
+                    ), // Boja za status 3
+                    Legend('Zavrsene', Colors.red), // Boja za status 4
+                    Legend('U tijeku  ', Colors.lightBlue), // Boja za u tijeku
+                  ],
                 ),
-                const SizedBox(width: 8),
-                const Text('Kreirane'),
-                const SizedBox(width: 16),
-                Container(
-                  width: 16,
-                  height: 16,
-                  color: Colors.green, // Boja za status 2
-                ),
-                const SizedBox(width: 8),
-                const Text('Potvrđene'),
-                const SizedBox(width: 16),
-                Container(
-                  width: 16,
-                  height: 16,
-                  color: Colors.orange, // Boja za status 3
-                ),
-                const SizedBox(width: 8),
-                const Text('Otkazane'),
-                const SizedBox(width: 16),
-                Container(
-                  width: 16,
-                  height: 16,
-                  color: Colors.red, // Boja za status 4
-                ),
-                const SizedBox(width: 8),
-                const Text('Uspjesno zavrseno'),
-                const SizedBox(width: 8),
               ],
             ),
             Expanded(
@@ -463,18 +238,6 @@ class _ReservationScreenState extends State<ReservationScreen> {
                   firstDayOfWeek: 1,
                   timeSlotViewSettings:
                       const TimeSlotViewSettings(startHour: 6, endHour: 24),
-
-                  //Klik na kalendar otvara se dialog za dodavanje rezervacije
-                  //    onTap: (CalendarTapDetails details) {
-                  //   if (details.targetElement == CalendarElement.calendarCell) {
-                  //     DateTime tappedTime = details.date!;
-                  //     setState(() {
-                  //       showAddReservationForm = true;
-                  //     });
-                  //     // Prijenos vremena dodira u AddReservationForm
-                  //     AddReservationForm(tappedTime: tappedTime);
-                  //   }
-                  // },
                 ),
               ),
             ),
@@ -484,41 +247,228 @@ class _ReservationScreenState extends State<ReservationScreen> {
     );
   }
 
-  // void _showAppointmentDialog(DateTime startTime) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: Text('Schedule Appointment'),
-  //         content: Text(
-  //             'Start Time: ${startTime.toString()}'), // Display the start time
-  //         actions: [
-  //           TextButton(
-  //             onPressed: () {
-  //               // Add logic to save the appointment
-  //               Navigator.of(context).pop(); // Close the dialog
-  //             },
-  //             child: Text('Save'),
-  //           ),
-  //           TextButton(
-  //             onPressed: () {
-  //               Navigator.of(context).pop(); // Close the dialog
-  //             },
-  //             child: Text('Cancel'),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
+  Row buildButtons(BuildContext context) {
+    return Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                    ),
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              backgroundColor: secondaryColor,
+                              title: Text("Dodaj rezervaciju"),
+                              content: SingleChildScrollView(
+                                child: AddReservationForm(),
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: primaryColor,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text("Zatvori")),
+                                ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: primaryColor,
+                                    ),
+                                    onPressed: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        InsertReservation();
+                                      }
+                                    },
+                                    child: Text("Spremi"))
+                              ],
+                            );
+                          });
+                    },
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.add_outlined,
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          'Dodaj',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 16.0),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                    ),
+                    onPressed: () {
+                      loadReservations();
+                    },
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.refresh_outlined,
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          'Osvježi',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+  }
+
+  Row buildFilters() {
+    return Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('  Klijent:'),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: SearchChoices.single(
+                        hint: Text("Odaberite klijenta"),
+                        items: users
+                            .map((user) => DropdownMenuItem(
+                                  value: user,
+                                  child: Text(
+                                      '${user.firstName} ${user.lastName}'),
+                                ))
+                            .toList(),
+                        value: selectedUser,
+                        isExpanded: true,
+                        onChanged: (selectedItem) {
+                          setState(() {
+                            selectedUser = selectedItem as UserForSelection?;
+                          });
+                          loadReservations();
+                        },
+                        closeButton: 'Zatvori',
+                        searchHint: 'Pretraži korisnike',
+                        underline: Container(),
+                        padding: const EdgeInsets.fromLTRB(20, 6, 0, 0),
+                        displayClearIcon: true,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('  Trener:'),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: SearchChoices.single(
+                        hint: Text("Odaberite trenera"),
+                        isExpanded: true,
+                        items: trainers
+                            .map((user) => DropdownMenuItem(
+                                  value: user,
+                                  child: Text(
+                                      '${user.firstName} ${user.lastName}'),
+                                ))
+                            .toList(),
+                        value: selectedTrainer,
+                        onChanged: (selectedItem) {
+                          setState(() {
+                            selectedTrainer =
+                                selectedItem as UserForSelection?;
+                          });
+                          loadReservations();
+                        },
+                        closeButton: 'Zatvori',
+                        searchHint: 'Pretraži trenere',
+                        underline: Container(),
+                        padding: const EdgeInsets.fromLTRB(10, 6, 0, 0),
+                        displayClearIcon: true,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('  Spol:'),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: DropdownButton<int>(
+                        isExpanded: true,
+                        icon: const Icon(Icons.arrow_drop_down_outlined),
+                        value: selectedGender,
+                        items: <int?>[null, 0, 1].map((int? value) {
+                          return DropdownMenuItem<int>(
+                            value: value,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Text(value == null
+                                  ? 'Svi'
+                                  : value == 0
+                                      ? 'Muški'
+                                      : 'Ženski'),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (int? newValue) {
+                          setState(() {
+                            selectedGender = newValue;
+                            loadReservations();
+                          });
+                        },
+                        underline: Container(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+  }
 
   Widget AddReservationForm({
     bool isEditing = false,
-    Reservation? userToEdit,
+    Reservation? reservationToEdit,
   }) {
-    if (userToEdit != null) {
-      // _firstNameController.text = userToEdit.firstName ?? '';
-      // _lastNameController.text = userToEdit.lastName ?? '';
+    if (reservationToEdit != null) {
     } else {}
 
     return Container(
@@ -783,7 +733,7 @@ class ReservationDataSource extends CalendarDataSource {
         startTime: reservation.StartDate!,
         endTime: reservation.EndDate!,
         subject: reservation.description!,
-        color: appointmentColor, // Postavite boju ovisno o stanju rezervacije
+        color: appointmentColor,
       ));
     }
 

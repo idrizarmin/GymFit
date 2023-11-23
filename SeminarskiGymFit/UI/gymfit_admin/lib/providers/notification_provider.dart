@@ -6,7 +6,7 @@ import 'dart:convert';
 import '../helpers/constants.dart';
 import '../utils/authorization.dart';
 
-class NotificationProvider extends BaseProvider {
+class NotificationProvider extends BaseProvider<Notifications> {
   NotificationProvider() : super('Notifications/GetPaged');
 
   Future<List<Notifications>> getPaged(

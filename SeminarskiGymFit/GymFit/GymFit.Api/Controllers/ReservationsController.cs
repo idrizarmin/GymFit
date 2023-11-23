@@ -25,5 +25,33 @@ namespace GymFit.Api.Controllers
                       return BadRequest();
             }
         }
+        [HttpGet("GetByMonth")] 
+        public async Task<IActionResult> GetReservationsByMonth([FromQuery] ReservationBarChartSearchObject searchObject, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await Service.GetCountByMonthAsync(searchObject, cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Problem with getting resources");
+                return BadRequest();
+            }
+        }
+        [HttpGet("GetCountCurrentMonth")]
+        public async Task<IActionResult> GetCountOfActiveUsers(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await Service.getCountCurrentMonthReservations(cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Problem with getting resources");
+                return BadRequest();
+            }
+        }
     }
 }

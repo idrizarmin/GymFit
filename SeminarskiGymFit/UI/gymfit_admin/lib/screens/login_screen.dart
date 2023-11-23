@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymfit_admin/helpers/constants.dart';
 import 'package:gymfit_admin/providers/login_provider.dart';
-import 'package:gymfit_admin/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import '../helpers/show_error_dialog.dart';
 

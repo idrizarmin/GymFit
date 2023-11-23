@@ -5,6 +5,8 @@ namespace GymFit.Infrastructure.Interfaces
 {
     public interface IReservationsRepository : IBaseRepository<Reservation, int, ReservationSearchObject>
     {
-        Task<List<Reservation>> GetAllFiltered(ReservationSearchObject searchObject, CancellationToken cancellationToken);
+        Task<List<Reservation>> GetAllFiltered(ReservationSearchObject searchObject, CancellationToken cancellationToken = default);
+        Task<List<int>> GetCountByMonth(ReservationBarChartSearchObject searchObject, CancellationToken cancellationToken= default);
+        int getCountCurrentMonthReservations(CancellationToken cancellationToken = default);
     }
 }

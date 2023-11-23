@@ -227,8 +227,8 @@ class _CityScreenState extends State<CityScreen> {
 
   Widget AddCityForm({bool isEditing = false, City? cityToEdit}) {
     if (cityToEdit != null) {
-      _nameController.text = cityToEdit.name ?? '';
-      _zipCodeController.text = cityToEdit.zipCode ?? '';
+      _nameController.text = cityToEdit.name;
+      _zipCodeController.text = cityToEdit.zipCode;
       _selectedCountryId = cityToEdit.countryId;
     } else {
       _nameController.text = '';

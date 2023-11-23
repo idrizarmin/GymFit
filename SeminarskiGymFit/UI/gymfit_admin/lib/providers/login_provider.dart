@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:gymfit_admin/models/register.dart';
 import 'package:gymfit_admin/models/user_login.dart';
 import 'package:gymfit_admin/providers/base_provider.dart';
