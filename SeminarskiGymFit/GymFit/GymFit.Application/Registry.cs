@@ -23,6 +23,7 @@ namespace GymFit.Application
             services.AddScoped<ITrainerCertificatesService, TrainerCertificatesService>();
             services.AddScoped<IUserService, UsersService>();
             services.AddScoped<IUserPackagesService, UserPackagesService>();
+            services.AddScoped<IPostService, PostService>();
         }
 
         public static void AddValidators(this IServiceCollection services)
@@ -40,6 +41,7 @@ namespace GymFit.Application
             services.AddScoped<IValidator<TrainerCertificateUpsertDto>, TrainerCertificateValidator>();
             services.AddScoped<IValidator<UserUpsertDto>, UserVaidator>();
             services.AddScoped<IValidator<UserPackageUpsertDto>, UserPackageValidator>();
+            services.AddScoped<IValidator<PostUpsertDto>, PostValidator>();
         }
     }
 }

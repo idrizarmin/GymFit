@@ -20,6 +20,7 @@ namespace GymFit.Infrastructure
         public readonly IUserPackageRepository UserPackageRepository;
         public readonly IUserRepository UserRepository;
         public readonly IClientProgresRepository ClientProgresRepository;
+        public readonly IPostRepository PostRepository;
 
         public UnitOfWork(DatabaseContext databaseContext,
             IArrivalsRepository arrivalsRepository,
@@ -34,22 +35,24 @@ namespace GymFit.Infrastructure
             ITrainerCertificatesRepository trainerCertificatesRepository,
             IUserPackageRepository userPackageRepository,
             IUserRepository userRepository,
-            IClientProgresRepository clientProgresRepository)
+            IClientProgresRepository clientProgresRepository,
+            IPostRepository postRepository)
         {
             _databaseContext = databaseContext;
-            ArrivalsRepository= arrivalsRepository;
-            CertificatesRepository= certificatesRepository;
-            CitiesRepository= citiesRepository;
-            CountriesRepository= countriesRepository;
-            GroupReservationsRepository= groupReservationsRepository;
-            GymRepository= gymRepository;
-            NotificationsRepository= notificationsRepository;
-            PhotosRepository= photosRepository;
-            ReservationsRepository= reservationsRepository;
-            TrainerCertificatesRepository= trainerCertificatesRepository;
-            UserPackageRepository= userPackageRepository;
-            UserRepository= userRepository;
+            ArrivalsRepository = arrivalsRepository;
+            CertificatesRepository = certificatesRepository;
+            CitiesRepository = citiesRepository;
+            CountriesRepository = countriesRepository;
+            GroupReservationsRepository = groupReservationsRepository;
+            GymRepository = gymRepository;
+            NotificationsRepository = notificationsRepository;
+            PhotosRepository = photosRepository;
+            ReservationsRepository = reservationsRepository;
+            TrainerCertificatesRepository = trainerCertificatesRepository;
+            UserPackageRepository = userPackageRepository;
+            UserRepository = userRepository;
             ClientProgresRepository = clientProgresRepository;
+            PostRepository = postRepository;
         }
 
         public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)

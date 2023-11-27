@@ -18,6 +18,7 @@ namespace GymFit.Infrastructure
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<UserPackage> UserPackages { get; set; } = null!;
         public DbSet<ClientProgress> ClientProgress { get; set; } = null!;
+        public DbSet<Post> Post { get; set; } = null!;
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {

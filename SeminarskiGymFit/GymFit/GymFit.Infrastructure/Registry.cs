@@ -1,5 +1,5 @@
-﻿
-using GymFit.Infrastructure.Interfaces;
+﻿using GymFit.Infrastructure.Interfaces;
+using GymFit.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GymFit.Infrastructure
@@ -21,6 +21,7 @@ namespace GymFit.Infrastructure
             services.AddScoped<IUserPackageRepository, UserPackageRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IClientProgresRepository, ClientProgresRepository>();
+            services.AddScoped<IPostRepository,PostsRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }

@@ -24,6 +24,11 @@ namespace GymFit.Infrastructure
               .WithOne(c => c.Photo)
               .HasForeignKey(c => c.PhotoId)
               .IsRequired();
+
+            builder.HasMany(c => c.Posts)
+            .WithOne(c => c.Photo)
+            .HasForeignKey(c => c.PhotoId)
+            .IsRequired();
         }
     }
 }

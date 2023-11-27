@@ -1,4 +1,5 @@
-﻿namespace GymFit.Core
+﻿
+namespace GymFit.Core
 {
     public class Photo : BaseEntity
     {
@@ -7,5 +8,6 @@
 
         public ICollection<Gym> Gyms { get; set; } = null!;
         public ICollection<User> Users { get; set; } = null!;
+        public ICollection<Post> Posts { get; set; } = null!;
     }
 }

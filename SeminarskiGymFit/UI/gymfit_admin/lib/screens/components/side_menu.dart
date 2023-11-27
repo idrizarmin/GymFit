@@ -156,20 +156,20 @@ class _SideMenuState extends State<SideMenu> {
                   widget.onMenuItemClicked(const UserProfileScreen());
                 },
               ),
-              DrawerListTile(
-                title: "Države",
-                svgSrc: "assets/icons/country.svg",
-                press: () {
-                  widget.onMenuItemClicked(const CountryScreen());
-                },
-              ),
-              DrawerListTile(
-                title: "Gradovi",
-                svgSrc: "assets/icons/city.svg",
-                press: () {
-                  widget.onMenuItemClicked(const CityScreen());
-                },
-              ),
+              // DrawerListTile(
+              //   title: "Države",
+              //   svgSrc: "assets/icons/country.svg",
+              //   press: () {
+              //     widget.onMenuItemClicked(const CountryScreen());
+              //   },
+              // ),
+              // DrawerListTile(
+              //   title: "Gradovi",
+              //   svgSrc: "assets/icons/city.svg",
+              //   press: () {
+              //     widget.onMenuItemClicked(const CityScreen());
+              //   },
+              // ),
              
                
             ],
