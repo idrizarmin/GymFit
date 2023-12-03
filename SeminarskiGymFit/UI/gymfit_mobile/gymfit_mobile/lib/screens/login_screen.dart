@@ -3,10 +3,14 @@ import 'package:gymfit_mobile/helpers/app_decoration.dart';
 import 'package:gymfit_mobile/helpers/custom_text_style.dart';
 import 'package:gymfit_mobile/helpers/image_constant.dart';
 import 'package:gymfit_mobile/helpers/theme_helper.dart';
+import 'package:gymfit_mobile/providers/login_provider.dart';
+import 'package:gymfit_mobile/routes/app_routes.dart';
 import 'package:gymfit_mobile/screens/registration/registration_screen.dart';
+import 'package:gymfit_mobile/utils/error_dialog.dart';
 import 'package:gymfit_mobile/widgets/custom_elevated_button.dart';
 import 'package:gymfit_mobile/widgets/custom_image_view.dart';
 import 'package:gymfit_mobile/widgets/custom_text_fptm_field.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -20,6 +24,26 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
+  late UserLoginProvider userProvider;
+
+  @override
+  void initState() {
+    super.initState();
+
+    userProvider = context.read<UserLoginProvider>();
+  }
+
+  void login() async {
+    try {
+      await userProvider.loginAsync(
+          _emailController.text, _passwordController.text);
+      if (context.mounted) {
+        Navigator.pushNamed(context, AppRoutes.homeContainerScreen);
+      }
+    } on Exception catch (e) {
+      showErrorDialog(context, e.toString().substring(11));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +102,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         left: 19,
                         right: 20,
                       ),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          // login();
+                           Navigator.pushNamed(context, AppRoutes.homeContainerScreen);
+                        }
+                      },
                     ),
                     SizedBox(height: 3),
                     GestureDetector(
@@ -148,13 +178,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 prefix: Icon(Icons.email_outlined),
                 controller: _emailController,
                 hintText: "ime.prezime@gmail.com",
-                obscureText: _obscurePassword,
                 textInputType: TextInputType.emailAddress,
-               validator: (value) {
+                validator: (value) {
                   if (value!.isEmpty) {
                     return 'Unesite vaš email.';
                   }
-                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                      .hasMatch(value)) {
                     return 'Unesite validan email.';
                   }
                   return null;

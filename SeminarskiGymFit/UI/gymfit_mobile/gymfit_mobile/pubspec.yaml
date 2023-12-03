@@ -40,6 +40,7 @@ dependencies:
   jwt_decoder: ^2.0.1
   cached_network_image: ^3.3.0
   flutter_svg: ^2.0.9
+  table_calendar: ^3.0.9
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +73,25 @@ flutter:
     - assets/images/gym1.jpg
     - assets/images/gym2.jpg
     - assets/images/gym3.jpg
+    - assets/images/gallery.jpg
+    - assets/images/gallery2.jpg
+    - assets/images/gallery3.jpg
+    - assets/images/gallery4.jpg
+    - assets/images/gallery5.jpg
+    - assets/images/gallery6.jpg
+    - assets/images/gallery7.jpg
+    - assets/images/gallery8.jpg
+    - assets/images/gallery9.jpg
+    - assets/images/gallery10.jpg
+    - assets/images/gallery11.jpg
+    - assets/images/gallery12.jpg
+    - assets/images/gallery13.jpg
+    - assets/images/trainer.jpg
+    - assets/icons/home.svg
+    - assets/icons/reservation.svg
+    - assets/icons/myReservation.svg
+    - assets/icons/user.svg
+    - assets/icons/trainers.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

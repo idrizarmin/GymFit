@@ -3,7 +3,7 @@ import 'package:gymfit_mobile/helpers/custom_text_style.dart';
 import 'package:gymfit_mobile/helpers/theme_helper.dart';
 
 class CustomTextFormField extends StatelessWidget {
-  CustomTextFormField({
+  const CustomTextFormField({
     Key? key,
     this.alignment,
     this.width,
@@ -105,7 +105,7 @@ class CustomTextFormField extends StatelessWidget {
         suffixIcon: suffix,
         suffixIconConstraints: suffixConstraints,
         isDense: true,
-        contentPadding: contentPadding ?? EdgeInsets.all(7),
+        contentPadding: contentPadding ?? const EdgeInsets.all(7),
         fillColor: fillColor ?? appTheme.blueGray100,
         filled: filled,
         border: borderDecoration ??

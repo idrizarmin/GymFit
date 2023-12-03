@@ -4,7 +4,7 @@ import 'package:gymfit_mobile/helpers/custom_text_style.dart';
 import 'package:gymfit_mobile/helpers/image_constant.dart';
 import 'package:gymfit_mobile/helpers/theme_helper.dart';
 import 'package:gymfit_mobile/models/register.dart';
-import 'package:gymfit_mobile/providers/user_provider.dart';
+import 'package:gymfit_mobile/providers/login_provider.dart';
 import 'package:gymfit_mobile/routes/app_routes.dart';
 import 'package:gymfit_mobile/screens/login_screen.dart';
 import 'package:gymfit_mobile/utils/error_dialog.dart';
@@ -28,11 +28,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
-  late UserProvider _userProvider;
+  late UserLoginProvider _userProvider;
   @override
   void initState() {
     super.initState();
-    _userProvider = context.read<UserProvider>();
+    _userProvider = context.read<UserLoginProvider>();
 
   }
 
@@ -57,6 +57,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     color: Colors.white,
                   ))),
         );
+        Navigator.pushNamed(context, AppRoutes.homeContainerScreen);
         
       }
     } on Exception catch (e) {
@@ -371,8 +372,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   Widget _buildRegistracija(BuildContext context) {
     return CustomElevatedButton(
       onPressed: () {
-        //register();
-        Navigator.pushReplacementNamed(context, AppRoutes.homeContainerScreen);
+        if(_formKey.currentState!.validate()){
+        register();
+        }
       },
       height: 48,
       text: "Registracija",

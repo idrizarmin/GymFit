@@ -10,7 +10,6 @@ namespace GymFit.Core
         public PostStatus Status { get; set; }
 
 
-        public int? PhotoId { get; set; }
-        public PhotoDto? Photo { get; set; }
+       
     }
 }

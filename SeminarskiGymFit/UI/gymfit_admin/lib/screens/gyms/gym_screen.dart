@@ -1,7 +1,4 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:gymfit_admin/helpers/constants.dart';
 import 'package:gymfit_admin/helpers/show_error_dialog.dart';
@@ -37,10 +34,6 @@ class _GymScreenState extends State<GymScreen> {
   late PostProvider _postProvider;
   bool isAllSelected = false;
   List<Gym?> gyms = <Gym>[];
-  XFile? _pickedFile;
-  File? _image;
-  final _picker = ImagePicker();
-  File? selectedImage;
   int currentPage = 1;
   int pageSize = 20;
   int hasNextPage = 0;
@@ -52,18 +45,6 @@ class _GymScreenState extends State<GymScreen> {
     _postProvider = PostProvider();
     loadGyms();
     loadPosts();
-  }
-
-  Future<void> _pickImage() async {
-    final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        _pickedFile = pickedFile;
-        _image = File(pickedFile.path);
-      });
-    }
   }
 
   void loadGyms() async {
@@ -113,16 +94,11 @@ class _GymScreenState extends State<GymScreen> {
 
   void EditPost(int id) async {
     try {
-      var imageFile = File(_image!.path);
-      List<int> imageBytes = imageFile.readAsBytesSync();
-      String imageBase64 = base64Encode(imageBytes);
-
       var post = {
         "id": id,
-        "title": _titleController,
+        "title": _titleController.text,
         "content": _contentController.text,
         "publishDate": DateTime.now().toUtc().toIso8601String(),
-        "photo": imageBase64,
       };
       var change = await _postProvider.edit(post);
       if (change == "OK") {
@@ -148,16 +124,12 @@ class _GymScreenState extends State<GymScreen> {
 
   void InsertPost() async {
     try {
-      var imageFile = File(_image!.path);
-      List<int> imageBytes = imageFile.readAsBytesSync();
-      String imageBase64 = base64Encode(imageBytes);
       var newPost = {
         "id": 0,
         "title": _titleController.text,
         "content": _contentController.text,
         "status": 1,
         "publishDate": DateTime.now().toUtc().toIso8601String(),
-        "photo": imageBase64,
       };
       var post = await _postProvider.insert(newPost);
       if (post == "OK") {
@@ -336,8 +308,9 @@ class _GymScreenState extends State<GymScreen> {
                         backgroundColor: myButtonColor,
                       ),
                       onPressed: () {
-                        Navigator.of(context).pop();
-                        InsertPost();
+                        if (_formKey.currentState!.validate()) {
+                          InsertPost();
+                        }
                       },
                       child: Text("Spremi"),
                     ),
@@ -423,7 +396,6 @@ class _GymScreenState extends State<GymScreen> {
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: myButtonColor),
                             onPressed: () {
-                              //loadUsers();
                               Navigator.of(context).pop();
                             },
                             child: Text("Zatvori")),
@@ -431,10 +403,12 @@ class _GymScreenState extends State<GymScreen> {
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: myButtonColor),
                             onPressed: () {
-                              EditPost(selectedPosts[0].id);
+                               if (_formKey.currentState!.validate()){
+                                EditPost(selectedPosts[0].id);
                               Navigator.of(context).pop();
                               selectedPosts = [];
-                              //loadUsers();
+                               }
+                              
                             },
                             child: Text("Spremi")),
                       ],
@@ -570,8 +544,8 @@ class _GymScreenState extends State<GymScreen> {
                           onChanged: (bool? value) {
                             setState(() {
                               isAllSelected = value ?? false;
-                              posts.forEach((notificationItem) {
-                                notificationItem.isSelected = isAllSelected;
+                              posts.forEach((postItem) {
+                                postItem.isSelected = isAllSelected;
                               });
 
                               if (!isAllSelected) {
@@ -599,14 +573,6 @@ class _GymScreenState extends State<GymScreen> {
                     label: Text(
                       "Datum kreiranja",
                       style: TextStyle(fontStyle: FontStyle.normal),
-                    ),
-                  ),
-                  DataColumn(
-                    label: Container(
-                      child: Text(
-                        "Slika",
-                        style: TextStyle(fontStyle: FontStyle.normal),
-                      ),
                     ),
                   ),
                 ],
@@ -640,26 +606,6 @@ class _GymScreenState extends State<GymScreen> {
                               : '--',
                         ),
                       ),
-                      DataCell(Row(
-                        children: [
-                          if (postItem.photo != null)
-                            Padding(
-                              padding: EdgeInsets.only(right: 8.0),
-                              child: Image.memory(
-                                Uint8List.fromList(
-                                    base64Decode(postItem.photo!.data)),
-                                width: 40,
-                                height: 40,
-                              ),
-                            )
-                          else
-                            Padding(
-                              padding: EdgeInsets.only(right: 8.0),
-                              child: Image.asset('assets/images/user1.jpg',
-                                  width: 70, height: 100),
-                            ),
-                        ],
-                      )),
                     ],
                   );
                 }).toList(),
@@ -673,11 +619,9 @@ class _GymScreenState extends State<GymScreen> {
     if (postToEdit != null) {
       _contentController.text = postToEdit.content!;
       _titleController.text = postToEdit.title!;
-      _pickedFile = null;
     } else {
       _contentController.text = '';
       _titleController.text = '';
-      _pickedFile = null;
     }
     return Container(
       height: 450,
@@ -687,55 +631,6 @@ class _GymScreenState extends State<GymScreen> {
         key: _formKey,
         child: Row(
           children: [
-            Expanded(
-                child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(35),
-                child: Column(children: [
-                  Container(
-                    alignment: Alignment.center,
-                    width: 200,
-                    height: 280,
-                    color: Color.fromARGB(255, 94, 229, 143),
-                    child: (_pickedFile != null)
-                        ? Image.file(
-                            File(_pickedFile!.path),
-                            width: 230,
-                            height: 250,
-                            fit: BoxFit.cover,
-                          )
-                        : (postToEdit != null && postToEdit.photo != null)
-                            ? Image.memory(
-                                Uint8List.fromList(
-                                    base64Decode(postToEdit.photo!.data)),
-                                width: 230,
-                                height: 200,
-                                fit: BoxFit.cover,
-                              )
-                            : const Text('Please select an image'),
-                  ),
-                  const SizedBox(height: 35),
-                  Center(
-                    child: SizedBox(
-                      width: 150, // Širina dugmeta
-                      height: 35, // Visina dugmeta
-                      child: ElevatedButton(
-                        onPressed: () => _pickImage(),
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.teal, // Boja pozadine
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                20.0), // Zaobljenost rubova
-                          ),
-                        ),
-                        child: Text('Odaberi sliku',
-                            style: TextStyle(fontSize: 14)),
-                      ),
-                    ),
-                  )
-                ]),
-              ),
-            )),
             SizedBox(
               width: 30,
             ),

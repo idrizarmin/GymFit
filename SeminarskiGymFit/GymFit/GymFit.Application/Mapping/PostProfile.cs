@@ -8,8 +8,7 @@ namespace GymFit.Application
         {
             CreateMap<PostDto,Post>().ReverseMap();
 
-            CreateMap<PostUpsertDto, Post>()
-                .ForMember(p=> p.Photo, u=>u.Ignore());
+            CreateMap<PostUpsertDto, Post>();
 
             
         }

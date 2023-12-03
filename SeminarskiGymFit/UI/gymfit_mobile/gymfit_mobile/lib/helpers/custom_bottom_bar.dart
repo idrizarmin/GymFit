@@ -22,31 +22,32 @@ class CustomBottomBarState extends State<CustomBottomBar> {
       type: BottomBarEnum.Home,
     ),
     BottomMenuModel(
-      icon: ImageConstant.imgCalendar,
-      activeIcon: ImageConstant.imgCalendar,
-      type: BottomBarEnum.Calendar,
+      icon: ImageConstant.imgReservation,
+      activeIcon: ImageConstant.imgReservation,
+      type: BottomBarEnum.Reservation,
     ),
     BottomMenuModel(
-      icon: ImageConstant.imgCalendarGray100,
-      activeIcon: ImageConstant.imgCalendarGray100,
-      type: BottomBarEnum.Calendargray100,
+      icon: ImageConstant.imgMyReservation,
+      activeIcon: ImageConstant.imgMyReservation,
+      type: BottomBarEnum.MyReservation,
+    ),
+     BottomMenuModel(
+      icon: ImageConstant.trainers,
+      activeIcon: ImageConstant.trainers,
+      type: BottomBarEnum.Trainers,
     ),
     BottomMenuModel(
       icon: ImageConstant.imgUser,
       activeIcon: ImageConstant.imgUser,
-      type: BottomBarEnum.User,
-    ),
-    BottomMenuModel(
-      icon: ImageConstant.imgUserGray5002,
-      activeIcon: ImageConstant.imgUserGray5002,
-      type: BottomBarEnum.Usergray5002,
+      type: BottomBarEnum.UserProfile,
     )
+   
   ];
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 56,
+      height: 40,
       decoration: BoxDecoration(
         color: appTheme.black90001,
       ),
@@ -62,14 +63,14 @@ class CustomBottomBarState extends State<CustomBottomBar> {
           return BottomNavigationBarItem(
             icon: CustomImageView(
               imagePath: bottomMenuList[index].icon,
-              height: 32,
-              width: 32,
+              height: 22,
+              width: 22,
               color: appTheme.gray300,
             ),
             activeIcon: CustomImageView(
               imagePath: bottomMenuList[index].activeIcon,
-              height: 32,
-              width: 32,
+              height: 22,
+              width: 22,
               color: theme.colorScheme.onPrimaryContainer,
             ),
             label: '',
@@ -88,10 +89,10 @@ class CustomBottomBarState extends State<CustomBottomBar> {
 
 enum BottomBarEnum {
   Home,
-  Calendar,
-  Calendargray100,
-  User,
-  Usergray5002,
+  Reservation,
+  MyReservation,
+  Trainers,
+  UserProfile,
 }
 
 class BottomMenuModel {
@@ -114,7 +115,7 @@ class DefaultWidget extends StatelessWidget {
     return Container(
       color: Colors.white,
       padding: EdgeInsets.all(10),
-      child: Center(
+      child: const Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,

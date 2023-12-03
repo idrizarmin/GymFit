@@ -1,14 +1,15 @@
 class ImageConstant {
   // Image folder path
   static String imagePath = 'assets/images';
+  static String iconPath = 'assets/icons';
 
-  // Start images
+ 
   static String imgStart = '$imagePath/startImage.jpg';
 
-  // trainers images
+ 
   static String img1858113176x390 = '$imagePath/img_1858113_1_76x390.png';
 
-  static String imgDownload21 = '$imagePath/img_download_2_1.png';
+  static String imgtrainer = '$imagePath/trainer.jpg';
 
   static String imgCall = '$imagePath/img_call.svg';
 
@@ -25,7 +26,6 @@ class ImageConstant {
 
   static String imgGroupAddLight = '$imagePath/img_group_add_light.svg';
 
-  // reservations images
   static String img1858113174x390 = '$imagePath/img_1858113_1_74x390.png';
 
   static String imgVector15 = '$imagePath/img_vector_15.svg';
@@ -71,7 +71,19 @@ class ImageConstant {
 
   static String gym3 = '$imagePath/gym2.jpg';
 
-  static String imgSamuelGirven2 = '$imagePath/img_samuel_girven_2.png';
+  static String gallery1 = '$imagePath/gallery.jpg';
+  static String gallery2 = '$imagePath/gallery2.jpg';
+  static String gallery3 = '$imagePath/gallery3.jpg';
+  static String gallery4 = '$imagePath/gallery4.jpg';
+  static String gallery5 = '$imagePath/gallery5.jpg';
+  static String gallery6 = '$imagePath/gallery6.jpg';
+  static String gallery7 = '$imagePath/gallery7.jpg';
+  static String gallery8 = '$imagePath/gallery8.jpg';
+  static String gallery9 = '$imagePath/gallery9.jpg';
+  static String gallery10 = '$imagePath/gallery10.jpg';
+  static String gallery11 = '$imagePath/gallery11.jpg';
+  static String gallery12 = '$imagePath/gallery12.jpg';
+  static String gallery13 = '$imagePath/gallery13.jpg';
 
   static String imgMohamedFareed = '$imagePath/img_mohamed_fareed.png';
 
@@ -85,17 +97,17 @@ class ImageConstant {
 
   static String imgVector9 = '$imagePath/img_vector_9.svg';
 
-  static String imgUser = '$imagePath/img_user.svg';
+  static String imgUser = '$iconPath/user.svg';
 
-  static String imgCalendar = '$imagePath/img_calendar.svg';
+  static String imgReservation = '$iconPath/reservation.svg';
 
-  static String imgHome = '$imagePath/img_home.svg';
+  static String imgMyReservation = '$iconPath/myReservation.svg';
+
+  static String imgHome = '$iconPath/home.svg';
 
   static String imgRectangle4164 = '$imagePath/img_rectangle_4164.png';
 
-  static String imgCalendarGray100 = '$imagePath/img_calendar_gray_100.svg';
-
-  static String imgUserGray5002 = '$imagePath/img_user_gray_50_02.svg';
+  static String trainers= '$iconPath/trainers.svg';
 
   static String img18581131103x390 = '$imagePath/img_1858113_1_103x390.png';
 

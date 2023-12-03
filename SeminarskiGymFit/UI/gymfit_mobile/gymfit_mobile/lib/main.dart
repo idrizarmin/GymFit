@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymfit_mobile/helpers/theme_helper.dart';
+import 'package:gymfit_mobile/providers/login_provider.dart';
+import 'package:gymfit_mobile/providers/post_provider.dart';
 import 'package:gymfit_mobile/providers/user_provider.dart';
 import 'package:gymfit_mobile/routes/app_routes.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +25,8 @@ class MyApp extends StatelessWidget {
     MultiProvider(
       providers: [
          ChangeNotifierProvider(create: (_) => UserProvider()),
+         ChangeNotifierProvider(create: (_) => UserLoginProvider()),
+         ChangeNotifierProvider(create: (_) => PostProvider()),
       ],
       child: MaterialApp(
         theme: theme,

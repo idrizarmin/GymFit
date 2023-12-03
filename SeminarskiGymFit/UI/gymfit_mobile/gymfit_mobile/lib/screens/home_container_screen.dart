@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:gymfit_mobile/helpers/custom_bottom_bar.dart';
 import 'package:gymfit_mobile/routes/app_routes.dart';
 import 'package:gymfit_mobile/screens/home_page/home_screen.dart';
+import 'package:gymfit_mobile/screens/reservations/myReservations_screen.dart';
+import 'package:gymfit_mobile/screens/reservations/reservations_screen.dart';
+import 'package:gymfit_mobile/screens/user/trainers_screen.dart';
+import 'package:gymfit_mobile/screens/user/user_profile.dart';
 
 class HomeContainerScreen extends StatefulWidget {
   const HomeContainerScreen({Key? key}) : super(key: key);
@@ -53,14 +57,14 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
     switch (type) {
       case BottomBarEnum.Home:
         return AppRoutes.homePage;
-      case BottomBarEnum.Calendar:
-        return "/";
-      case BottomBarEnum.Calendargray100:
-        return "/";
-      case BottomBarEnum.User:
-        return "/";
-      case BottomBarEnum.Usergray5002:
-        return "/";
+      case BottomBarEnum.Reservation:
+        return AppRoutes.reservationsScreen;
+      case BottomBarEnum.MyReservation:
+        return AppRoutes.myReservationsScreen;
+      case BottomBarEnum.Trainers:
+        return AppRoutes.trainersScreen;
+      case BottomBarEnum.UserProfile:
+        return AppRoutes.userProfileScreen;
       default:
         return "/";
     }
@@ -71,6 +75,14 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
     switch (currentRoute) {
       case AppRoutes.homePage:
         return HomePage();
+      case AppRoutes.reservationsScreen:
+        return ReservationsScreen();
+      case AppRoutes.myReservationsScreen:
+        return MyReservationsScreen();
+      case AppRoutes.trainersScreen:
+        return TrainersScreen();
+         case AppRoutes.userProfileScreen:
+        return UserProfileScreen();
       default:
         return DefaultWidget();
     }

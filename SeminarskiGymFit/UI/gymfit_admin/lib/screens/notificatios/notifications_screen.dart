@@ -804,8 +804,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       DataCell(Text(notificationItem.content)),
                       DataCell(
                         Text(
-                            '${notificationItem.user!.firstName} ${notificationItem.user!.lastName}?? '
-                            ' '),
+                            '${notificationItem.user!.firstName} ${notificationItem.user!.lastName}'),
                       ),
                       DataCell(
                         Text(

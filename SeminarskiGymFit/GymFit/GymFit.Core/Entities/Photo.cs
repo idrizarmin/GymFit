@@ -8,6 +8,5 @@ namespace GymFit.Core
 
         public ICollection<Gym> Gyms { get; set; } = null!;
         public ICollection<User> Users { get; set; } = null!;
-        public ICollection<Post> Posts { get; set; } = null!;
     }
 }

@@ -4,7 +4,7 @@ import 'package:gymfit_mobile/helpers/theme_helper.dart';
 class AppDecoration {
   // Fill decorations
   static BoxDecoration get fillBlack => BoxDecoration(
-        color: appTheme.black900,
+        color: appTheme.black200,
       );
   static BoxDecoration get fillBlueCc => BoxDecoration(
         color: appTheme.blue600Cc,
@@ -16,7 +16,7 @@ class AppDecoration {
         color: appTheme.gray900,
       );
   static BoxDecoration get fillOnErrorContainer => BoxDecoration(
-        color: theme.colorScheme.onErrorContainer,
+        color: appTheme.bgSecondary,
       );
   static BoxDecoration get fillOnPrimaryContainer => BoxDecoration(
         color: theme.colorScheme.onPrimaryContainer,

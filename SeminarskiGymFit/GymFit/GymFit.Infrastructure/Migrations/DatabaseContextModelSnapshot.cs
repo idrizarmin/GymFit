@@ -545,10 +545,6 @@ namespace GymFit.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("PhotoId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("PublishDate")
                         .HasColumnType("datetime2");
 
@@ -564,8 +560,6 @@ namespace GymFit.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PhotoId");
 
                     b.ToTable("Post");
                 });
@@ -956,17 +950,6 @@ namespace GymFit.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("GymFit.Core.Post", b =>
-                {
-                    b.HasOne("GymFit.Core.Photo", "Photo")
-                        .WithMany("Posts")
-                        .HasForeignKey("PhotoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Photo");
-                });
-
             modelBuilder.Entity("GymFit.Core.Reservation", b =>
                 {
                     b.HasOne("GymFit.Core.Gym", "Gym")
@@ -1064,8 +1047,6 @@ namespace GymFit.Infrastructure.Migrations
             modelBuilder.Entity("GymFit.Core.Photo", b =>
                 {
                     b.Navigation("Gyms");
-
-                    b.Navigation("Posts");
 
                     b.Navigation("Users");
                 });

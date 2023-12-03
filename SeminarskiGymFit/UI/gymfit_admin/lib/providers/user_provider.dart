@@ -66,12 +66,7 @@ Future<int> getCountOfUsersActive() async {
       throw Exception('Failed to load data');
     }
   }
-  Future<List<User>> getTrainers() async {
-    final users = await get(null); // Dohvatite sve korisnike
-    final trainers = users.where((user) => user.role == 2).toList();
-    return trainers;
-  }
-
+ 
   Future<List<User>> getPaged({UserSearchObject? searchObject}) async {
     var uri = Uri.parse('$apiUrl/User/GetPaged');
     var headers = Authorization.createHeaders();

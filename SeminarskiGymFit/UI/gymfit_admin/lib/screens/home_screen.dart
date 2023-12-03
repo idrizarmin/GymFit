@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 180,
+              width: 200,
               child: SideMenu(onMenuItemClicked: _changePage),
             ),
             Expanded(

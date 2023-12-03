@@ -21,10 +21,7 @@ namespace GymFit.Infrastructure.Configurations
             builder.Property(x => x.PublishDate)
               .IsRequired();
 
-            builder.HasOne(e => e.Photo)
-                .WithMany(e => e.Posts)
-                .HasForeignKey(e => e.PhotoId)
-                .IsRequired(false);
+         
         }
     }
 }

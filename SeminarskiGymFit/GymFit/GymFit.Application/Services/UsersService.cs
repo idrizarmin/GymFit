@@ -36,19 +36,25 @@ namespace GymFit.Application
         public async Task<int> getCountOfUsersInactiveAsync(CancellationToken cancellationToken)
         {
 
-            return CurrentRepository.getCountOfUsersInactiveAsync(cancellationToken);
+            return   CurrentRepository.getCountOfUsersInactiveAsync(cancellationToken);
         }
 
-        public async Task<List<UserForSelectionDto>> GetUserForSelectionAsync( CancellationToken cancellationToken = default){
+        public async Task<List<UserForSelectionDto?>> GetUserForSelectionAsync( CancellationToken cancellationToken = default){
             var users = await CurrentRepository.GetUsersForSelection(cancellationToken);
 
-            return Mapper.Map<List<UserForSelectionDto>>(users);
+            return Mapper.Map<List<UserForSelectionDto?>>(users);
         }
-        public async Task<List<UserForSelectionDto>> GetTrainersForSelectionAsync(CancellationToken cancellationToken = default)
+        public async Task<List<UserForSelectionDto?>> GetTrainersForSelectionAsync(CancellationToken cancellationToken = default)
         {
             var users = await CurrentRepository.GetTrainersForSelection(cancellationToken);
 
-            return Mapper.Map<List<UserForSelectionDto>>(users);
+            return Mapper.Map<List<UserForSelectionDto?>>(users);
+        }
+        public async Task<List<UserDto?>> GetAllTrainersAsync(CancellationToken cancellationToken = default)
+        {
+            var users = await CurrentRepository.GetAllTrainers(cancellationToken);
+
+            return Mapper.Map<List<UserDto?>>(users);
         }
         public async Task<PagedList<UserDto>> GetAdminsPagedAsync(UserSearchObject searchObject, CancellationToken cancellationToken = default)
         {

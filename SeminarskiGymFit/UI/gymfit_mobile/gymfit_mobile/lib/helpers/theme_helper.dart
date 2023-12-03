@@ -159,11 +159,13 @@ class PrimaryColors {
   // Black
   Color get black900 => Color(0XFF060807);
   Color get black90001 => Color(0XFF000000);
+  Color get black200 => Color.fromARGB(221, 3, 5, 19);
 
   // BlueCc
   Color get blue600Cc => Color(0XCC2299DD);
-  Color get bgSecondary => Color.fromARGB(255,17,18,28);
+  Color get bgSecondary => Color.fromARGB(255, 15, 20, 65);
   Color get bgcolor => Color.fromARGB(186,37,46,83);
+  
 
   // BlueGray
   Color get blueGray100 => Color(0XFFD9D9D9);

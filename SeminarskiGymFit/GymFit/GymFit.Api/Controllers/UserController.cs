@@ -92,6 +92,22 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet("GetAllTrainers")]
+        public async Task<IActionResult> GetAllTrainers(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var dto = await Service.GetAllTrainersAsync(cancellationToken);
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Problem with getting resources");
+                return BadRequest();
+            }
+        }
+
         [HttpGet("GetAdminsPaged")]
 
         public async Task<IActionResult> GetAdminsPagedAsync([FromQuery] UserSearchObject searchObject, CancellationToken cancellationToken)

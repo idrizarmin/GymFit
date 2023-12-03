@@ -41,6 +41,10 @@ namespace GymFit.Infrastructure
         {
             return await DbSet.Where(u => u.Role == Role.Trener).ToListAsync(cancellationToken); 
         }
+        public async Task<List<User>> GetAllTrainers(CancellationToken cancellationToken = default)
+        {
+            return await DbSet.Where(u => u.Role == Role.Trener).ToListAsync(cancellationToken);
+        }
         public  async Task<PagedList<User>> GetAdminsPagedAsync(UserSearchObject searchObject, CancellationToken cancellationToken = default)
         {
             return await DbSet.Include(s => s.Photo)

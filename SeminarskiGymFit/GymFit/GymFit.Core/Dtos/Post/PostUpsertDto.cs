@@ -8,7 +8,6 @@ namespace GymFit.Core
         public DateTime PublishDate { get; set; }
         public PostStatus Status { get; set; }
 
-        public string? photo { get; set; }
      
 
     }

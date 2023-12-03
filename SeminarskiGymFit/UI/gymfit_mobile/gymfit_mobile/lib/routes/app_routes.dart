@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:gymfit_mobile/screens/home_container_screen.dart';
 import 'package:gymfit_mobile/screens/login_screen.dart';
 import 'package:gymfit_mobile/screens/registration/registration_screen.dart';
+import 'package:gymfit_mobile/screens/reservations/myReservations_screen.dart';
+import 'package:gymfit_mobile/screens/reservations/reservations_screen.dart';
 
 import 'package:gymfit_mobile/screens/start_screenn.dart';
+import 'package:gymfit_mobile/screens/user/trainers_screen.dart';
+import 'package:gymfit_mobile/screens/user/user_profile.dart';
 
 class AppRoutes {
   static const String startScreen = '/start_screen';
@@ -33,10 +37,10 @@ class AppRoutes {
     loginScreen: (context) => LoginScreen(),
     registrationScreen: (context) => RegistrationScreen(),
     homeContainerScreen: (context) => HomeContainerScreen(),
-    // trainersScreen: (context) => TrainersScreen(),
-    // reservationsScreen: (context) => ReservationsScreen(),
-    // userProfileScreen: (context) => UserProfileScreen(),
-    // myReservationsScreen: (context) => MyReservationsScreen(),
+     trainersScreen: (context) => TrainersScreen(),
+     reservationsScreen: (context) => ReservationsScreen(),
+    userProfileScreen: (context) => UserProfileScreen(),
+   myReservationsScreen: (context) => MyReservationsScreen(),
     // notificationsScreen: (context) => NotificationsScreen(),
     // appNavigationScreen: (context) => AppNavigationScreen()
   };

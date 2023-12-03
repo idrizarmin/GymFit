@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gymfit_admin/helpers/constants.dart';
 import 'package:gymfit_admin/providers/login_provider.dart';
-import 'package:gymfit_admin/screens/cities/cities_screen.dart';
-import 'package:gymfit_admin/screens/country/country_screen.dart';
 import 'package:gymfit_admin/screens/dashboard/dashboard_screen.dart';
 import 'package:gymfit_admin/screens/gyms/gym_screen.dart';
-import 'package:gymfit_admin/screens/home_screen.dart';
 import 'package:gymfit_admin/screens/login_screen.dart';
 import 'package:gymfit_admin/screens/notificatios/notifications_screen.dart';
 import 'package:gymfit_admin/screens/reports/report_screen.dart';
@@ -110,20 +107,20 @@ class _SideMenuState extends State<SideMenu> {
                     widget.onMenuItemClicked(const GymScreen());
                   },
                 ),
-                DrawerListTile(
-                  title: "Izvještaji",
-                  svgSrc: "assets/icons/report.svg",
-                  press: () {
-                    widget.onMenuItemClicked(const ReportScreen());
-                  },
-                ),
-                DrawerListTile(
-                  title: "Računi",
-                  svgSrc: "assets/icons/bill.svg",
-                  press: () {
-                    widget.onMenuItemClicked(const UsersScreen());
-                  },
-                ),
+                // DrawerListTile(
+                //   title: "Izvještaji",
+                //   svgSrc: "assets/icons/report.svg",
+                //   press: () {
+                //     widget.onMenuItemClicked(const ReportScreen());
+                //   },
+                // ),
+                // DrawerListTile(
+                //   title: "Računi",
+                //   svgSrc: "assets/icons/bill.svg",
+                //   press: () {
+                //     widget.onMenuItemClicked(const UsersScreen());
+                //   },
+                // ),
                  ExpansionTile(
             onExpansionChanged: (value) {
               setState(() {
