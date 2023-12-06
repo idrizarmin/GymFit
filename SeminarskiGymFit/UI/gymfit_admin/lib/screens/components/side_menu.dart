@@ -6,7 +6,6 @@ import 'package:gymfit_admin/screens/dashboard/dashboard_screen.dart';
 import 'package:gymfit_admin/screens/gyms/gym_screen.dart';
 import 'package:gymfit_admin/screens/login_screen.dart';
 import 'package:gymfit_admin/screens/notificatios/notifications_screen.dart';
-import 'package:gymfit_admin/screens/reports/report_screen.dart';
 import 'package:gymfit_admin/screens/reservations/reservations_screen.dart';
 import 'package:gymfit_admin/screens/users/admin_screen.dart';
 import 'package:gymfit_admin/screens/users/trainer_screen.dart';

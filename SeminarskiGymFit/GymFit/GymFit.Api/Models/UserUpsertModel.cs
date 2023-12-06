@@ -14,7 +14,7 @@ namespace GymFit.Api.Models
         public string? ProfessionalTitle { get; set; }
 
         public Gender Gender { get; set; }
-        public DateTime BirthDate { get; set; }
+        public DateTime DateOfBirth { get; set; }
         public Role Role { get; set; }
         public DateTime? LastSignInAt { get; set; }
         public bool IsVerified { get; set; }

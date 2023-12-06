@@ -1,4 +1,4 @@
-import 'package:gymfit_admin/models/photo.dart';
+import 'package:gymfit_mobile/models/photo.dart';
 
 class User {
   late int id;

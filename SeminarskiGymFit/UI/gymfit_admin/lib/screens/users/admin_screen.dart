@@ -130,7 +130,7 @@ class _AdminScreenState extends State<AdminScreen> {
         "address": null,
         "professionalTitle": null,
         "gender": selectedGender,
-        "birthDate": _birthDateController.text,
+        "dateOfBirth": _birthDateController.text,
         "role": 0,
         "lastSignInAt": DateTime.now().toUtc().toIso8601String(),
         "isVerified": _isVerified,
@@ -583,7 +583,7 @@ class _AdminScreenState extends State<AdminScreen> {
       _lastNameController.text = userToEdit.lastName ?? '';
       _emailController.text = userToEdit.email ?? '';
       _phoneNumberController.text = userToEdit.phoneNumber ?? '';
-      _birthDateController.text = userToEdit.birthDate ?? '';
+      _birthDateController.text = userToEdit.dateOfBirth ?? '';
       selectedGender = userToEdit.gender;
       _isActive = userToEdit.isActive;
       _isVerified = userToEdit.isVerified;
@@ -606,7 +606,6 @@ class _AdminScreenState extends State<AdminScreen> {
     return Container(
       height: 450,
       width: 950,
-      color: secondaryColor,
       child: Form(
         key: _formKey,
         child: Row(
@@ -620,7 +619,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     alignment: Alignment.center,
                     width: double.infinity,
                     height: 180,
-                    color: Color.fromARGB(255, 94, 229, 143),
+                    color: primaryColor,
                     child: (_pickedFile != null)
                         ? Image.file(
                             File(_pickedFile!.path),
@@ -647,14 +646,14 @@ class _AdminScreenState extends State<AdminScreen> {
                       child: ElevatedButton(
                         onPressed: () => _pickImage(),
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.teal, // Boja pozadine
+                          backgroundColor: primaryColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
                                 20.0), // Zaobljenost rubova
                           ),
                         ),
                         child: Text('Select An Image',
-                            style: TextStyle(fontSize: 14)),
+                            style: TextStyle(fontSize: 12)),
                       ),
                     ),
                   )

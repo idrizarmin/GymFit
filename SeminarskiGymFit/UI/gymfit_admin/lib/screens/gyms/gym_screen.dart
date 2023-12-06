@@ -626,7 +626,6 @@ class _GymScreenState extends State<GymScreen> {
     return Container(
       height: 450,
       width: 950,
-      color: secondaryColor,
       child: Form(
         key: _formKey,
         child: Row(
@@ -749,7 +748,6 @@ class _GymScreenState extends State<GymScreen> {
     return Container(
       height: 450,
       width: 950,
-      color: secondaryColor,
       child: Form(
         key: _formKey,
         child: Row(

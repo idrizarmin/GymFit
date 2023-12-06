@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:gymfit_admin/helpers/constants.dart';
 import 'package:gymfit_admin/helpers/show_error_dialog.dart';
@@ -99,7 +100,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             : null;
     try {
       var usersResponse =
-          await _userProvider.getPaged(searchObject: searchObject);
+          await _userProvider.getAdminsPaged(searchObject: searchObject);
       setState(() {
         users = usersResponse;
       });
@@ -131,7 +132,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         "firstName": _firstNameController.text,
         "lastName": _lastNameController.text,
         "email": _emailController.text,
-        "birthDate": _birthDateController.text,
+        "dateOfBirth": _birthDateController.text,
         "phoneNumber": _phoneNumberController.text,
         "gender": selectedGender,
         "isActive": _isActive,
@@ -218,10 +219,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               "Broj telefona: ", admin?.phoneNumber ?? "--"),
                           _buildUserData(
                               "Datum rođenja: ",
-                              admin?.birthDate == null
+                              admin?.dateOfBirth == null
                                   ? "--"
                                   : DateFormat('dd/MM/yyyy')
-                                      .format(DateTime.parse(admin!.birthDate!))
+                                      .format(DateTime.parse(admin!.dateOfBirth!))
                                       .toString()),
                           _buildUserData("Spol: ",
                               admin?.gender == 0 ? "Muski" : "Zesnki" ?? "--"),
@@ -309,7 +310,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       _lastNameController.text = userToEdit.lastName ?? '';
       _emailController.text = userToEdit.email ?? '';
       _phoneNumberController.text = userToEdit.phoneNumber ?? '';
-      _birthDateController.text = userToEdit.birthDate ?? '';
+      _birthDateController.text = userToEdit.dateOfBirth ?? '';
       selectedRole = userToEdit.role;
       selectedGender = userToEdit.gender;
       _isActive = userToEdit.isActive;
@@ -321,7 +322,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     return Container(
       height: 450,
       width: 950,
-      color: secondaryColor,
       child: Form(
         key: _formKey,
         child: Row(
@@ -336,40 +336,40 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     width: double.infinity,
                     height: 350,
                     color: Colors.grey[300],
-                     child: Image.asset('assets/images/user1.jpg')
-                    //(_pickedFile != null)
-                    //     ? Image.file(
-                    //   File(_pickedFile!.path),
-                    //   width: 230,
-                    //   height: 200,
-                    //   fit: BoxFit.cover,
-                    // )
-                    //     : (userToEdit != null && userToEdit.profilePhoto != null)
-                    //     ? Image.memory(
-                    //   Uint8List.fromList(
-                    //       base64Decode(userToEdit.profilePhoto!.data)),
-                    //   width: 230,
-                    //   height: 200,
-                    //   fit: BoxFit.cover,
-                    // )
-                    //     : const Text('Please select an image'),
+                     child: (_pickedFile != null)
+                        ? Image.file(
+                            File(_pickedFile!.path),
+                            width: 230,
+                            height: 200,
+                            fit: BoxFit.cover,
+                          )
+                        : (userToEdit != null &&
+                                userToEdit.profilePhoto != null)
+                            ? Image.memory(
+                                Uint8List.fromList(base64Decode(
+                                    userToEdit.profilePhoto!.data)),
+                                width: 230,
+                                height: 200,
+                                fit: BoxFit.cover,
+                              )
+                            : const Text('Please select an image'),
                   ),
                   const SizedBox(height: 35),
                   Center(
                     child: SizedBox(
-                      width: 150, // Širina dugmeta
-                      height: 35, // Visina dugmeta
+                      width: 150, 
+                      height: 35, 
                       child: ElevatedButton(
                         onPressed: () => _pickImage(),
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.teal, // Boja pozadine
+                          backgroundColor: Color.fromARGB(255, 49, 206, 49), 
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
-                                20.0), // Zaobljenost rubova
+                                20.0), 
                           ),
                         ),
                         child: Text('Select An Image',
-                            style: TextStyle(fontSize: 14)),
+                            style: TextStyle(fontSize: 12)),
                       ),
                     ),
                   )

@@ -205,53 +205,55 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             height: 16,
           ),
           buildDataView(context),
-           SizedBox(
+          SizedBox(
             height: 1,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: myButtonColor
-                ),
-                onPressed: () {
-                  if (currentPage > 1) {
-                    setState(() {
-                      currentPage--;
-                    });
-                    loadNotifications(NotificationsSearchObject(
-                      PageNumber: currentPage,
-                      PageSize: pageSize,
-                      content: _contentController.text,
-                    ));
-                  }
-                },
-                child: const Icon(Icons.arrow_left_outlined),
-              ),
-              SizedBox(width: 16),
-              ElevatedButton(
-                 style: ElevatedButton.styleFrom(backgroundColor: myButtonColor),
-                onPressed: () {
-                  setState(() {
-                    if (hasNextPage == pageSize) {
-                    currentPage++;
-                    }
-                  });
-                  if (hasNextPage == pageSize) {
-                    loadNotifications(NotificationsSearchObject(
-                      PageNumber: currentPage,
-                      PageSize: pageSize,
-                      content: _contentController.text,
-                    ));
-                  }
-                },
-                child: const Icon(Icons.arrow_right_outlined),
-              ),
-            ],
-          ),
+          _buildPagination(),
         ]),
       ),
+    );
+  }
+
+  Row _buildPagination() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: myButtonColor),
+          onPressed: () {
+            if (currentPage > 1) {
+              setState(() {
+                currentPage--;
+              });
+              loadNotifications(NotificationsSearchObject(
+                PageNumber: currentPage,
+                PageSize: pageSize,
+                content: _contentController.text,
+              ));
+            }
+          },
+          child: const Icon(Icons.arrow_left_outlined),
+        ),
+        SizedBox(width: 16),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: myButtonColor),
+          onPressed: () {
+            setState(() {
+              if (hasNextPage == pageSize) {
+                currentPage++;
+              }
+            });
+            if (hasNextPage == pageSize) {
+              loadNotifications(NotificationsSearchObject(
+                PageNumber: currentPage,
+                PageSize: pageSize,
+                content: _contentController.text,
+              ));
+            }
+          },
+          child: const Icon(Icons.arrow_right_outlined),
+        ),
+      ],
     );
   }
 
@@ -268,7 +270,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  backgroundColor: secondaryColor,
+                  // backgroundColor: secondaryColor,
                   title: Text("Kreiraj obavijest"),
                   content: SingleChildScrollView(child: AddNotificationForm()),
                   actions: <Widget>[
@@ -291,6 +293,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
+                                  backgroundColor: secondaryColor,
                                   title: Text("Greška"),
                                   content: Text(
                                       "Obavezno odabrati barem jednog korisnika."),
@@ -613,7 +616,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     return Container(
       height: 450,
       width: 950,
-      color: secondaryColor,
+      // color: secondaryColor,
       child: Form(
         key: _formKey,
         child: Row(
