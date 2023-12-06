@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymfit_mobile/helpers/app_decoration.dart';
+import 'package:gymfit_mobile/helpers/constants.dart';
 import 'package:gymfit_mobile/helpers/custom_text_style.dart';
 import 'package:gymfit_mobile/helpers/image_constant.dart';
 import 'package:gymfit_mobile/helpers/theme_helper.dart';
@@ -263,7 +264,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           ),
           SizedBox(height: 2),
           CustomTextFormField(
-            suffix: Icon(Icons.email_outlined),
+            suffix: const Icon(Icons.email_outlined, color:  Color.fromARGB(255, 53, 53, 53),),
             controller: _emailController,
             hintText: "ime.prezime@gmail.com",
             textInputType: TextInputType.emailAddress,
@@ -307,8 +308,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           CustomTextFormField(
             suffix: IconButton(
               icon: _obscurePassword
-                  ? const Icon(Icons.visibility_outlined)
-                  : const Icon(Icons.visibility_off_outlined),
+                  ? const Icon(Icons.visibility_outlined ,color:  Color.fromARGB(255, 53, 53, 53),)
+                  : const Icon(Icons.visibility_off_outlined, color:  Color.fromARGB(255, 53, 53, 53),),
               onPressed: () {
                 setState(() {
                   _obscurePassword = !_obscurePassword;
@@ -371,6 +372,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   Widget _buildRegistracija(BuildContext context) {
     return CustomElevatedButton(
+      buttonStyle: ElevatedButton.styleFrom(
+        backgroundColor: primary
+      ),
       onPressed: () {
         if(_formKey.currentState!.validate()){
         register();

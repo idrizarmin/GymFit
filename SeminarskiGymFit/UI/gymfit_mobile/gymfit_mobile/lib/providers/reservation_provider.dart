@@ -1,5 +1,5 @@
 
-import 'package:gymfit_mobile/models/reservatiopn.dart';
+import 'package:gymfit_mobile/models/reservation.dart';
 import 'package:gymfit_mobile/models/searchObjects/reservation_search_object.dart';
 import 'package:gymfit_mobile/providers/base_provider.dart';
 import 'package:http/http.dart' as http;
@@ -30,6 +30,9 @@ class ReservationProvider extends BaseProvider<Reservation> {
       }
       if (searchObject.PageSize != null) {
         queryParameters['PageSize'] = searchObject.PageSize.toString();
+      }
+        if (searchObject.status != null) {
+        queryParameters['status'] = searchObject.status.toString();
       }
     }
     uri = uri.replace(queryParameters: queryParameters);

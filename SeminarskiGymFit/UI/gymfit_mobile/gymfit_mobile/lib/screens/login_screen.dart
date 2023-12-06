@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymfit_mobile/helpers/app_decoration.dart';
+import 'package:gymfit_mobile/helpers/constants.dart';
 import 'package:gymfit_mobile/helpers/custom_text_style.dart';
 import 'package:gymfit_mobile/helpers/image_constant.dart';
 import 'package:gymfit_mobile/helpers/theme_helper.dart';
@@ -96,6 +97,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     _buildPasswordField(context),
                     SizedBox(height: 50),
                     CustomElevatedButton(
+                      buttonStyle: ElevatedButton.styleFrom(
+                        backgroundColor: primary
+                      ),
                       height: 48,
                       text: "Prijava",
                       margin: EdgeInsets.only(
@@ -175,7 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
             alignment: Alignment.centerRight,
             children: [
               CustomTextFormField(
-                prefix: Icon(Icons.email_outlined),
+                prefix: Icon(Icons.email_outlined ,color: const Color.fromARGB(255, 53, 53, 53),),
                 controller: _emailController,
                 hintText: "ime.prezime@gmail.com",
                 textInputType: TextInputType.emailAddress,
@@ -224,11 +228,11 @@ class _LoginScreenState extends State<LoginScreen> {
             alignment: Alignment.centerRight,
             children: [
               CustomTextFormField(
-                prefix: Icon(Icons.password_outlined),
+                prefix: const Icon(Icons.password_outlined, color:  Color.fromARGB(255, 53, 53, 53),),
                 suffix: IconButton(
                   icon: _obscurePassword
-                      ? const Icon(Icons.visibility_outlined)
-                      : const Icon(Icons.visibility_off_outlined),
+                      ? const Icon(Icons.visibility_outlined, color:  Color.fromARGB(255, 53, 53, 53),)
+                      : const Icon(Icons.visibility_off_outlined , color:  Color.fromARGB(255, 53, 53, 53),),
                   onPressed: () {
                     setState(() {
                       _obscurePassword = !_obscurePassword;

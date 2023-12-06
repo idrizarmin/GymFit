@@ -1,4 +1,5 @@
-﻿using GymFit.Application.Interfaces;
+﻿using GymFit.Application;
+using GymFit.Application.Interfaces;
 using GymFit.Core;
 using GymFit.Infrastructure.Interfaces.SearchObjects;
 using Microsoft.AspNetCore.Mvc;
@@ -52,6 +53,17 @@ namespace GymFit.Api.Controllers
                 Logger.LogError(e, "Problem with getting resources");
                 return BadRequest();
             }
+        }
+
+        [HttpPut("status/{id}")]
+        public async Task<IActionResult> UpdateReservationStatusByClient(int id, CancellationToken cancellationToken)
+        {
+            var result = await Service.SetReservationToConfirmedOrCancelled(id, cancellationToken);
+
+            if (!result.IsValid)
+                return BadRequest(result);
+
+            return Ok(result);
         }
     }
 }

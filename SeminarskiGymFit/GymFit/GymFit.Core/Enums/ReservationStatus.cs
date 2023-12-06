@@ -5,6 +5,6 @@
         Created = 1,
         Confirmed = 2,
         Cancelled = 3,
-        Paid = 4,
+        Finished = 4,
     }
 }

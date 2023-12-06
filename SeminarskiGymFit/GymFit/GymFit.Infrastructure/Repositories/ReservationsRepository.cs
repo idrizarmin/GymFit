@@ -1,4 +1,5 @@
 ﻿using GymFit.Core;
+using GymFit.Core.Enums;
 using GymFit.Infrastructure.Interfaces;
 using GymFit.Infrastructure.Interfaces.SearchObjects;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +14,12 @@ namespace GymFit.Infrastructure
       
         public async Task<List<Reservation>> GetAllFiltered(ReservationSearchObject searchObject, CancellationToken cancellationToken = default)
         {
-            return await DbSet
+            return await DbSet.Include(x=>x.Trainer)
                 .Where(n => (searchObject.spol == null || n.User.Gender == searchObject.spol)
                 && (searchObject.userId == null || n.UserId == searchObject.userId)
-                && (searchObject.trainerId == null || n.TrainerId == searchObject.trainerId))
+                && (searchObject.trainerId == null || n.TrainerId == searchObject.trainerId)
+                && searchObject.status == null || n.Status == searchObject.status)
+
                 .ToListAsync(cancellationToken);
         }
         public int getCountCurrentMonthReservations(CancellationToken cancellationToken = default)
@@ -25,6 +28,12 @@ namespace GymFit.Infrastructure
             return  DbSet.Where(s =>(s.ReservationDate.Month== currentDate.Month)
             && (s.ReservationDate.Year == currentDate.Year)).AsNoTracking().Count();
         }
+        private bool ReservationExists(long reservationId)
+        {
+            return DbSet.Any(x => x.Id == reservationId && !x.IsDeleted);
+        }
+
+       
         public async Task<List<int>> GetCountByMonth(ReservationBarChartSearchObject searchObject, CancellationToken cancellationToken = default)
         {
 

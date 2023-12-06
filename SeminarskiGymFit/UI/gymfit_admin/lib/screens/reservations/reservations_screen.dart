@@ -274,48 +274,56 @@ class _ReservationScreenState extends State<ReservationScreen> {
             const SizedBox(height: 16.0),
             buildButtons(context),
             const SizedBox(height: 10.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                LegendsListWidget(
-                  legends: [
-                    Legend('Kreirane', Colors.brown), // Boja za status 1
-                    Legend(
-                      'Potvrđene',
-                      Colors.green,
-                    ), // Boja za status 2
-                    Legend(
-                      'Nepotvrđene',
-                      Colors.orange,
-                    ), // Boja za status 3
-                    Legend('Zavrsene', Colors.red), // Boja za status 4
-                    Legend('U tijeku  ', Colors.lightBlue), // Boja za u tijeku
-                  ],
-                ),
-              ],
-            ),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white), // Set border color
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: SfCalendar(
-                  view: CalendarView.week,
-                  monthViewSettings: MonthViewSettings(
-                      appointmentDisplayMode:
-                          MonthAppointmentDisplayMode.appointment),
-                  dataSource: _events,
-                  firstDayOfWeek: 1,
-                  timeSlotViewSettings:
-                      const TimeSlotViewSettings(startHour: 6, endHour: 24),
-                ),
-              ),
-            ),
+            _buildLegend(),
+            _buildCalendar(),
           ],
         ),
       ),
     );
+  }
+
+  Expanded _buildCalendar() {
+    return Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white), // Set border color
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: SfCalendar(
+                view: CalendarView.week,
+                monthViewSettings: MonthViewSettings(
+                    appointmentDisplayMode:
+                        MonthAppointmentDisplayMode.appointment),
+                dataSource: _events,
+                firstDayOfWeek: 1,
+                timeSlotViewSettings:
+                    const TimeSlotViewSettings(startHour: 6, endHour: 24),
+              ),
+            ),
+          );
+  }
+
+  Row _buildLegend() {
+    return Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              LegendsListWidget(
+                legends: [
+                  Legend('Kreirane', Colors.brown), 
+                  Legend(
+                    'Potvrđene',
+                    Colors.green,
+                  ), // Boja za status 2
+                  Legend(
+                    'Nepotvrđene',
+                    Colors.orange,
+                  ), // Boja za status 3
+                  Legend('Zavrsene', Colors.red), 
+                  Legend('U tijeku  ', Colors.lightBlue), 
+                ],
+              ),
+            ],
+          );
   }
 
   Row buildButtons(BuildContext context) {

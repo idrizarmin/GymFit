@@ -16,7 +16,7 @@ class Reservation {
   late int? userId;
   late int? status;
   late User? Trainer;
-  late int? TrainerId;
+  late int? trainerId;
 
   Reservation({
     required this.id,
@@ -31,7 +31,7 @@ class Reservation {
     this.DaysOfWeek,
     this.GymId,
     this.Trainer,
-    this.TrainerId,
+    this.trainerId,
     this.isUsed,
     this.user,
     this.userId,
@@ -48,13 +48,13 @@ class Reservation {
     PauseDuration = json['pauseDuration'];
     MaxCapacity = json['maxCapacity'];
     DaysOfWeek = json['daysOfWeek'];
-    TrainerId = json['trainerId'];
+    trainerId = json['trainerId'];
     GymId = json['gymId'];
     isUsed = json['isUsed'];
     status = json['status'];
 
    // user = User.fromJson(json['user']);
-   // Trainer = User.fromJson(json['trainer']);
+   Trainer = User.fromJson(json['trainer']);
   }
 
   Map<String, dynamic> toJson() {

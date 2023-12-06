@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:gymfit_mobile/helpers/app_decoration.dart';
 import 'package:gymfit_mobile/helpers/constants.dart';
-import 'package:gymfit_mobile/helpers/custom_text_style.dart';
 import 'package:gymfit_mobile/helpers/theme_helper.dart';
 import 'package:gymfit_mobile/models/searchObjects/trainer_search_object.dart';
 import 'package:gymfit_mobile/models/user.dart';
