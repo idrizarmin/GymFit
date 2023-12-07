@@ -28,11 +28,6 @@ namespace GymFit.Infrastructure
             return  DbSet.Where(s =>(s.ReservationDate.Month== currentDate.Month)
             && (s.ReservationDate.Year == currentDate.Year)).AsNoTracking().Count();
         }
-        private bool ReservationExists(long reservationId)
-        {
-            return DbSet.Any(x => x.Id == reservationId && !x.IsDeleted);
-        }
-
        
         public async Task<List<int>> GetCountByMonth(ReservationBarChartSearchObject searchObject, CancellationToken cancellationToken = default)
         {
@@ -59,5 +54,13 @@ namespace GymFit.Infrastructure
             return result;
         }
 
+        public Task<List<Reservation>> GetAllReservationsStatusCreated(CancellationToken cancellationToken = default)
+        {
+           return DbSet.Where(x=> x.Status == ReservationStatus.Created && x.StartDate.AddHours(-3)< DateTime.Now).ToListAsync(cancellationToken) ;
+        }
+        public Task<List<Reservation>> GetAllReservationsStatusConfirmed(CancellationToken cancellationToken = default)
+        {
+            return DbSet.Where(x => x.Status == ReservationStatus.Confirmed && x.EndDate.AddMinutes(5) < DateTime.Now).ToListAsync(cancellationToken);
+        }
     }
 }

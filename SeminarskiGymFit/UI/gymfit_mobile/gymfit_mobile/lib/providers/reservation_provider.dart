@@ -45,8 +45,21 @@ class ReservationProvider extends BaseProvider<Reservation> {
       throw Exception('Failed to load data');
     }
   }
+ Future<dynamic> setReservationAsCanceled(int id) async {
+  print('pozvaana');
+    var uri = Uri.parse('$apiUrl/Reservations/status/${id}');
+    Map<String, String> headers = Authorization.createHeaders();
+    
+    var response = await http.put(uri, headers: headers);
+    print( response);
+    if (response.statusCode == 200) {
+      print('proslo');
+      return "OK";
+    } else {
+      throw Exception('Greška prilikom unosa');
+    }
+  }
 
-  
 
   @override
   Future<dynamic> insert(dynamic resource) async {

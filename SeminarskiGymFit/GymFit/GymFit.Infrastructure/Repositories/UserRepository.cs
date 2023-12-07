@@ -87,6 +87,10 @@ namespace GymFit.Infrastructure
                  
         }
 
+        public Task<List<User>> GetAllUsers(CancellationToken cancellationToken = default)
+        {
+            return DbSet.Where(x=> x.Role == Role.Korisnik).ToListAsync(cancellationToken);
+        }
     }
 }
 

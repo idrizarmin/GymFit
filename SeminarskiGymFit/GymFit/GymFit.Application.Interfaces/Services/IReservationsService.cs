@@ -13,6 +13,10 @@ namespace GymFit.Application.Interfaces
         Task<int> getCountCurrentMonthReservations(CancellationToken cancellationToken = default);
         Task<Message> SetReservationToConfirmedOrCancelled(int id, CancellationToken cancellationToken);
 
+        Task AutoSetToCancelIfNotConfirmed();
+
+        Task AutoSetReservationToUsed();
+
 
     }
 }

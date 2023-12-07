@@ -1,6 +1,9 @@
 using GymFit.Api;
+using GymFit.Api.Controllers;
 using GymFit.Application;
+using GymFit.Application.Interfaces;
 using GymFit.Infrastructure;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +22,18 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHangfire( (sp, config) => {
+    var conString = sp.GetRequiredService<IConfiguration>().GetConnectionString("Main");
+    config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseSqlServerStorage(conString);
+
+});
+builder.Services.AddHangfireServer();
+
+
+
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
@@ -31,12 +46,18 @@ builder.Services.AddCors(options => options.AddPolicy(
 
 builder.Services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
 
+
+
+
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddSwagger();
 }
 
 var app = builder.Build();
+
+
+
 
 if (app.Environment.IsDevelopment())
 {
@@ -50,4 +71,15 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseHangfireDashboard("/test/gymfit", new DashboardOptions
+{
+    DashboardTitle = "Hangfire gymFit Application",
+    DarkModeEnabled = true,
+    DisplayStorageConnectionString = false
+
+});
+
+
 app.Run();
+
+

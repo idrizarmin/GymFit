@@ -2,6 +2,7 @@
 using GymFit.Application.Interfaces;
 using GymFit.Core;
 using GymFit.Infrastructure.Interfaces.SearchObjects;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymFit.Api.Controllers
@@ -65,5 +66,32 @@ namespace GymFit.Api.Controllers
 
             return Ok(result);
         }
+
+        #region Hangfire
+
+        [HttpPost("AutoSetCancelReservation")]
+        public ActionResult AutoSetCancelReservation()
+        {
+            RecurringJob.AddOrUpdate(
+            "Run every 5 minutes//AutoSetCancelReservation",
+            () => Service.AutoSetToCancelIfNotConfirmed(),
+            "*/5 * * * *"
+                );
+
+            return Ok();
+        }
+        [HttpPost("AutoSetReservationToUsed")]
+        public ActionResult AutoSetReservationToUsed()
+        {
+            RecurringJob.AddOrUpdate(
+            "Run every 3 minutes//AutoSetUsedReservation",
+            () => Service.AutoSetReservationToUsed(),
+            "*/3 * * * *"
+                );
+
+            return Ok();
+        }
+
+        #endregion
     }
 }

@@ -6,7 +6,6 @@ using GymFit.Core.Enums;
 using GymFit.Infrastructure;
 using GymFit.Infrastructure.Interfaces;
 using GymFit.Infrastructure.Interfaces.SearchObjects;
-using Microsoft.EntityFrameworkCore;
 
 namespace GymFit.Application
 {
@@ -33,10 +32,12 @@ namespace GymFit.Application
         }
 
 
-
+        
         public async Task<Message> SetReservationToConfirmedOrCancelled(int id, CancellationToken cancellationToken)
         {
             var reservation = await CurrentRepository.GetByIdAsync(id);
+            if (reservation == null)
+                throw new ArgumentException($"Update Reservation. Reservation with id: {id} could not be found.");
             try
             {
                 bool changed = false;
@@ -67,6 +68,64 @@ namespace GymFit.Application
                 Status = ExceptionCodeEnum.Success
             };
         }
+
        
+
+
+        #region Hangfire
+        public async Task AutoSetToCancelIfNotConfirmed()
+        {
+            var reservations = await CurrentRepository.GetAllReservationsStatusCreated();
+
+            {
+                try
+                {
+                    foreach (var reservation in reservations)
+                    {
+                        reservation.Status = ReservationStatus.Cancelled;
+
+
+                         CurrentRepository.Update(reservation);
+                    }
+                    await UnitOfWork.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+        }
+        //SETS reservation to used automatically if past endtime for reservations,
+        public async Task AutoSetReservationToUsed()  
+        {
+            var reservations = await CurrentRepository.GetAllReservationsStatusConfirmed();
+
+            {
+                try
+                {
+                    if (reservations != null)
+                    {
+                        foreach (var reservation in reservations)
+                        {
+                           
+                                reservation.Status = ReservationStatus.Finished;
+                                reservation.isUsed = true;
+
+                            CurrentRepository.Update(reservation);
+                        }
+                       
+                    }
+                    await UnitOfWork.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+        }
+
+       
+
+        #endregion
     }
 }

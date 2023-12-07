@@ -58,8 +58,16 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
       showErrorDialog(context, e.toString().substring(11));
     }
   }
+  void setCanceled (int id){
+   try {
+     _reservationProvider.setReservationAsCanceled(id);
+   } on Exception catch (e) {
+      showErrorDialog(context, e.toString().substring(11));
+   }
 
-  void setReservationAsCanceled(DateTime reservationStartDate) async {
+  }
+
+  void setReservationAsCanceled(DateTime reservationStartDate, int id) async {
     var today = DateTime.now();
 
     int hoursDifference = reservationStartDate.difference(today).inHours;
@@ -116,12 +124,15 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
             actions: [
               TextButton(
                 onPressed: () {
+                  
                   Navigator.pop(context);
                 },
                 child: Text('Zatvori'),
               ),
               TextButton(
                 onPressed: () {
+                  setCanceled(id);
+                  loadReservations();
                   Navigator.pop(context);
                 },
                 child: Text('Otkaži'),
@@ -144,6 +155,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
           width: double.maxFinite,
           child: Column(
             children: [
+              
               Container(
                 alignment: Alignment.center,
                 width: double.maxFinite,
@@ -157,12 +169,15 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
                   style: TextStyle(fontSize: 14, color: white),
                 ),
               ),
-              SizedBox(height: 14),
+             Container(
+              height: 1.0, 
+              color: const Color.fromARGB(255, 214, 214, 214), 
+            ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _buildStatusButton(1, "Kreirane"),
                   _buildStatusButton(2, "Potvrđene"),
+                  _buildStatusButton(3, "Otkazane"),
                   _buildStatusButton(4, "Završene"),
                 ],
               ),
@@ -186,10 +201,18 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
     );
   }
 
-  ElevatedButton _buildStatusButton(int status, String label) {
-    return ElevatedButton(
+  Expanded _buildStatusButton(int status, String label) {
+  return Expanded(
+    child: ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: _status == status ? Colors.teal : null,
+        backgroundColor: _status == status ? Colors.teal : Colors.black,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero,
+        ),
+        padding: EdgeInsets.all(2), 
+        minimumSize: Size(2, 40),
+        elevation: 0,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap, 
       ),
       onPressed: () {
         setState(() {
@@ -199,15 +222,16 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
       },
       child: Text(
         label,
-        style: TextStyle(color: white),
+        style: TextStyle(color: white, fontSize: 12),
       ),
-    );
-  }
+    ),
+  );
+}
 
   AppBar _buildAppbar(BuildContext context) {
     return AppBar(
       backgroundColor: appTheme.bgSecondary,
-      automaticallyImplyLeading: false, // Remove back button
+      automaticallyImplyLeading: false, 
       title: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -281,7 +305,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
                         ElevatedButton(
                           onPressed: () {
                             setReservationAsCanceled(
-                                reservations[index].StartDate!);
+                                reservations[index].StartDate!, reservations[index].id);
                           },
                           child: Text('Otkaži'),
                         ),
