@@ -3,11 +3,17 @@ import 'package:gymfit_mobile/helpers/constants.dart';
 import 'package:gymfit_mobile/helpers/custom_text_style.dart';
 import 'package:gymfit_mobile/helpers/image_constant.dart';
 import 'package:gymfit_mobile/helpers/theme_helper.dart';
+import 'package:gymfit_mobile/models/notifications.dart';
 import 'package:gymfit_mobile/models/post.dart';
+import 'package:gymfit_mobile/models/searchObjects/notification_search_object.dart';
+import 'package:gymfit_mobile/providers/login_provider.dart';
+import 'package:gymfit_mobile/providers/notification_provider.dart';
 import 'package:gymfit_mobile/providers/post_provider.dart';
+import 'package:gymfit_mobile/screens/notifications/notification_screen.dart';
 import 'package:gymfit_mobile/utils/error_dialog.dart';
 import 'package:gymfit_mobile/widgets/custom_image_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -21,12 +27,50 @@ class _HomePageState extends State<HomePage> {
   late MediaQueryData mediaQueryData;
   List<Post> posts = <Post>[];
   late PostProvider _postProvider;
+  late NotificationProvider _notificationProvider;
+  late UserLoginProvider _loginProvider;
+  int? _userId;
+  List<Notifications> notifications = <Notifications>[];
+  int unreadNotifications = 0;
 
   @override
   void initState() {
     super.initState();
     _postProvider = PostProvider();
+    _notificationProvider = context.read<NotificationProvider>();
+    _loginProvider = context.read<UserLoginProvider>();
+
+    loadUser();
     loadPosts();
+    loadNotifications();
+  }
+
+  void loadUser() async {
+    var id = _loginProvider.getUserId();
+    print(id);
+    _userId = id;
+  }
+
+  void loadNotifications() async {
+    try {
+      NotificationsSearchObject searchObject =
+          NotificationsSearchObject(userId: _userId);
+
+      var notificationsResponse =
+          await _notificationProvider.getPaged(searchObject: searchObject);
+      unreadNotifications = notificationsResponse
+          .where((notification) => notification.Read == false)
+          .length;
+          print(unreadNotifications);
+    } on Exception catch (e) {
+      showErrorDialog(context, e.toString().substring(11));
+    }
+  }
+
+  int countUnreadNotifications() {
+    return notifications
+        .where((notification) => notification.Read == false)
+        .length;
   }
 
   void loadPosts() async {
@@ -66,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                   decoration: AppDecoration.fillBlack,
                   child: Text(
                     "Početna",
-                    style:TextStyle(fontSize: 14, color: white),
+                    style: TextStyle(fontSize: 14, color: white),
                   ),
                 ),
                 SizedBox(height: 11),
@@ -109,18 +153,37 @@ class _HomePageState extends State<HomePage> {
       ),
       actions: [
         IconButton(
-          icon: Icon(
-            Icons.notifications,
-            color: appTheme.blue,
+          icon: Stack(
+            children: [
+              Icon(Icons.notifications,color: appTheme.blue,),
+              if (unreadNotifications > 0)
+                Positioned(
+                  top: -5,
+                  left:0,
+                  child: Container(
+                    padding: EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.red,
+                    ),
+                    child: Text(
+                      unreadNotifications.toString(),
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 255, 255, 255),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
           onPressed: () {
             showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return Form(
-                    child: Text("Obavijesti"),
-                  );
-                });
+              context: context,
+              builder: (BuildContext context) {
+                return NotificationForm();
+              },
+            );
           },
         ),
       ],

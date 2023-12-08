@@ -14,6 +14,21 @@ namespace GymFit.Api.Controllers
         public NotificationsController(INotificationsService service, ILogger<NotificationsController> logger) : base(service, logger)
         {
         }
+        [HttpGet("GetAllNotifications")]
+        public async Task<IActionResult> GetAllNotifications([FromQuery] NotificationsSearchObject searchObject, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var dto = await Service.GetAllNotificationsAsync(searchObject , cancellationToken);
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Problem with getting resources");
+                return BadRequest();
+            }
+        }
+
 
         [HttpPost("crateBirthdayNotification")]
         public ActionResult crateBirthdaayNotification() {

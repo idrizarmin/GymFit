@@ -24,7 +24,6 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
   late UserLoginProvider _loginProvider;
   int _status = 1;
   int? _userId;
-  //User? _user;
 
   @override
   void initState() {

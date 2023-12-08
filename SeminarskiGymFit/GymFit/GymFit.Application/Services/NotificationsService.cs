@@ -15,6 +15,13 @@ namespace GymFit.Application
         {
         }
 
+        public async Task<List<NotificationDto>> GetAllNotificationsAsync(NotificationsSearchObject searchObject, CancellationToken cancellationToken = default)
+        {
+            var notifications = await CurrentRepository.GetAllNotifications(searchObject, cancellationToken);
+
+            return Mapper.Map<List<NotificationDto>>(notifications);
+        }
+
         #region Hangfire
         public async Task CreateBirthdayNotifications()
         {
@@ -141,6 +148,8 @@ namespace GymFit.Application
 
 
         }
+
+       
 
         #endregion
     }
