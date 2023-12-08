@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:gymfit_mobile/helpers/custom_bottom_bar.dart';
+import 'package:gymfit_mobile/helpers/theme_helper.dart';
+import 'package:gymfit_mobile/models/searchObjects/notification_search_object.dart';
+import 'package:gymfit_mobile/providers/login_provider.dart';
+import 'package:gymfit_mobile/providers/notification_provider.dart';
 import 'package:gymfit_mobile/routes/app_routes.dart';
 import 'package:gymfit_mobile/screens/home_page/home_screen.dart';
+import 'package:gymfit_mobile/screens/notifications/notification_screen.dart';
 import 'package:gymfit_mobile/screens/reservations/myReservations_screen.dart';
 import 'package:gymfit_mobile/screens/reservations/reservations_screen.dart';
 import 'package:gymfit_mobile/screens/user/trainers_screen.dart';
 import 'package:gymfit_mobile/screens/user/user_profile.dart';
+import 'package:gymfit_mobile/utils/error_dialog.dart';
+import 'package:provider/provider.dart';
 
 class HomeContainerScreen extends StatefulWidget {
   const HomeContainerScreen({Key? key}) : super(key: key);
@@ -17,11 +24,44 @@ class HomeContainerScreen extends StatefulWidget {
 class _HomeContainerScreenState extends State<HomeContainerScreen> {
   late GlobalKey<NavigatorState> navigatorKey;
   late MediaQueryData mediaQueryData;
-
+  late NotificationProvider _notificationProvider;
+  late UserLoginProvider _loginProvider;
+  int? _userId;
+  int unreadNotifications = 0;
+  
   @override
   void initState() {
     super.initState();
     navigatorKey = GlobalKey();
+    _notificationProvider = context.read<NotificationProvider>();
+    _loginProvider = context.read<UserLoginProvider>();
+    loadUser();
+
+    loadNotifications();
+  }
+
+  void loadUser() async {
+    var id = _loginProvider.getUserId();
+    print(id);
+    _userId = id;
+  }
+
+ Future<int> loadNotifications() async {
+    try {
+      NotificationsSearchObject searchObject =
+          NotificationsSearchObject(userId: _userId);
+
+      var notificationsResponse =
+          await _notificationProvider.getPaged(searchObject: searchObject);
+      int unreadNotifications = notificationsResponse
+          .where((notification) => notification.Read == false)
+          .length;
+      print(unreadNotifications);
+      return unreadNotifications;
+    } on Exception catch (e) {
+      showErrorDialog(context, e.toString().substring(11));
+      return 0;
+    }
   }
 
   @override
@@ -29,6 +69,7 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
     mediaQueryData = MediaQuery.of(context);
     return SafeArea(
       child: Scaffold(
+        appBar: _buildAppbar(context),
         body: Navigator(
           key: navigatorKey,
           initialRoute: AppRoutes.homePage,
@@ -39,6 +80,73 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
         ),
         bottomNavigationBar: _buildBottomBar(),
       ),
+    );
+  }
+
+  AppBar _buildAppbar(BuildContext context) {
+    return AppBar(
+      backgroundColor: appTheme.bgSecondary,
+      automaticallyImplyLeading: false, // Remove back button
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            "assets/images/logo1.png",
+            height: 50,
+            width: 110,
+            fit: BoxFit.contain,
+          ),
+        ],
+      ),
+       actions: [
+        IconButton(
+          icon: FutureBuilder<int>(
+            future: loadNotifications(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                int unreadNotifications = snapshot.data ?? 0;
+                return Stack(
+                  children: [
+                    Icon(
+                      Icons.notifications,
+                      color: appTheme.blue,
+                    ),
+                    if (unreadNotifications > 0)
+                      Positioned(
+                        top: -5,
+                        left: 0,
+                        child: Container(
+                          padding: EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.red,
+                          ),
+                          child: Text(
+                            unreadNotifications.toString(),
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 255, 255, 255),
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              } else {
+                return Container();
+              }
+            },
+          ),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return NotificationForm();
+              },
+            );
+          },
+        ),
+      ],
     );
   }
 
@@ -81,7 +189,7 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
         return MyReservationsScreen();
       case AppRoutes.trainersScreen:
         return TrainersScreen();
-         case AppRoutes.userProfileScreen:
+      case AppRoutes.userProfileScreen:
         return UserProfileScreen();
       default:
         return DefaultWidget();

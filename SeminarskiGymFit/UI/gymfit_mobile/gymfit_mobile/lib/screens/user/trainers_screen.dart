@@ -53,7 +53,6 @@ class _TrainersScreenState extends State<TrainersScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: appTheme.bgSecondary,
-        appBar: _buildAppbar(context),
         body: SizedBox(
           width: mediaQueryData.size.width,
           child: SingleChildScrollView(
@@ -117,40 +116,7 @@ class _TrainersScreenState extends State<TrainersScreen> {
               );
   }
 
-  AppBar _buildAppbar(BuildContext context) {
-    return AppBar(
-      backgroundColor: appTheme.bgSecondary,
-      automaticallyImplyLeading: false, // Remove back button
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-            "assets/images/logo1.png",
-            height: 50,
-            width: 110,
-            fit: BoxFit.contain,
-          ),
-        ],
-      ),
-      actions: [
-        IconButton(
-          icon: Icon(
-            Icons.notifications,
-            color: appTheme.blue,
-          ),
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return Form(
-                    child: Text("Obavijesti"),
-                  );
-                });
-          },
-        ),
-      ],
-    );
-  }
+ 
 
   Widget _buildTrainersWithInfo(BuildContext context) {
     return Container(

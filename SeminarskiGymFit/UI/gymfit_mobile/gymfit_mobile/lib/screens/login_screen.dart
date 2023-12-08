@@ -30,21 +30,21 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-
+  
     userProvider = context.read<UserLoginProvider>();
   }
 
   void login() async {
-    try {
-      await userProvider.loginAsync(
-          _emailController.text, _passwordController.text);
-      if (context.mounted) {
-        Navigator.pushNamed(context, AppRoutes.homeContainerScreen);
-      }
-    } on Exception catch (e) {
-      showErrorDialog(context, e.toString().substring(11));
+  try {
+    await userProvider.loginAsync(
+        _emailController.text, _passwordController.text);
+    if (context.mounted) {
+      Navigator.pushReplacementNamed(context, AppRoutes.homeContainerScreen);
     }
+  } on Exception catch (e) {
+    showErrorDialog(context, e.toString().substring(11));
   }
+}
 
   @override
   Widget build(BuildContext context) {

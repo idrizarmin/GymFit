@@ -125,7 +125,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: appTheme.bgSecondary,
-        appBar: _buildAppbar(context),
         body: SizedBox(
           width: mediaQueryData.size.width,
           child: SingleChildScrollView(
@@ -284,41 +283,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  AppBar _buildAppbar(BuildContext context) {
-    return AppBar(
-      // backgroundColor: Colors.black,
-      backgroundColor: appTheme.bgSecondary,
-      automaticallyImplyLeading: false,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-            "assets/images/logo1.png",
-            height: 50,
-            width: 110,
-            fit: BoxFit.contain,
-          ),
-        ],
-      ),
-      actions: [
-        IconButton(
-          icon: Icon(
-            Icons.notifications,
-            color: appTheme.blue,
-          ),
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return Form(
-                    child: Text("Obavijesti"),
-                  );
-                });
-          },
-        ),
-      ],
-    );
-  }
+  
 
   Widget AddUserForm({bool isEditing = false, User? userToEdit}) {
     if (userToEdit != null) {

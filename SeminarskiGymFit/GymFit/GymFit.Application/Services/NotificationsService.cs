@@ -2,6 +2,7 @@
 using FluentValidation;
 using GymFit.Application.Interfaces;
 using GymFit.Core;
+using GymFit.Core.Enums;
 using GymFit.Infrastructure;
 using GymFit.Infrastructure.Interfaces;
 using GymFit.Infrastructure.Interfaces.SearchObjects;
@@ -21,6 +22,67 @@ namespace GymFit.Application
 
             return Mapper.Map<List<NotificationDto>>(notifications);
         }
+
+        public async Task<Message> SetNotificationsAsSeenAsMessageAsync(int userId, CancellationToken cancellationToken)
+        {
+
+            var user = await UnitOfWork.UserRepository.GetByIdAsync(userId);
+
+            var notifications = await CurrentRepository.GetAllByUserId(userId);
+
+            {
+                try
+                {
+                    foreach (var notification in notifications)
+                    {
+                        notification.Read = true;
+                        notification.DateRead = DateTime.Now;
+                        notification.Deleted = false;
+
+                        await UnitOfWork.SaveChangesAsync();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+                return new Message
+                {
+                    Info = "Notifications seen!",
+                    IsValid = true,
+                    Status = ExceptionCodeEnum.Success
+                };
+            }
+        }
+
+        public async Task<Message> SetNotificationAsDeleted(int id, CancellationToken cancellationToken)
+        {
+            var notification = await CurrentRepository.GetByIdAsync(id);
+
+            try
+            {
+                //Seen se koristi kako datum brisanja
+                if (notification != null) { 
+                    notification.Deleted = true;
+                    notification.Seen = DateTime.Now;
+
+                    CurrentRepository.Update(notification);
+                    await UnitOfWork.SaveChangesAsync();
+            }
+                }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return new Message
+                {
+                    Info = "Notifications read!",
+                    IsValid = true,
+                    Status = ExceptionCodeEnum.Success
+                };
+            }
+
 
         #region Hangfire
         public async Task CreateBirthdayNotifications()

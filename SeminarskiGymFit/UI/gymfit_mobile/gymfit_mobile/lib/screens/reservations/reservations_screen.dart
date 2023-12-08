@@ -277,7 +277,6 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
     return Scaffold(
       backgroundColor: appTheme.bgSecondary,
       resizeToAvoidBottomInset: false,
-      appBar: _buildAppbar(context),
       body: Padding(
         padding: EdgeInsets.only(right: 3),
         child: Column(
@@ -640,40 +639,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
     );
   }
 
-  AppBar _buildAppbar(BuildContext context) {
-    return AppBar(
-      backgroundColor: appTheme.bgSecondary,
-      automaticallyImplyLeading: false,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-            "assets/images/logo1.png",
-            height: 50,
-            width: 110,
-            fit: BoxFit.contain,
-          ),
-        ],
-      ),
-      actions: [
-        IconButton(
-          icon: Icon(
-            Icons.notifications,
-            color: appTheme.blue,
-          ),
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return Form(
-                    child: Text("Obavijesti"),
-                  );
-                });
-          },
-        ),
-      ],
-    );
-  }
+  
 
   Widget _buildRezervacija(BuildContext context) {
     return CustomElevatedButton(

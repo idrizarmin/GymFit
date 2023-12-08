@@ -13,13 +13,18 @@ namespace GymFit.Infrastructure
 
         }
 
+        public Task<List<Notification>> GetAllByUserId(int id, CancellationToken cancellationToken = default)
+        {
+            return DbSet.Where(x => x.UserId == id).ToListAsync(cancellationToken);
+        }
+
         public async Task<List<Notification>> GetAllNotifications(NotificationsSearchObject searchObject, CancellationToken cancellationToken = default)
         {
 
             return await DbSet.Where(n => (searchObject.seen == null || n.Read == searchObject.seen)
                  && (searchObject.userId == null || n.UserId == searchObject.userId)
-                 && (searchObject.content == null || n.Content.ToLower().Contains(searchObject.content.ToLower())))
-                 .ToListAsync(cancellationToken);
+                 && (searchObject.content == null || n.Content.ToLower().Contains(searchObject.content.ToLower()))
+                 && (n.Deleted == false)).ToListAsync(cancellationToken);
         }
 
         public override async Task<PagedList<Notification>> GetPagedAsync(NotificationsSearchObject searchObject, CancellationToken cancellationToken = default)

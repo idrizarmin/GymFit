@@ -1,6 +1,7 @@
 ﻿using GymFit.Application;
 using GymFit.Application.Interfaces;
 using GymFit.Core;
+using GymFit.Infrastructure;
 using GymFit.Infrastructure.Interfaces;
 using GymFit.Infrastructure.Interfaces.SearchObjects;
 using Hangfire;
@@ -28,7 +29,34 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
-
+        [HttpPut("SetNotificaationsAsSeen")]
+        public async Task<IActionResult> SetNotificaationAsSeen(int userId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var message = await Service.SetNotificationsAsSeenAsMessageAsync(userId, cancellationToken);
+                return Ok(message);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Problem with getting resources");
+                return BadRequest();
+            }
+        }
+        [HttpPut("SetNotificaationAsDeleted")]
+        public async Task<IActionResult> SetNotificaationAsDeleted(int id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var message = await Service.SetNotificationAsDeleted(id, cancellationToken);
+                return Ok(message);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Problem with getting resources");
+                return BadRequest();
+            }
+        }
 
         [HttpPost("crateBirthdayNotification")]
         public ActionResult crateBirthdaayNotification() {

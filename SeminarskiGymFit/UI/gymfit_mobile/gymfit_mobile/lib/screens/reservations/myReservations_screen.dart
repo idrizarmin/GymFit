@@ -149,7 +149,6 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: appTheme.bgSecondary,
-        appBar: _buildAppbar(context),
         body: SizedBox(
           width: double.maxFinite,
           child: Column(
@@ -227,40 +226,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
   );
 }
 
-  AppBar _buildAppbar(BuildContext context) {
-    return AppBar(
-      backgroundColor: appTheme.bgSecondary,
-      automaticallyImplyLeading: false, 
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-            "assets/images/logo1.png",
-            height: 50,
-            width: 110,
-            fit: BoxFit.contain,
-          ),
-        ],
-      ),
-      actions: [
-        IconButton(
-          icon: Icon(
-            Icons.notifications,
-            color: appTheme.blue,
-          ),
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return Form(
-                    child: Text("Obavijesti"),
-                  );
-                });
-          },
-        ),
-      ],
-    );
-  }
+  
 
   Widget _buildReservationInfo(BuildContext context) {
     return Container(
