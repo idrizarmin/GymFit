@@ -31,7 +31,8 @@ namespace GymFit.Infrastructure
         {
             return await DbSet.Include(s=>s.User).Where(n => (searchObject.seen == null || n.Read == searchObject.seen)
                  && (searchObject.userId== null || n.UserId == searchObject.userId)
-                 && (searchObject.content == null || n.Content.ToLower().Contains(searchObject.content.ToLower())))
+                 && (searchObject.content == null || n.Content.ToLower().Contains(searchObject.content.ToLower()))
+                  && (n.Deleted == false))
                  .ToPagedListAsync(searchObject, cancellationToken);
         }
 

@@ -46,10 +46,21 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
     _userId = id;
   }
 
+void setAsSeen() async {
+  if(_userId!=null){
+    _notificationProvider.setAsSeen(_userId!);
+  }
+
+  }
+
+
+
+
  Future<int> loadNotifications() async {
     try {
       NotificationsSearchObject searchObject =
-          NotificationsSearchObject(userId: _userId);
+          NotificationsSearchObject(userId: _userId,
+          PageSize: 1000);
 
       var notificationsResponse =
           await _notificationProvider.getPaged(searchObject: searchObject);
@@ -138,6 +149,7 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
             },
           ),
           onPressed: () {
+            setAsSeen();
             showDialog(
               context: context,
               builder: (BuildContext context) {

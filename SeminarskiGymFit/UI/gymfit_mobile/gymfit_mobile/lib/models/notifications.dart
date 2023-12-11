@@ -30,9 +30,7 @@ Notifications({
     userId = json['userId'];
     content = json['content'];
     Read = json['read'];
-    //DateRead = DateTime.parse(json['dateRead']);
     SendOnDate = DateTime.parse(json['sendOnDate']);
-    //Seen = DateTime.parse(json['seen']);
     user = User.fromJson(json['user']);
     
   }
@@ -42,9 +40,7 @@ Notifications({
     data['id'] = id;
     data['content'] = content;
     data['read'] = Read;
-    //data['dateRead'] = DateRead;
     data['sendOnDate'] = SendOnDate;
-    //data['seen'] = Seen;
     return data;
   }
 

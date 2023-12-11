@@ -69,7 +69,29 @@ namespace GymFit.Application
             };
         }
 
-       
+        public async Task SetToCancelFromCreated(int id, CancellationToken cancellationToken)
+        {
+            var reservation = await CurrentRepository.GetByIdAsync(id);
+            if (reservation == null)
+                throw new ArgumentException($"Update Reservation. Reservation with id: {id} could not be found.");
+
+            {
+                try
+                {   
+                    {
+                        reservation.Status = ReservationStatus.Cancelled;
+
+
+                        CurrentRepository.Update(reservation);
+                    }
+                    await UnitOfWork.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+        }
 
 
         #region Hangfire

@@ -67,6 +67,21 @@ namespace GymFit.Api.Controllers
             return Ok(result);
         }
 
+        [HttpPut("toCanceled/{id}")]
+        public async Task<IActionResult> UpdateReservation(int id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result =  Service.SetToCancelFromCreated(id, cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Problem with getting resources");
+                return BadRequest();
+            }
+        }
+
         #region Hangfire
 
         [HttpPost("AutoSetCancelReservation")]

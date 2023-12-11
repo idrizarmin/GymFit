@@ -28,9 +28,7 @@ class AppRoutes {
 
   static const String myReservationsScreen = '/my_reservations_screen';
 
-  static const String notificationsScreen = '/notifications_screen';
-
-  static const String appNavigationScreen = '/app_navigation_screen';
+ 
 
   static Map<String, WidgetBuilder> routes = {
     startScreen: (context) => StartScreen(),
@@ -41,7 +39,6 @@ class AppRoutes {
      reservationsScreen: (context) => ReservationsScreen(),
     userProfileScreen: (context) => UserProfileScreen(),
    myReservationsScreen: (context) => MyReservationsScreen(),
-    // notificationsScreen: (context) => NotificationsScreen(),
-    // appNavigationScreen: (context) => AppNavigationScreen()
+  
   };
 }

@@ -69,15 +69,15 @@ namespace GymFit.Application
 
                     CurrentRepository.Update(notification);
                     await UnitOfWork.SaveChangesAsync();
-            }
                 }
+            }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
             return new Message
                 {
-                    Info = "Notifications read!",
+                    Info = "Notification set as deleted!",
                     IsValid = true,
                     Status = ExceptionCodeEnum.Success
                 };

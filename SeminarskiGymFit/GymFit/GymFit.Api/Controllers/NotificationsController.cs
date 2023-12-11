@@ -29,7 +29,7 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
-        [HttpPut("SetNotificaationsAsSeen")]
+        [HttpPut("SetNotificationsAsSeen")]
         public async Task<IActionResult> SetNotificaationAsSeen(int userId, CancellationToken cancellationToken)
         {
             try
@@ -43,7 +43,7 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
-        [HttpPut("SetNotificaationAsDeleted")]
+        [HttpPut("SetNotificationAsDeleted")]
         public async Task<IActionResult> SetNotificaationAsDeleted(int id, CancellationToken cancellationToken)
         {
             try
