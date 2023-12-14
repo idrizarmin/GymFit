@@ -12,5 +12,7 @@
 
         public int UserId { get; set; }
         public UserDto User { get; set; } = null!;
+        public int packageId { get; set; }
+        public Package package { get; set; } = null!;
     }
 }

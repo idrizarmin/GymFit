@@ -22,6 +22,8 @@ namespace GymFit.Infrastructure
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IClientProgresRepository, ClientProgresRepository>();
             services.AddScoped<IPostRepository,PostsRepository>();
+            services.AddScoped<IPackageRepository,PackageRepository>();
+            services.AddScoped<ITransactionRepository,TransactionsRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }

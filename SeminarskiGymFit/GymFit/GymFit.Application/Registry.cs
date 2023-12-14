@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using GymFit.Application.Interfaces;
 using GymFit.Core;
-using GymFit.Infrastructure.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GymFit.Application
@@ -24,6 +23,8 @@ namespace GymFit.Application
             services.AddScoped<IUserService, UsersService>();
             services.AddScoped<IUserPackagesService, UserPackagesService>();
             services.AddScoped<IPostService, PostService>();
+            services.AddScoped<IPackageService, PackageService>();
+            services.AddScoped<ITransactionsService, TransactionsService>();
         }
 
         public static void AddValidators(this IServiceCollection services)
@@ -42,6 +43,8 @@ namespace GymFit.Application
             services.AddScoped<IValidator<UserUpsertDto>, UserVaidator>();
             services.AddScoped<IValidator<UserPackageUpsertDto>, UserPackageValidator>();
             services.AddScoped<IValidator<PostUpsertDto>, PostValidator>();
+            services.AddScoped<IValidator<PackageUpsertDto>, PackageValidator>();
+            services.AddScoped<IValidator<TransactionUpsertDto>, TransactionValidator>();
         }
     }
 }

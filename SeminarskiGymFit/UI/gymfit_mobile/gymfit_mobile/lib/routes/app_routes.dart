@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymfit_mobile/screens/home_container_screen.dart';
 import 'package:gymfit_mobile/screens/login_screen.dart';
+import 'package:gymfit_mobile/screens/memberships/membership_screen.dart';
 import 'package:gymfit_mobile/screens/registration/registration_screen.dart';
 import 'package:gymfit_mobile/screens/reservations/myReservations_screen.dart';
 import 'package:gymfit_mobile/screens/reservations/reservations_screen.dart';
@@ -28,17 +29,18 @@ class AppRoutes {
 
   static const String myReservationsScreen = '/my_reservations_screen';
 
- 
+  static const String membershipScreen = '/membership_screen';
+
 
   static Map<String, WidgetBuilder> routes = {
     startScreen: (context) => StartScreen(),
     loginScreen: (context) => LoginScreen(),
     registrationScreen: (context) => RegistrationScreen(),
     homeContainerScreen: (context) => HomeContainerScreen(),
-     trainersScreen: (context) => TrainersScreen(),
-     reservationsScreen: (context) => ReservationsScreen(),
+    trainersScreen: (context) => TrainersScreen(),
+    reservationsScreen: (context) => ReservationsScreen(),
     userProfileScreen: (context) => UserProfileScreen(),
-   myReservationsScreen: (context) => MyReservationsScreen(),
-  
+    myReservationsScreen: (context) => MyReservationsScreen(),
+    membershipScreen: (context) => MembershipScreen(),
   };
 }

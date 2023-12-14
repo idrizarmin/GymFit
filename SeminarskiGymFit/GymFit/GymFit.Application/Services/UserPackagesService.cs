@@ -7,7 +7,7 @@ using GymFit.Infrastructure.Interfaces;
 
 namespace GymFit.Application
 {
-    public class UserPackagesService : BaseService<UserPackage, UserPackageDto, UserPackageUpsertDto, BaseSearchObject, IUserPackageRepository>, IUserPackagesService
+    public class UserPackagesService : BaseService<UserPackage, UserPackageDto, UserPackageUpsertDto, UserPackageSearchObject, IUserPackageRepository>, IUserPackagesService
     {
         public UserPackagesService(IMapper mapper, IUnitOfWork unitOfWork, IValidator<UserPackageUpsertDto> validator) : base(mapper, unitOfWork, validator)
         {

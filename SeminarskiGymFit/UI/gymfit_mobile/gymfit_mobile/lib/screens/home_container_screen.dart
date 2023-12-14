@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymfit_mobile/helpers/constants.dart';
 import 'package:gymfit_mobile/helpers/custom_bottom_bar.dart';
 import 'package:gymfit_mobile/helpers/theme_helper.dart';
 import 'package:gymfit_mobile/models/searchObjects/notification_search_object.dart';
@@ -6,9 +7,11 @@ import 'package:gymfit_mobile/providers/login_provider.dart';
 import 'package:gymfit_mobile/providers/notification_provider.dart';
 import 'package:gymfit_mobile/routes/app_routes.dart';
 import 'package:gymfit_mobile/screens/home_page/home_screen.dart';
+import 'package:gymfit_mobile/screens/memberships/membership_screen.dart';
 import 'package:gymfit_mobile/screens/notifications/notification_screen.dart';
 import 'package:gymfit_mobile/screens/reservations/myReservations_screen.dart';
 import 'package:gymfit_mobile/screens/reservations/reservations_screen.dart';
+import 'package:gymfit_mobile/screens/start_screenn.dart';
 import 'package:gymfit_mobile/screens/user/trainers_screen.dart';
 import 'package:gymfit_mobile/screens/user/user_profile.dart';
 import 'package:gymfit_mobile/utils/error_dialog.dart';
@@ -28,7 +31,7 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
   late UserLoginProvider _loginProvider;
   int? _userId;
   int unreadNotifications = 0;
-  
+
   @override
   void initState() {
     super.initState();
@@ -46,21 +49,16 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
     _userId = id;
   }
 
-void setAsSeen() async {
-  if(_userId!=null){
-    _notificationProvider.setAsSeen(_userId!);
+  void setAsSeen() async {
+    if (_userId != null) {
+      _notificationProvider.setAsSeen(_userId!);
+    }
   }
 
-  }
-
-
-
-
- Future<int> loadNotifications() async {
+  Future<int> loadNotifications() async {
     try {
       NotificationsSearchObject searchObject =
-          NotificationsSearchObject(userId: _userId,
-          PageSize: 1000);
+          NotificationsSearchObject(userId: _userId, PageSize: 1000);
 
       var notificationsResponse =
           await _notificationProvider.getPaged(searchObject: searchObject);
@@ -101,6 +99,7 @@ void setAsSeen() async {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          SizedBox( width: 100,),
           Image.asset(
             "assets/images/logo1.png",
             height: 50,
@@ -109,7 +108,8 @@ void setAsSeen() async {
           ),
         ],
       ),
-       actions: [
+      actions: [
+        // Notifications Icon
         IconButton(
           icon: FutureBuilder<int>(
             future: loadNotifications(),
@@ -158,6 +158,52 @@ void setAsSeen() async {
             );
           },
         ),
+        // Menu Icon
+        IconButton(
+          icon: Icon(Icons.menu),
+          onPressed: () {
+            final RenderBox overlay =
+                Overlay.of(context).context.findRenderObject() as RenderBox;
+            showMenu(
+              context: context,
+              color: teal,
+              position: RelativeRect.fromRect(
+                Rect.fromPoints(
+                  Offset(
+                      MediaQuery.of(context).size.width - 50, kToolbarHeight),
+                  Offset(
+                      MediaQuery.of(context).size.width, kToolbarHeight + 20),
+                ),
+                overlay.localToGlobal(Offset.zero) & overlay.size,
+              ),
+              items: [
+                PopupMenuItem(
+                  child: Container(
+                    child: ListTile(
+                      title: Text('Članarine'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.pushNamed(
+            navigatorKey.currentContext!, AppRoutes.membershipScreen);
+                      },
+                    ),
+                  ),
+                ),
+                PopupMenuItem(
+                  child: ListTile(
+                    title: Text('Logout'),
+                    onTap: () {
+                      Navigator.pop(context); 
+                      _loginProvider.logout();
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => StartScreen()));
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ],
     );
   }
@@ -203,6 +249,9 @@ void setAsSeen() async {
         return TrainersScreen();
       case AppRoutes.userProfileScreen:
         return UserProfileScreen();
+      case AppRoutes.membershipScreen:
+        return MembershipScreen();
+       
       default:
         return DefaultWidget();
     }

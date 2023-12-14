@@ -45,6 +45,7 @@ dependencies:
   search_choices: ^2.2.7
   image_picker: ^1.0.4
   intl: ^0.18.1
+  flutter_stripe: ^9.6.0
 
 dev_dependencies:
   flutter_test:

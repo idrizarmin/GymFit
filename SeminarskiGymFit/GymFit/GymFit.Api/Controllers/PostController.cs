@@ -11,3 +11,4 @@ namespace GymFit.Api.Controllers
         }
     }
 }
+

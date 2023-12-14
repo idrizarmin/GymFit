@@ -13,6 +13,11 @@
         public int UserId { get; set; }
         public User User { get; set; } = null!;
 
+        public int packageId { get; set; }
+        public Package package { get; set; } = null!;
+
         public ICollection<Arrivals> Arrivals { get; set; } = null!;
+        public ICollection<Transactions> Transactions { get; set; } = null!;
+
     }
 }

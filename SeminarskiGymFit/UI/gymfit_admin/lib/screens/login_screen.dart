@@ -148,32 +148,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderSide: const BorderSide(color: Colors.red),
                       ),
                       labelStyle: const TextStyle(
-                        color: Color.fromRGBO(41, 209, 32, 1),
+                        color: primaryColor,
                       ),
                     ),
                   ),
                   const SizedBox(height: 100),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     const Text("Nemate račun?"),
-                  //     TextButton(
-                  //         onPressed: () async {
-                  //           Navigator.of(context).push(
-                  //             MaterialPageRoute(
-                  //               builder: (context) => const RegisterScreen(),
-                  //             ),
-                  //           );
-                  //           // print("data: ${data.result[0].naziv}");
-                  //         },
-                  //         child: const Text(
-                  //           "Registruj se",
-                  //           style: TextStyle(
-                  //             color: Color.fromARGB(255, 56, 255, 6),
-                  //           ),
-                  //         ))
-                  //   ],
-                  // ),
+                
                   Column(
                     children: [
                       ElevatedButton(

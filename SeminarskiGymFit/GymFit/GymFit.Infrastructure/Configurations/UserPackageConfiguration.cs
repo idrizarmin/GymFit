@@ -39,6 +39,11 @@ namespace GymFit.Infrastructure
                     .WithOne(e => e.UserPackage)
                     .HasForeignKey(e => e.UserPackageId)
                     .IsRequired();
+
+            builder.HasMany(e => e.Transactions)
+               .WithOne(t => t.UserPackage)
+               .HasForeignKey(t => t.userPackageId)
+               .IsRequired();
         }
     }
 }

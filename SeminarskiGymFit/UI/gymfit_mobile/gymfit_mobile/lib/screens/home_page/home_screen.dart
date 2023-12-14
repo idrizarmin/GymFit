@@ -351,37 +351,43 @@ class _HomePageState extends State<HomePage> {
       decoration: AppDecoration.fillBlack.copyWith(
         borderRadius: BorderRadiusStyle.roundedBorder10,
       ),
-      child: Container(
-        height: 300,
-        child: ListView.builder(
-          scrollDirection: Axis.vertical,
-          itemCount: posts.length,
-          itemBuilder: (context, index) {
-            return Container(
-              margin: EdgeInsets.only(bottom: 6),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: Colors.white, // Set the border color
-                  width: 1.0, // Set the border width
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      posts[index].title!,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+      child: Column(
+        children: [
+          Text("Objave", style: TextStyle(color: white, fontSize: 18, fontWeight: FontWeight.bold),),
+          SizedBox(height: 4,),
+          Container(
+            height: 300,
+            child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: posts.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: EdgeInsets.only(bottom: 6),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: Colors.white, // Set the border color
+                      width: 1.0, // Set the border width
                     ),
-                    Text(posts[index].content!),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          posts[index].title!,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(posts[index].content!),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

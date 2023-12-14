@@ -92,6 +92,7 @@ flutter:
     - assets/icons/activeUser.svg
     - assets/icons/unactiveUser.svg
     - assets/icons/users1.svg
+    - assets/icons/package.svg
 
 
     

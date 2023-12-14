@@ -3,7 +3,7 @@ using GymFit.Infrastructure.Interfaces;
 
 namespace GymFit.Application.Interfaces
 {
-    public interface IUserPackagesService : IBaseService<int, UserPackageDto, UserPackageUpsertDto, BaseSearchObject>
+    public interface IUserPackagesService : IBaseService<int, UserPackageDto, UserPackageUpsertDto, UserPackageSearchObject>
     {
     }
 }

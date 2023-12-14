@@ -6,6 +6,7 @@ import 'package:gymfit_admin/screens/dashboard/dashboard_screen.dart';
 import 'package:gymfit_admin/screens/gyms/gym_screen.dart';
 import 'package:gymfit_admin/screens/login_screen.dart';
 import 'package:gymfit_admin/screens/notificatios/notifications_screen.dart';
+import 'package:gymfit_admin/screens/packages/packages_screen.dart';
 import 'package:gymfit_admin/screens/reservations/reservations_screen.dart';
 import 'package:gymfit_admin/screens/users/admin_screen.dart';
 import 'package:gymfit_admin/screens/users/trainer_screen.dart';
@@ -113,13 +114,13 @@ class _SideMenuState extends State<SideMenu> {
                 //     widget.onMenuItemClicked(const ReportScreen());
                 //   },
                 // ),
-                // DrawerListTile(
-                //   title: "Računi",
-                //   svgSrc: "assets/icons/bill.svg",
-                //   press: () {
-                //     widget.onMenuItemClicked(const UsersScreen());
-                //   },
-                // ),
+                DrawerListTile(
+                  title: "Paketi",
+                  svgSrc: "assets/icons/package.svg",
+                  press: () {
+                    widget.onMenuItemClicked(const PackagesScreen());
+                  },
+                ),
                  ExpansionTile(
             onExpansionChanged: (value) {
               setState(() {

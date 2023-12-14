@@ -4,6 +4,7 @@ import 'package:gymfit_admin/providers/city_provider.dart';
 import 'package:gymfit_admin/providers/country_provider.dart';
 import 'package:gymfit_admin/providers/login_provider.dart';
 import 'package:gymfit_admin/providers/notification_provider.dart';
+import 'package:gymfit_admin/providers/package_provider.dart';
 import 'package:gymfit_admin/providers/user_provider.dart';
 import 'package:gymfit_admin/screens/home_screen.dart';
 import 'package:gymfit_admin/screens/login_screen.dart';
@@ -17,6 +18,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => CountryProvider()),
       ChangeNotifierProvider(create: (_) => CityProvider()),
       ChangeNotifierProvider(create: (_) => NotificationProvider()),
+      ChangeNotifierProvider(create: (_) => PackageProvider()),
       
     ],
     child: const MyMaterialApp(),
@@ -30,7 +32,7 @@ class MyMaterialApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'RS II Material app',
+      title: 'RS II GymFit app',
       theme: ThemeData.dark().copyWith(
         buttonTheme: (ButtonThemeData(
           buttonColor: myButtonColor,

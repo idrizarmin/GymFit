@@ -1,0 +1,131 @@
+void makePayment () async {
+  try {
+    paymentIntent = await createPayment();
+
+    var gpay = PaymentSheetGooglePay(merchantCountryCode: "US",
+    currencyCode: "US",
+    testEnv: true,
+    );
+    await Stripe.instance.initPaymentSheet(paymentSheetParameters: SetupPaymentSheetParameters(
+      paymentIntentClientSecret: paymentIntent!["client_secret"],
+      style: ThemeMode.dark,
+      merchantDisplayName: "GymFit",// Sabir
+      googlePay: gpay,
+    ));
+      displayPaymentSheet();
+  } catch (e) {
+    
+  }
+}
+
+  void displayPaymentSheet() async {
+    try {
+     await  Stripe.instance.presentPaymentSheet();
+     print("done");
+    } catch (e) {
+     print("failed");
+
+    }
+  }
+
+   createPayment() async {
+    try {
+      Map<String, dynamic> body = {"amount": "1000", "currency": "USD"};
+
+      http.Response response = await http.post(
+          Uri.parse("https://api.stripe.com/v1/payment_intents"),
+          body: body,
+          headers: {
+            'Authorization': 'Bearer $stripeSecretKey',
+            'Content-Type': 'application/x-www-form-urlencoded'
+          });
+      return jsonDecode(response.body);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+
+  ////////////////////////////////////////////////////
+  ///showPaymentSheet() async {
+  if (_selectedPackage == null || _selectedMonths == null) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        content: Text("Molimo odaberite paket i broj mjeseci."),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: teal,
+            ),
+            child: Text(
+              "OK",
+              style: TextStyle(color: white),
+            ),
+          ),
+        ],
+      ),
+    );
+    return;
+  }
+
+  // Declare paymentIntentData here
+  Map<String, dynamic>? paymentIntentData;
+
+  try {
+    // Assign value to paymentIntentData
+    paymentIntentData = await createPaymentIntent(
+        (calculateTotalPrice() * 100).round().toString(), 'BAM');
+
+    await Stripe.instance.initPaymentSheet(
+      paymentSheetParameters: SetupPaymentSheetParameters(
+        paymentIntentClientSecret: paymentIntentData!['client_secret'],
+        merchantDisplayName: 'GymFit',
+        googlePay: PaymentSheetGooglePay(merchantCountryCode: "a"),
+        appearance: const PaymentSheetAppearance(
+          primaryButton: PaymentSheetPrimaryButtonAppearance(
+            colors: PaymentSheetPrimaryButtonTheme(
+              light: PaymentSheetPrimaryButtonThemeColors(
+                background: Colors.amber,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await Stripe.instance.presentPaymentSheet();
+  } catch (e) {
+    print('Stripe Payment Error: $e');
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        content: Text("Error: $e"),
+      ),
+    );
+  }
+}
+
+  createPaymentIntent(String amount, String currency) async {
+    try {
+      Map<String, dynamic> body = {
+        'amount': amount,
+        'currency': currency,
+        'payment_method_types[]': 'card'
+      };
+
+      var response = await http.post(
+          Uri.parse('https://api.stripe.com/v1/payment_intents'),
+          body: body,
+          headers: {
+            'Authorization': 'Bearer $stripeSecretKey',
+            'Content-Type': 'application/x-www-form-urlencoded'
+          });
+      return jsonDecode(response.body);
+    } catch (err) {
+      throw Exception(err.toString());
+    }
+  }

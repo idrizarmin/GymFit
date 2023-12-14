@@ -5,11 +5,14 @@ using GymFit.Application.Interfaces;
 using GymFit.Infrastructure;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionStringConfig = builder.BindConfig<ConnectionStringConfig>("ConnectionStrings");
 var jwtTokenConfig = builder.BindConfig<JwtTokenConfig>("JwtToken");
+
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
 builder.Services.AddMapper();
 builder.Services.AddValidators();
@@ -22,6 +25,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
 builder.Services.AddHangfire( (sp, config) => {
     var conString = sp.GetRequiredService<IConfiguration>().GetConnectionString("Main");
     config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)

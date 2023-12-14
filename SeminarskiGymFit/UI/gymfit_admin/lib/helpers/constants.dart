@@ -9,6 +9,7 @@ const primaryColor = Color.fromRGBO(21, 144, 15, 1);
 const secondaryColor = Color.fromARGB(255, 17, 18, 28);
 const bgColor = Color.fromARGB(186, 37, 46, 83);
 const myWhite = Color.fromARGB(185, 255, 255, 255);
+const white = Colors.white;
 
 const defaultPadding= 16.0;
 

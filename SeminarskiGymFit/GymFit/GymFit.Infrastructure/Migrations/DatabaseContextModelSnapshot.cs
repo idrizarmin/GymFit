@@ -494,6 +494,40 @@ namespace GymFit.Infrastructure.Migrations
                     b.ToTable("Notifications");
                 });
 
+            modelBuilder.Entity("GymFit.Core.Package", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Package");
+                });
+
             modelBuilder.Entity("GymFit.Core.Photo", b =>
                 {
                     b.Property<int>("Id")
@@ -680,6 +714,48 @@ namespace GymFit.Infrastructure.Migrations
                     b.ToTable("TrainerCertificates");
                 });
 
+            modelBuilder.Entity("GymFit.Core.Transactions", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PayPalTransactionId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("userPackageId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("userPackageId");
+
+                    b.ToTable("Traansactions");
+                });
+
             modelBuilder.Entity("GymFit.Core.User", b =>
                 {
                     b.Property<int>("Id")
@@ -837,9 +913,14 @@ namespace GymFit.Infrastructure.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
+                    b.Property<int>("packageId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("packageId");
 
                     b.ToTable("UserPackages");
                 });
@@ -996,6 +1077,17 @@ namespace GymFit.Infrastructure.Migrations
                     b.Navigation("Trainer");
                 });
 
+            modelBuilder.Entity("GymFit.Core.Transactions", b =>
+                {
+                    b.HasOne("GymFit.Core.UserPackage", "UserPackage")
+                        .WithMany("Transactions")
+                        .HasForeignKey("userPackageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("UserPackage");
+                });
+
             modelBuilder.Entity("GymFit.Core.User", b =>
                 {
                     b.HasOne("GymFit.Core.City", null)
@@ -1017,7 +1109,15 @@ namespace GymFit.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GymFit.Core.Package", "package")
+                        .WithMany()
+                        .HasForeignKey("packageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("User");
+
+                    b.Navigation("package");
                 });
 
             modelBuilder.Entity("GymFit.Core.Certificates", b =>
@@ -1080,6 +1180,8 @@ namespace GymFit.Infrastructure.Migrations
             modelBuilder.Entity("GymFit.Core.UserPackage", b =>
                 {
                     b.Navigation("Arrivals");
+
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

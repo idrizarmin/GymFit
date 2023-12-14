@@ -1,6 +1,5 @@
 ﻿using GymFit.Core;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace GymFit.Infrastructure
 {
