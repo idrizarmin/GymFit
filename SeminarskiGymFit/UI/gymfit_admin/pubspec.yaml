@@ -49,7 +49,7 @@ dependencies:
   syncfusion_flutter_calendar: ^23.1.44
   search_choices: ^2.2.7
   fl_chart: ^0.64.0
-
+  transparent_image: ^2.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

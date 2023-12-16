@@ -19,11 +19,11 @@ namespace GymFit.Infrastructure
 
         }
 
-        public Task<List<UserPackage>> GetAllUserPackages(int id, CancellationToken cancellationToken = default)
+        public Task<List<UserPackage>> GetAllUserPackages(CancellationToken cancellationToken = default)
         {
-            return DbSet.Where(x => x.IsDeleted== false && x.UserId== id && x.ActivateOnDate!=null && !x.Expired ).ToListAsync(cancellationToken);
+            return DbSet.ToListAsync(cancellationToken);
         }
-
+      
         public async Task<UserPackage?> GetUserPackage(int id, CancellationToken cancellationToken = default)
         {
 

@@ -5,5 +5,6 @@ namespace GymFit.Application.Interfaces
 {
     public interface IUserPackagesService : IBaseService<int, UserPackageDto, UserPackageUpsertDto, UserPackageSearchObject>
     {
+        //Task AutoSetUserPackeExpired();
     }
 }

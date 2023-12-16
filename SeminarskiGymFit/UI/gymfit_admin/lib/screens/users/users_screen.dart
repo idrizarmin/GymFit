@@ -9,9 +9,11 @@ import 'package:gymfit_admin/models/searchObjects/user_search.dart';
 import 'package:gymfit_admin/models/user.dart';
 import 'package:gymfit_admin/providers/user_provider.dart';
 import 'package:gymfit_admin/screens/components/header.dart';
+import 'package:gymfit_admin/utils/authorization.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class UsersScreen extends StatefulWidget {
   const UsersScreen({Key? key}) : super(key: key);
@@ -730,24 +732,22 @@ class _UsersScreenState extends State<UsersScreen> {
                                   ("${userItem.firstName.toString() ?? ""} ${userItem.lastName.toString() ?? ""}"))),
                               DataCell(Row(
                                 children: [
-                                  if (userItem.profilePhoto != null)
                                     Padding(
                                       padding: EdgeInsets.only(right: 8.0),
-                                      child: Image.memory(
-                                        Uint8List.fromList(base64Decode(
-                                            userItem.profilePhoto!.data)),
-                                        width: 40,
-                                        height: 40,
+                                      child: FadeInImage(
+                                      image: NetworkImage(
+                                        '$apiUrl/Photos/GetbyId?id=07ecbacd-50b8-4ddb-833d-74bd4218631f&original=false',
+                                        headers: Authorization.createHeaders(),
                                       ),
-                                    )
-                                  else
-                                    Padding(
-                                      padding: EdgeInsets.only(right: 8.0),
-                                      child: Image.asset(
-                                          'assets/images/user1.jpg',
-                                          width: 70,
-                                          height: 100),
+                                      placeholder:
+                                          MemoryImage(kTransparentImage),
+                                      fadeInDuration:
+                                          const Duration(milliseconds: 300),
+                                      fit: BoxFit.fill,
+                                      width: 80,
+                                      height: 105,
                                     ),
+                                    )
                                 ],
                               )),
                               DataCell(Center(
@@ -832,23 +832,21 @@ class _UsersScreenState extends State<UsersScreen> {
                     width: double.infinity,
                     height: 180,
                     color: Color.fromARGB(255, 94, 229, 143),
-                    child: (_pickedFile != null)
-                        ? Image.file(
-                            File(_pickedFile!.path),
-                            width: 230,
-                            height: 200,
-                            fit: BoxFit.cover,
-                          )
-                        : (userToEdit != null &&
-                                userToEdit.profilePhoto != null)
-                            ? Image.memory(
-                                Uint8List.fromList(base64Decode(
-                                    userToEdit.profilePhoto!.data)),
-                                width: 230,
-                                height: 200,
-                                fit: BoxFit.cover,
-                              )
-                            : const Text('Please select an image'),
+                    child:   ClipRRect(
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(8), bottomLeft: Radius.circular(8)),
+              child: FadeInImage(
+                image: NetworkImage(
+                  '$apiUrl/images/1',
+                  headers: Authorization.createHeaders(),
+                ),
+                placeholder: MemoryImage(kTransparentImage),
+                fadeInDuration: const Duration(milliseconds: 300),
+                fit: BoxFit.fill,
+                width: 80,
+                height: 105,
+              ),
+            ),
                   ),
                   const SizedBox(height: 35),
                   Center(

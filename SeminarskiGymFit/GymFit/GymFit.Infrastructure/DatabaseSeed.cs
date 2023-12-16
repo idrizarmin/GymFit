@@ -14,6 +14,9 @@ namespace GymFit.Infrastructure
             SeedUsers(modelBuilder);
             SeedCertificates(modelBuilder);
             //SeedGyms(modelBuilder);
+            //SeedPackages(modelBuilder);
+            //SeedUserPackages(modelBuilder);
+            
         }
 
         private void SeedCountries(ModelBuilder modelBuilder)
@@ -116,8 +119,8 @@ namespace GymFit.Infrastructure
                 {
                     Id = 1,
                     FirstName = "GymFIT",
-                    LastName = "Armin",
-                    Email = "gymFit_admin@gmail.com",
+                    LastName = "Admin",
+                    Email = "admin@gmail.com",
                     Role = Role.Administrator,
                     PasswordHash = "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", //Plain text: test
                     PasswordSalt = "1wQEjdSFeZttx6dlvEDjOg==",
@@ -133,9 +136,9 @@ namespace GymFit.Infrastructure
                 new() 
                 {
                     Id = 2,
-                    FirstName = "GymFIT_Trener",
-                    LastName = "Idriz",
-                    Email = "gymFit_trener@gmail.com",
+                    FirstName = "Trener1",
+                    LastName = "Trener1",
+                    Email = "trener@gmail.com",
                     Role = Role.Trener,
                     PasswordHash = "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", //Plain text: test
                     PasswordSalt = "1wQEjdSFeZttx6dlvEDjOg==",
@@ -147,7 +150,63 @@ namespace GymFit.Infrastructure
                     Gender = Gender.Male,
                     DateOfBirth = _dateTime,
                     ProfessionalTitle = "Trener"
-                });
+                }, 
+                new()
+                {
+                    Id = 3,
+                    FirstName = "Trener2",
+                    LastName = "Trener2",
+                    Email = "trener@gmail.com",
+                    Role = Role.Trener,
+                    PasswordHash = "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", //Plain text: test
+                    PasswordSalt = "1wQEjdSFeZttx6dlvEDjOg==",
+                    PhoneNumber = "38763321321",
+                    IsVerified = true,
+                    IsActive = true,
+                    CreatedAt = _dateTime,
+                    ModifiedAt = null,
+                    Gender = Gender.Male,
+                    DateOfBirth = _dateTime,
+                    ProfessionalTitle = "Trener"
+                },
+                new()
+                {
+                    Id = 4,
+                    FirstName = "User1",
+                    LastName = "User1",
+                    Email = "user1@gmail.com",
+                    Role = Role.Korisnik,
+                    PasswordHash = "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", //Plain text: test
+                    PasswordSalt = "1wQEjdSFeZttx6dlvEDjOg==",
+                    PhoneNumber = "38763321321",
+                    IsVerified = true,
+                    IsActive = true,
+                    CreatedAt = _dateTime,
+                    ModifiedAt = null,
+                    Gender = Gender.Female,
+                    DateOfBirth = _dateTime,
+                    ProfessionalTitle = "User"
+                },
+                new()
+                {
+                    Id = 5,
+                    FirstName = "User2",
+                    LastName = "User2",
+                    Email = "user2@gmail.com",
+                    Role = Role.Korisnik,
+                    PasswordHash = "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", 
+                    PasswordSalt = "1wQEjdSFeZttx6dlvEDjOg==",
+                    PhoneNumber = "38763321321",
+                    IsVerified = true,
+                    IsActive = true,
+                    CreatedAt = _dateTime,
+                    ModifiedAt = null,
+                    Gender = Gender.Male,
+                    DateOfBirth = _dateTime,
+                    ProfessionalTitle = "User"
+                }
+
+                );
         }
         private void SeedCertificates(ModelBuilder modelBuilder)
         {
@@ -195,6 +254,101 @@ namespace GymFit.Infrastructure
                     Website = "www.gymfit.com",
                     Name = "GymFit2",
                     PhoneNumber = "38762211212"
+                });
+        }
+        private void SeedPackages(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Package>().HasData(
+              new()
+              {
+                  Id = 1,
+                  CreatedAt = _dateTime,
+                  ModifiedAt = null,
+                  description = "Standardna clanarina",
+                  name ="Standard",
+                  IsDeleted=false,
+                  price =50
+
+              },
+              new() {
+                  Id = 1,
+                  CreatedAt = _dateTime,
+                  ModifiedAt = null,
+                  description = "Premium članarina, neogranicen broj posjeta",
+                  name = "Premium",
+                  IsDeleted = false,
+                  price = 70
+              }
+             ); 
+        }
+        private void SeedUserPackages(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserPackage>().HasData(
+                new()
+                {
+                    Id = 1,
+                    CreatedAt = _dateTime,
+                    ModifiedAt = null,
+                    ActivationDate = DateTime.Now,
+                    ExpirationDate = DateTime.Now.AddMonths(2),
+                    IsDeleted = false,
+                    Expired= false,
+                    IsPaused= false,
+                    packageId = 1,
+                    UserId = 4,
+                    ActivateOnDate= DateTime.Now,
+                    PauseDuration=0,
+                    PausedOnDate= DateTime.Now,
+                    
+                },
+                new()
+                {
+                    Id = 2,
+                    CreatedAt = _dateTime,
+                    ModifiedAt = null,
+                    ActivationDate = DateTime.Now,
+                    ExpirationDate = DateTime.Now.AddMonths(1),
+                    IsDeleted = false,
+                    Expired = false,
+                    IsPaused = false,
+                    packageId = 1,
+                    UserId = 5,
+                    ActivateOnDate = DateTime.Now,
+                    PauseDuration = 0,
+                    PausedOnDate = DateTime.Now,
+                });
+        }
+        private void SeedNotifications(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Notification>().HasData(
+                new()
+                {
+                    Id = 1,
+                    CreatedAt = _dateTime,
+                    ModifiedAt = null,
+                    IsDeleted = false,
+                    Deleted = false,
+                    Content="Sretnu novu godinu želi vam GymFit",
+                    Read=false,
+                    DateRead= null,
+                    SendOnDate= DateTime.Now,
+                    Seen=null,
+                    UserId=4,
+
+                },
+                new()
+                {
+                    Id = 2,
+                    CreatedAt = _dateTime,
+                    ModifiedAt = null,
+                    IsDeleted = false,
+                    Deleted = false,
+                    Content = "Imamo novog trenera za yogu, pogledajte naše trenere",
+                    Read = false,
+                    DateRead = null,
+                    SendOnDate = DateTime.Now,
+                    Seen = null,
+                    UserId = 4,
                 });
         }
     }

@@ -5,5 +5,7 @@ namespace GymFit.Infrastructure.Interfaces
     public interface IUserPackageRepository : IBaseRepository<UserPackage, int, UserPackageSearchObject>
     {
         Task<UserPackage> GetUserPackage(int id,CancellationToken cancellationToken = default);
+        Task<List<UserPackage>> GetAllUserPackages(CancellationToken cancellationToken = default);
+
     }
 }

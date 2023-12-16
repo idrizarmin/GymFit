@@ -13,9 +13,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GymFit.Application", "GymFi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GymFit.Common.Services", "GymFit.Common.Services\GymFit.Common.Services.csproj", "{D99DD72F-863E-412B-A3C6-3B275CA767C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymFit.Application.Interfaces", "GymFit.Application.Interfaces\GymFit.Application.Interfaces.csproj", "{E50E31DE-12C5-455F-8C2A-027B798743F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GymFit.Application.Interfaces", "GymFit.Application.Interfaces\GymFit.Application.Interfaces.csproj", "{E50E31DE-12C5-455F-8C2A-027B798743F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymFit.Api", "GymFit.Api\GymFit.Api.csproj", "{619687BD-8AB0-4482-AF9C-20BFBFA9D397}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GymFit.Api", "GymFit.Api\GymFit.Api.csproj", "{619687BD-8AB0-4482-AF9C-20BFBFA9D397}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0BF16C92-CA3C-4370-AFA3-C03B102D0A4F}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile = Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
