@@ -50,6 +50,7 @@ dependencies:
   search_choices: ^2.2.7
   fl_chart: ^0.64.0
   transparent_image: ^2.0.1
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -56,7 +56,7 @@ class _PackagesScreenState extends State<PackagesScreen> {
       var newPackage = {
         "id": 0,
         "name": _nameController.text,
-        "description": _descriptionController.text ?? "",
+        "description": _descriptionController.text,
         "price": double.parse(_priceController.text)
       };
       var notification = await _packageProvider.insert(newPackage);
@@ -74,7 +74,7 @@ class _PackagesScreenState extends State<PackagesScreen> {
       var newPackage = {
         "id": id,
         "name": _nameController.text,
-        "description": _descriptionController.text ?? "",
+        "description": _descriptionController.text,
         "price": double.parse(_priceController.text)
       };
       var change = await _packageProvider.edit(newPackage);

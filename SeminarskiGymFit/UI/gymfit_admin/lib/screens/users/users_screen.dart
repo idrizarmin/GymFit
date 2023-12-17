@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gymfit_admin/helpers/constants.dart';
 import 'package:gymfit_admin/helpers/show_error_dialog.dart';
 import 'package:gymfit_admin/models/searchObjects/user_search.dart';
 import 'package:gymfit_admin/models/user.dart';
+import 'package:gymfit_admin/providers/photo_provider.dart';
 import 'package:gymfit_admin/providers/user_provider.dart';
 import 'package:gymfit_admin/screens/components/header.dart';
 import 'package:gymfit_admin/utils/authorization.dart';
@@ -26,6 +26,7 @@ class _UsersScreenState extends State<UsersScreen> {
   List<User> users = <User>[];
   List<User> selectedUsers = <User>[];
   late UserProvider _userProvider;
+  late PhotoProvider _photoProvider;
   bool isEditing = false;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
@@ -48,6 +49,7 @@ class _UsersScreenState extends State<UsersScreen> {
   int hasNextPage = 0;
   File? _image;
   XFile? _pickedFile;
+  // File? _pickedFile;
   final _picker = ImagePicker();
   File? selectedImage;
 
@@ -55,6 +57,7 @@ class _UsersScreenState extends State<UsersScreen> {
   void initState() {
     super.initState();
     _userProvider = context.read<UserProvider>();
+    _photoProvider = context.read<PhotoProvider>();
     loadUsers(
         UserSearchObject(name: _searchController.text, PageSize: pageSize),
         _selectedIsActive,
@@ -78,6 +81,13 @@ class _UsersScreenState extends State<UsersScreen> {
       });
     }
   }
+  // void _pickImage() async {
+  //   final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+  //   setState(() {
+  //     _pickedFile = pickedFile != null ? File(pickedFile.path) : null;
+  //   });
+  // }
 
   void loadUsers(UserSearchObject searchObject, String selectedIsActive,
       String selectedIsVerified) async {
@@ -98,10 +108,17 @@ class _UsersScreenState extends State<UsersScreen> {
           await _userProvider.getPaged(searchObject: searchObject);
       setState(() {
         users = usersResponse;
+        for (var element in users) {
+          print(element.photo!.guidId);
+        }
       });
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
     }
+  }
+
+  Future<String> loadPhoto(String guidId) async {
+    return await _photoProvider.getPhoto(guidId);
   }
 
   void InsertUser() async {
@@ -183,19 +200,6 @@ class _UsersScreenState extends State<UsersScreen> {
     }
   }
 
-  Widget displayImage(String base64String) {
-    if (base64String == null) {
-      return Placeholder();
-    } else {
-      List<int> bytes = base64Decode(base64String);
-
-      return Image.memory(
-        Uint8List.fromList(bytes),
-        fit: BoxFit.cover,
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -238,7 +242,7 @@ class _UsersScreenState extends State<UsersScreen> {
               border: Border.all(color: Colors.white),
               borderRadius: BorderRadius.circular(10.0),
             ),
-            width: 350,
+            width: 200,
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
@@ -730,26 +734,68 @@ class _UsersScreenState extends State<UsersScreen> {
                               ),
                               DataCell(Text(
                                   ("${userItem.firstName.toString() ?? ""} ${userItem.lastName.toString() ?? ""}"))),
-                              DataCell(Row(
-                                children: [
+                              DataCell(
+                                Row(
+                                  children: [
                                     Padding(
                                       padding: EdgeInsets.only(right: 8.0),
-                                      child: FadeInImage(
-                                      image: NetworkImage(
-                                        '$apiUrl/Photos/GetbyId?id=07ecbacd-50b8-4ddb-833d-74bd4218631f&original=false',
-                                        headers: Authorization.createHeaders(),
+                                      child: FutureBuilder<String>(
+                                        future: loadPhoto(
+                                            userItem.photo?.guidId ?? ''),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<String> snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return CircularProgressIndicator(); // ili neki drugi indikator učitavanja
+                                          } else if (snapshot.hasError) {
+                                            return Text(
+                                                'Greška prilikom učitavanja slike'); // ili obradi grešku kako želiš
+                                          } else {
+                                            final imageUrl = snapshot.data;
+
+                                            if (imageUrl != null &&
+                                                imageUrl.isNotEmpty) {
+                                              return Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical:
+                                                        8.0), // Prilagodi vrednost prema potrebi
+                                                child: FadeInImage(
+                                                  image: NetworkImage(
+                                                    imageUrl,
+                                                    headers: Authorization
+                                                        .createHeaders(),
+                                                  ),
+                                                  placeholder: MemoryImage(
+                                                      kTransparentImage),
+                                                  fadeInDuration:
+                                                      const Duration(
+                                                          milliseconds: 300),
+                                                  fit: BoxFit.fill,
+                                                  width: 80,
+                                                  height: 105,
+                                                ),
+                                              );
+                                            } else {
+                                              // Učitaj podrazumevanu sliku iz assetsa ako je userItem.photo null
+                                              return Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical:
+                                                        8.0), // Prilagodi vrednost prema potrebi
+                                                child: Image.asset(
+                                                  'assets/images/user1.jpg',
+                                                  width: 80,
+                                                  height: 105,
+                                                  fit: BoxFit.fill,
+                                                ),
+                                              );
+                                            }
+                                          }
+                                        },
                                       ),
-                                      placeholder:
-                                          MemoryImage(kTransparentImage),
-                                      fadeInDuration:
-                                          const Duration(milliseconds: 300),
-                                      fit: BoxFit.fill,
-                                      width: 80,
-                                      height: 105,
                                     ),
-                                    )
-                                ],
-                              )),
+                                  ],
+                                ),
+                              ),
                               DataCell(Center(
                                 child: Text(
                                     userItem.phoneNumber?.toString() ?? ""),
@@ -831,22 +877,61 @@ class _UsersScreenState extends State<UsersScreen> {
                     alignment: Alignment.center,
                     width: double.infinity,
                     height: 180,
-                    color: Color.fromARGB(255, 94, 229, 143),
-                    child:   ClipRRect(
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(8), bottomLeft: Radius.circular(8)),
-              child: FadeInImage(
-                image: NetworkImage(
-                  '$apiUrl/images/1',
-                  headers: Authorization.createHeaders(),
-                ),
-                placeholder: MemoryImage(kTransparentImage),
-                fadeInDuration: const Duration(milliseconds: 300),
-                fit: BoxFit.fill,
-                width: 80,
-                height: 105,
-              ),
-            ),
+                    color: primaryColor,
+                    child: FutureBuilder<String>(
+                      future: _pickedFile != null
+                          ? Future.value(_pickedFile!.path)
+                          : loadPhoto(isEditing
+                              ? (userToEdit?.photo?.guidId ?? '')
+                              : ''),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Greška prilikom učitavanja slike');
+                        } else {
+                          final imageUrl = snapshot.data;
+
+                          if (imageUrl != null && imageUrl.isNotEmpty) {
+                            return Container(
+                              child: FadeInImage(
+                                image: NetworkImage(
+                                  imageUrl,
+                                  headers: Authorization.createHeaders(),
+                                ),
+                                placeholder: MemoryImage(kTransparentImage),
+                                fadeInDuration:
+                                    const Duration(milliseconds: 300),
+                                fit: BoxFit.cover,
+                                width: 230,
+                                height: 200,
+                              ),
+                            );
+                          } else {
+                            // Ako uređujete korisnika, pokažite poruku za odabir slike
+                            // Inače, prikažite podrazumevanu sliku iz assetsa
+                            return isEditing
+                                ? Container(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 8.0),
+                                    child: const Text('Please select an image'),
+                                  )
+                                : Container(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 8.0),
+                                    child: Image.asset(
+                                      'assets/images/default_user_image.jpg',
+                                      width: 230,
+                                      height: 200,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  );
+                          }
+                        }
+                      },
+                    ),
                   ),
                   const SizedBox(height: 35),
                   Center(
@@ -1003,7 +1088,9 @@ class _UsersScreenState extends State<UsersScreen> {
                       Checkbox(
                         value: _isActive,
                         onChanged: (bool? value) {
-                          _isActive = !_isActive;
+                          setState(() {
+                            _isActive = !_isActive;
+                          });
                         },
                       ),
                       Text('Aktivan'),
@@ -1017,7 +1104,9 @@ class _UsersScreenState extends State<UsersScreen> {
                       Checkbox(
                         value: _isVerified,
                         onChanged: (bool? value) {
-                          _isVerified = !_isVerified;
+                          setState(() {
+                            _isVerified = !_isVerified;
+                          });
                         },
                       ),
                       Text('Verifikovan'),

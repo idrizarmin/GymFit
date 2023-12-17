@@ -7,11 +7,14 @@ import 'package:gymfit_admin/helpers/constants.dart';
 import 'package:gymfit_admin/helpers/show_error_dialog.dart';
 import 'package:gymfit_admin/models/searchObjects/user_search.dart';
 import 'package:gymfit_admin/models/user.dart';
+import 'package:gymfit_admin/providers/photo_provider.dart';
 import 'package:gymfit_admin/providers/user_provider.dart';
 import 'package:gymfit_admin/screens/components/header.dart';
+import 'package:gymfit_admin/utils/authorization.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class TrainerScreen extends StatefulWidget {
   const TrainerScreen({Key? key}) : super(key: key);
@@ -24,6 +27,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
   List<User> users = <User>[];
   List<User> selectedUsers = <User>[];
   late UserProvider _userProvider;
+  late PhotoProvider _photoProvider;
   bool isEditing = false;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
@@ -51,6 +55,8 @@ class _TrainerScreenState extends State<TrainerScreen> {
   void initState() {
     super.initState();
     _userProvider = context.read<UserProvider>();
+    _photoProvider = context.read<PhotoProvider>();
+
     loadUsers(
         UserSearchObject(name: _searchController.text, PageSize: itemsPerPage),
         _selectedIsActive,
@@ -97,6 +103,10 @@ class _TrainerScreenState extends State<TrainerScreen> {
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
     }
+  }
+
+ Future<String> loadPhoto(String guidId) async {
+    return await _photoProvider.getPhoto(guidId);
   }
 
   void InsertUser() async {
@@ -655,26 +665,68 @@ class _TrainerScreenState extends State<TrainerScreen> {
                               ),
                               DataCell(Text(
                                   ("${userItem.firstName.toString() ?? ""} ${userItem.lastName.toString() ?? ""}"))),
-                             DataCell(Row(
-                              children: [
-                                if (userItem.profilePhoto != null)
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 8.0),
-                                    child: Image.memory(
-                                      Uint8List.fromList(
-                                          base64Decode(userItem.profilePhoto!.data)),
-                                      width: 40,
-                                      height: 40,
+                             DataCell(
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(right: 8.0),
+                                      child: FutureBuilder<String>(
+                                        future: loadPhoto(
+                                            userItem.photo?.guidId ?? ''),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<String> snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return CircularProgressIndicator(); // ili neki drugi indikator učitavanja
+                                          } else if (snapshot.hasError) {
+                                            return Text(
+                                                'Greška prilikom učitavanja slike'); // ili obradi grešku kako želiš
+                                          } else {
+                                            final imageUrl = snapshot.data;
+
+                                            if (imageUrl != null &&
+                                                imageUrl.isNotEmpty) {
+                                              return Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical:
+                                                        8.0), // Prilagodi vrednost prema potrebi
+                                                child: FadeInImage(
+                                                  image: NetworkImage(
+                                                    imageUrl,
+                                                    headers: Authorization
+                                                        .createHeaders(),
+                                                  ),
+                                                  placeholder: MemoryImage(
+                                                      kTransparentImage),
+                                                  fadeInDuration:
+                                                      const Duration(
+                                                          milliseconds: 300),
+                                                  fit: BoxFit.fill,
+                                                  width: 80,
+                                                  height: 105,
+                                                ),
+                                              );
+                                            } else {
+                                              // Učitaj podrazumevanu sliku iz assetsa ako je userItem.photo null
+                                              return Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical:
+                                                        8.0), // Prilagodi vrednost prema potrebi
+                                                child: Image.asset(
+                                                  'assets/images/user1.jpg',
+                                                  width: 80,
+                                                  height: 105,
+                                                  fit: BoxFit.fill,
+                                                ),
+                                              );
+                                            }
+                                          }
+                                        },
+                                      ),
                                     ),
-                                  )
-                                else
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 8.0),
-                                    child: Image.asset('assets/images/user1.jpg',
-                                        width: 70, height: 100),
-                                  ),
-                              ],
-                            )),
+                                  ],
+                                ),
+                              ),
                               DataCell(Center(
                                 child: Text(
                                     userItem.phoneNumber?.toString() ?? ""),
@@ -765,10 +817,10 @@ class _TrainerScreenState extends State<TrainerScreen> {
                             fit: BoxFit.cover,
                           )
                         : (userToEdit != null &&
-                                userToEdit.profilePhoto != null)
+                                userToEdit.photo != null)
                             ? Image.memory(
                                 Uint8List.fromList(base64Decode(
-                                    userToEdit.profilePhoto!.data)),
+                                    userToEdit.photo!.data!)),
                                 width: 230,
                                 height: 200,
                                 fit: BoxFit.cover,

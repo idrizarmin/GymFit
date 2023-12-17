@@ -344,10 +344,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             fit: BoxFit.cover,
                           )
                         : (userToEdit != null &&
-                                userToEdit.profilePhoto != null)
+                                userToEdit.photo != null)
                             ? Image.memory(
                                 Uint8List.fromList(base64Decode(
-                                    userToEdit.profilePhoto!.data)),
+                                    userToEdit.photo!.data!)),
                                 width: 230,
                                 height: 200,
                                 fit: BoxFit.cover,

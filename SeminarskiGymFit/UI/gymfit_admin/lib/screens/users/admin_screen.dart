@@ -517,12 +517,12 @@ class _AdminScreenState extends State<AdminScreen> {
                                   ("${userItem.firstName.toString() ?? ""} ${userItem.lastName.toString() ?? ""}"))),
                               DataCell(Row(
                                 children: [
-                                  if (userItem.profilePhoto != null)
+                                  if (userItem.photo != null)
                                     Padding(
                                       padding: EdgeInsets.only(right: 8.0),
                                       child: Image.memory(
                                         Uint8List.fromList(base64Decode(
-                                            userItem.profilePhoto!.data)),
+                                            userItem.photo!.data!)),
                                         width: 40,
                                         height: 40,
                                       ),
@@ -628,10 +628,10 @@ class _AdminScreenState extends State<AdminScreen> {
                             fit: BoxFit.cover,
                           )
                         : (userToEdit != null &&
-                                userToEdit.profilePhoto != null)
+                                userToEdit.photo != null)
                             ? Image.memory(
                                 Uint8List.fromList(base64Decode(
-                                    userToEdit.profilePhoto!.data)),
+                                    userToEdit.photo!.data!)),
                                 width: 230,
                                 height: 200,
                                 fit: BoxFit.cover,
