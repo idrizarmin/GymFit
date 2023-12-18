@@ -14,33 +14,34 @@ namespace GymFit.Application
         {
         }
 
-        //public async Task AutoSetUserPackeExpired()
-        //{
-        //    var userPackages = await CurrentRepository.GetAllUserPackages();
+        public async Task AutoSetUserPackeExpired()
+        {
+            var userPackages = await CurrentRepository.GetAllUserPackages();
 
-        //    {
-        //        try
-        //        {
-        //            if (userPackages != null )
-        //            {
-        //                foreach (var userPackage in userPackages)
-        //                {
-        //                    if (userPackage.ExpirationDate < DateTime.Now) {
+            {
+                try
+                {
+                    if (userPackages != null)
+                    {
+                        foreach (var userPackage in userPackages)
+                        {
+                            if (userPackage.ExpirationDate < DateTime.Now)
+                            {
 
-        //                        userPackage.Expired = true;
-        //                        CurrentRepository.Update(userPackage);
-        //                    }
-                           
-        //                }
+                                userPackage.Expired = true;
+                                CurrentRepository.Update(userPackage);
+                            }
 
-        //            }
-        //            await UnitOfWork.SaveChangesAsync();
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            throw new Exception(ex.Message);
-        //        }
-        //    }
-        //}
+                        }
+
+                    }
+                    await UnitOfWork.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+        }
     }
 }

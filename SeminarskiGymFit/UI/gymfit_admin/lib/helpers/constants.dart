@@ -5,11 +5,12 @@ const apiUrl = String.fromEnvironment('baseUrl',
 defaultValue: 'https://localhost:7260/api');
 
 
-const primaryColor = Color.fromRGBO(21, 144, 15, 1);
+const primaryColor = Colors.teal;
 const secondaryColor = Color.fromARGB(255, 17, 18, 28);
 const bgColor = Color.fromARGB(186, 37, 46, 83);
 const myWhite = Color.fromARGB(185, 255, 255, 255);
 const white = Colors.white;
+const green = Color.fromRGBO(36, 228, 19, 1);
 
 const defaultPadding= 16.0;
 

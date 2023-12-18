@@ -269,8 +269,9 @@ Future<List<UserForSelection>> getTrainersForSelection(
     final response = await http.get(uri, headers: headers);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
+      return data.map((d) => fromJson(d)).cast<User>();
 
-      return fromJson(data);
+
     } else {
       throw Exception('Failed to load data');
     }

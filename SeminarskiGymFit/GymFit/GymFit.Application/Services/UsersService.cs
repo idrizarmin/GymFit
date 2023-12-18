@@ -81,6 +81,7 @@ namespace GymFit.Application
             entity.PasswordHash = _cryptoService.GenerateHash(dto.Password!, entity.PasswordSalt);
 
             if (dto.profilePhoto != null)
+                
                 entity.Photo = Mapper.Map<Photo>(dto.profilePhoto);
 
             await CurrentRepository.AddAsync(entity, cancellationToken);

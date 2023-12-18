@@ -219,7 +219,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: myButtonColor),
+          style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
           onPressed: () {
             if (currentPage > 1) {
               setState(() {
@@ -232,11 +232,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               ));
             }
           },
-          child: const Icon(Icons.arrow_left_outlined),
+          child: const Icon(
+            Icons.arrow_left_outlined,
+            color: white,
+          ),
         ),
         SizedBox(width: 16),
         ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: myButtonColor),
+          style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
           onPressed: () {
             setState(() {
               if (hasNextPage == pageSize) {
@@ -251,7 +254,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               ));
             }
           },
-          child: const Icon(Icons.arrow_right_outlined),
+          child: const Icon(
+            Icons.arrow_right_outlined,
+            color: white,
+          ),
         ),
       ],
     );
@@ -276,15 +282,15 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   actions: <Widget>[
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: myButtonColor),
+                          backgroundColor: primaryColor),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text("Zatvori"),
+                      child: Text("Zatvori", style: TextStyle(color: white)),
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: myButtonColor,
+                        backgroundColor: primaryColor,
                       ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
@@ -300,12 +306,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                   actions: <Widget>[
                                     ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: myButtonColor,
+                                        backgroundColor: primaryColor,
                                       ),
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
-                                      child: Text("OK"),
+                                      child: Text("OK",
+                                          style: TextStyle(color: white)),
                                     ),
                                   ],
                                 );
@@ -320,7 +327,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           }
                         }
                       },
-                      child: Text("Spremi"),
+                      child: Text("Spremi", style: TextStyle(color: white)),
                     ),
                   ],
                 );
@@ -362,11 +369,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       actions: <Widget>[
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: myButtonColor),
+                              backgroundColor: primaryColor),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text("OK"),
+                          child: Text("OK", style: TextStyle(color: white)),
                         ),
                       ],
                     );
@@ -382,11 +389,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       actions: <Widget>[
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor),
+                                backgroundColor: primaryColor),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Ok"))
+                            child: Text("Ok", style: TextStyle(color: white)))
                       ],
                     );
                   });
@@ -403,22 +410,24 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       actions: <Widget>[
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor),
+                                backgroundColor: primaryColor),
                             onPressed: () {
                               loadUsers();
                               Navigator.of(context).pop();
                             },
-                            child: Text("Zatvori")),
+                            child: Text("Zatvori",
+                                style: TextStyle(color: white))),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor),
+                                backgroundColor: primaryColor),
                             onPressed: () {
                               EditNotification(selectedNotifications[0].id);
                               Navigator.of(context).pop();
                               selectedNotifications = [];
                               loadUsers();
                             },
-                            child: Text("Spremi")),
+                            child:
+                                Text("Spremi", style: TextStyle(color: white))),
                       ],
                     );
                   });
@@ -464,7 +473,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Text("OK"),
+                                child:
+                                    Text("OK", style: TextStyle(color: white)),
                               ),
                             ]);
                       });
@@ -487,7 +497,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Odustani"),
+                            child: Text("Odustani",
+                                style: TextStyle(color: white)),
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -499,7 +510,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               }
                               Navigator.of(context).pop();
                             },
-                            child: Text("Obriši"),
+                            child:
+                                Text("Obriši", style: TextStyle(color: white)),
                           ),
                         ],
                       );
@@ -770,9 +782,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     ),
                   ),
                   DataColumn(
-                    label: Text(
-                      "Datum slanja",
-                      style: TextStyle(fontStyle: FontStyle.normal),
+                    label: Flexible(
+                      child: Text(
+                        "Datum slanja",
+                        style: TextStyle(fontStyle: FontStyle.normal),
+                      ),
                     ),
                   ),
                   DataColumn(
@@ -822,7 +836,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         child: notificationItem.Read == true
                             ? Icon(
                                 Icons.check_outlined,
-                                color: primaryColor,
+                                color: green,
                               )
                             : Icon(
                                 Icons.close_outlined,

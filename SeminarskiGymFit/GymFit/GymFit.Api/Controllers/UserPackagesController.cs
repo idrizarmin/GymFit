@@ -12,16 +12,16 @@ namespace GymFit.Api.Controllers
         {
         }
 
-        //[HttpPost("setExpired")]
-        //public ActionResult setExpired()
-        //{
-        //    RecurringJob.AddOrUpdate(
-        //    "Run at 00:20 every day//AutoSetExpired",
-        //    () => Service.AutoSetUserPackeExpired(),
-        //    "30 0 * * *"
-        //        );
+        [HttpPost("setExpired")]
+        public ActionResult setExpired()
+        {
+            RecurringJob.AddOrUpdate(
+            "Run at 00:20 every day//AutoSetExpired",
+            () => Service.AutoSetUserPackeExpired(),
+            "30 0 * * *"
+                );
 
-        //    return Ok();
-        //}
+            return Ok();
+        }
     }
 }

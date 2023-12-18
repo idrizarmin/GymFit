@@ -7,11 +7,14 @@ import 'package:gymfit_admin/helpers/show_error_dialog.dart';
 import 'package:gymfit_admin/models/searchObjects/user_search.dart';
 import 'package:gymfit_admin/models/user.dart';
 import 'package:gymfit_admin/providers/login_provider.dart';
+import 'package:gymfit_admin/providers/photo_provider.dart';
 import 'package:gymfit_admin/providers/user_provider.dart';
 import 'package:gymfit_admin/screens/components/header.dart';
+import 'package:gymfit_admin/utils/authorization.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({Key? key}) : super(key: key);
@@ -25,6 +28,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   List<User> selectedUsers = <User>[];
   late UserProvider _userProvider;
   late LoginProvider _loginProvider;
+  late PhotoProvider _photoProvider;
   bool isEditing = false;
   User? admin;
   final _formKey = GlobalKey<FormState>();
@@ -35,6 +39,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
+  ValueNotifier<File?> _pickedFileNotifier = ValueNotifier(null);
   final int userId = 0;
   DateTime selectedDate = DateTime.now();
 
@@ -49,7 +54,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   int currentPage = 1;
 
   File? _image;
-  XFile? _pickedFile;
+  File? _pickedFile;
   final _picker = ImagePicker();
   File? selectedImage;
 
@@ -59,6 +64,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     _userProvider = context.read<UserProvider>();
     _loginProvider = context.read<LoginProvider>();
+    _photoProvider = context.read<PhotoProvider>();
+    _pickedFileNotifier = ValueNotifier<File?>(_pickedFile);
+
+
     loadAdmin();
     loadUsers(
         UserSearchObject(
@@ -74,14 +83,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     });
   }
 
-  Future<void> _pickImage() async {
-    final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery);
+ Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
     if (pickedFile != null) {
-      setState(() {
-        _pickedFile = pickedFile;
-        _image = File(pickedFile.path);
-      });
+      _pickedFileNotifier.value = File(pickedFile.path);
+      _pickedFile = File(pickedFile.path);
     }
   }
 
@@ -120,7 +128,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       showErrorDialog(context, e.toString().substring(11));
     }
   }
-
+Future<String> loadPhoto(String guidId) async {
+    return await _photoProvider.getPhoto(guidId);
+  }
   void EditUser(int id) async {
     try {
       var imageFile = File(_image!.path);
@@ -190,20 +200,62 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(children: [
-                        Container(
-                          alignment: Alignment.center,
-                          child: CircleAvatar(
-                            radius: 100,
-                            backgroundImage:
-                                AssetImage('assets/images/user1.jpg'),
-                          ),
-                        ),
-                      ]),
-                    ),
+                                      padding: EdgeInsets.only(right: 8.0),
+                                      child: FutureBuilder<String>(
+                                        future: loadPhoto(
+                                            admin!.photo?.guidId ?? ''),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<String> snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return CircularProgressIndicator(); 
+                                          } else if (snapshot.hasError) {
+                                            return Text(
+                                                'Greška prilikom učitavanja slike'); 
+                                          } else {
+                                            final imageUrl = snapshot.data;
+
+                                            if (imageUrl != null &&
+                                                imageUrl.isNotEmpty) {
+                                              return Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical:
+                                                        8.0), 
+                                                child: FadeInImage(
+                                                  image: NetworkImage(
+                                                    imageUrl,
+                                                    headers: Authorization
+                                                        .createHeaders(),
+                                                  ),
+                                                  placeholder: MemoryImage(
+                                                      kTransparentImage),
+                                                  fadeInDuration:
+                                                      const Duration(
+                                                          milliseconds: 300),
+                                                  fit: BoxFit.fill,
+                                                  width: 80,
+                                                  height: 105,
+                                                ),
+                                              );
+                                            } else {
+                                              return Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 8.0),
+                                                child: Image.asset(
+                                                  'assets/images/user1.jpg',
+                                                  width: 80,
+                                                  height: 105,
+                                                  fit: BoxFit.fill,
+                                                ),
+                                              );
+                                            }
+                                          }
+                                        },
+                                      ),
+                                    ),
                     SizedBox(
                       width: 30,
                     ),
@@ -234,7 +286,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           backgroundColor: primaryColor,
                         ),
                         onPressed: () {},
-                        child: Text("Promjena lozinke")),
+                        child: Text("Promjena lozinke",style: TextStyle(color: white))),
                     SizedBox(
                       height: 10,
                     ),
@@ -254,24 +306,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   actions: <Widget>[
                                     ElevatedButton(
                                         style: ElevatedButton.styleFrom(
-                                            backgroundColor: myButtonColor),
+                                            backgroundColor: primaryColor),
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                         },
-                                        child: Text("Zatvori")),
+                                        child: Text("Zatvori",style: TextStyle(color: white))),
                                     ElevatedButton(
                                         style: ElevatedButton.styleFrom(
-                                            backgroundColor: myButtonColor),
+                                            backgroundColor: primaryColor),
                                         onPressed: () {
                                           EditUser(selectedUsers[0].id);
                                           Navigator.of(context).pop();
                                         },
-                                        child: Text("Spremi")),
+                                        child: Text("Spremi",style: TextStyle(color: white))),
                                   ],
                                 );
                               });
                         },
-                        child: Text("Uredi profil")),
+                        child: Text("Uredi profil",style: TextStyle(color: white))),
                   ],
                 ),
               ),
@@ -329,47 +381,94 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             Expanded(
                 child: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20,5,20,10),
+                padding: const EdgeInsets.all(35),
                 child: Column(children: [
-                  Container(
-                    alignment: Alignment.center,
-                    width: double.infinity,
-                    height: 350,
-                    color: Colors.grey[300],
-                     child: (_pickedFile != null)
-                        ? Image.file(
-                            File(_pickedFile!.path),
-                            width: 230,
-                            height: 200,
-                            fit: BoxFit.cover,
-                          )
-                        : (userToEdit != null &&
-                                userToEdit.photo != null)
-                            ? Image.memory(
-                                Uint8List.fromList(base64Decode(
-                                    userToEdit.photo!.data!)),
-                                width: 230,
-                                height: 200,
-                                fit: BoxFit.cover,
-                              )
-                            : const Text('Please select an image'),
-                  ),
+                  ValueListenableBuilder<File?>(
+                      valueListenable: _pickedFileNotifier,
+                      builder: (context, pickedFile, _) {
+                        return Container(
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          height: 180,
+                          color: primaryColor,
+                          child: FutureBuilder<String>(
+                            future: _pickedFile != null
+                                ? Future.value(_pickedFile!.path)
+                                : loadPhoto(isEditing
+                                    ? (userToEdit?.photo?.guidId ?? '')
+                                    : ''),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<String> snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('Molimo odaberite fotografiju');
+                              } else {
+                                final imageUrl = snapshot.data;
+
+                                if (imageUrl != null && imageUrl.isNotEmpty) {
+                                  return Container(
+                                    child: FadeInImage(
+                                      image: _pickedFile != null
+                                          ? FileImage(_pickedFile!)
+                                              as ImageProvider<Object>
+                                          : NetworkImage(
+                                              imageUrl,
+                                              headers:
+                                                  Authorization.createHeaders(),
+                                            ) as ImageProvider<Object>,
+                                      placeholder:
+                                          MemoryImage(kTransparentImage),
+                                      fadeInDuration:
+                                          const Duration(milliseconds: 300),
+                                      fit: BoxFit.cover,
+                                      width: 230,
+                                      height: 200,
+                                    ),
+                                  );
+                                } else {
+                                  // Ako uređujete korisnika, pokažite poruku za odabir slike
+                                  // Inače, prikažite podrazumevanu sliku iz assetsa
+                                  return isEditing
+                                      ? Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 8.0),
+                                          child: const Text(
+                                              'Please select an image'),
+                                        )
+                                      : Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 8.0),
+                                          child: Image.asset(
+                                            'assets/images/default_user_image.jpg',
+                                            width: 230,
+                                            height: 200,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        );
+                                }
+                              }
+                            },
+                          ),
+                        );
+                      }),
                   const SizedBox(height: 35),
                   Center(
                     child: SizedBox(
-                      width: 150, 
-                      height: 35, 
+                      width: 150, // Širina dugmeta
+                      height: 35, // Visina dugmeta
                       child: ElevatedButton(
                         onPressed: () => _pickImage(),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 49, 206, 49), 
+                          backgroundColor: primaryColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
-                                20.0), 
+                                20.0), // Zaobljenost rubova
                           ),
                         ),
-                        child: Text('Select An Image',
-                            style: TextStyle(fontSize: 12)),
+                        child: const Text('Select An Image',
+                            style: TextStyle(fontSize: 12, color: white)),
                       ),
                     ),
                   )

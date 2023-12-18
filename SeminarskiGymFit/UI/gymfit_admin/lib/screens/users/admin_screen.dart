@@ -6,11 +6,14 @@ import 'package:gymfit_admin/helpers/constants.dart';
 import 'package:gymfit_admin/helpers/show_error_dialog.dart';
 import 'package:gymfit_admin/models/searchObjects/user_search.dart';
 import 'package:gymfit_admin/models/user.dart';
+import 'package:gymfit_admin/providers/photo_provider.dart';
 import 'package:gymfit_admin/providers/user_provider.dart';
 import 'package:gymfit_admin/screens/components/header.dart';
+import 'package:gymfit_admin/utils/authorization.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({Key? key}) : super(key: key);
@@ -23,6 +26,7 @@ class _AdminScreenState extends State<AdminScreen> {
   List<User> users = <User>[];
   List<User> selectedUsers = <User>[];
   late UserProvider _userProvider;
+  late PhotoProvider _photoProvider;
   bool isEditing = false;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
@@ -32,6 +36,9 @@ class _AdminScreenState extends State<AdminScreen> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
+  ValueNotifier<File?> _pickedFileNotifier = ValueNotifier(null);
+  late ValueNotifier<bool> _isActiveNotifier;
+  late ValueNotifier<bool> _isVerifiedNotifier;
   DateTime selectedDate = DateTime.now();
   int? selectedGender;
   bool _isActive = false;
@@ -40,7 +47,7 @@ class _AdminScreenState extends State<AdminScreen> {
   int currentPage = 1;
   int itemsPerPage = 100000000;
   File? _image;
-  XFile? _pickedFile;
+  File? _pickedFile;
   final _picker = ImagePicker();
   File? selectedImage;
 
@@ -48,6 +55,10 @@ class _AdminScreenState extends State<AdminScreen> {
   void initState() {
     super.initState();
     _userProvider = context.read<UserProvider>();
+    _photoProvider = context.read<PhotoProvider>();
+    _isActiveNotifier = ValueNotifier<bool>(_isActive);
+    _isVerifiedNotifier = ValueNotifier<bool>(_isVerified);
+    _pickedFileNotifier = ValueNotifier<File?>(_pickedFile);
     loadUsers(
         UserSearchObject(name: _searchController.text, PageSize: itemsPerPage));
 
@@ -58,15 +69,17 @@ class _AdminScreenState extends State<AdminScreen> {
   }
 
   Future<void> _pickImage() async {
-    final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      setState(() {
-        _pickedFile = pickedFile;
-        _image = File(pickedFile.path);
-      });
+      _pickedFileNotifier.value = File(pickedFile.path);
+      _pickedFile = File(pickedFile.path);
     }
+  }
+
+  Future<String> loadPhoto(String guidId) async {
+    return await _photoProvider.getPhoto(guidId);
   }
 
   void loadUsers(UserSearchObject searchObject) async {
@@ -227,7 +240,7 @@ class _AdminScreenState extends State<AdminScreen> {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text("Zatvori")),
+                          child: Text("Zatvori", style: TextStyle(color: white))),
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: primaryColor,
@@ -237,7 +250,7 @@ class _AdminScreenState extends State<AdminScreen> {
                               InsertUser();
                             }
                           },
-                          child: Text("Spremi"))
+                          child: Text("Spremi", style: TextStyle(color: white)))
                     ],
                   );
                 });
@@ -277,11 +290,11 @@ class _AdminScreenState extends State<AdminScreen> {
                       actions: <Widget>[
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: myButtonColor),
+                              backgroundColor: primaryColor),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text("OK"),
+                          child: Text("OK", style: TextStyle(color: white)),
                         ),
                       ],
                     );
@@ -297,11 +310,11 @@ class _AdminScreenState extends State<AdminScreen> {
                       actions: <Widget>[
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor),
+                                backgroundColor: primaryColor),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Ok"))
+                            child: Text("Ok", style: TextStyle(color: white)))
                       ],
                     );
                   });
@@ -317,20 +330,20 @@ class _AdminScreenState extends State<AdminScreen> {
                       actions: <Widget>[
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor),
+                                backgroundColor: primaryColor),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Zatvori")),
+                            child: Text("Zatvori", style: TextStyle(color: white))),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor),
+                                backgroundColor: primaryColor),
                             onPressed: () {
                               EditUser(selectedUsers[0].id);
                               selectedUsers = [];
                               Navigator.of(context).pop();
                             },
-                            child: Text("Spremi")),
+                            child: Text("Spremi", style: TextStyle(color: white))),
                       ],
                     );
                   });
@@ -371,12 +384,12 @@ class _AdminScreenState extends State<AdminScreen> {
                             actions: <Widget>[
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: myButtonColor,
+                                  backgroundColor: primaryColor,
                                 ),
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Text("OK"),
+                                child: Text("OK", style: TextStyle(color: white)),
                               ),
                             ]);
                       });
@@ -394,12 +407,12 @@ class _AdminScreenState extends State<AdminScreen> {
                           actions: <Widget>[
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor,
+                                backgroundColor: primaryColor,
                               ),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Odustani"),
+                              child: Text("Odustani", style: TextStyle(color: white)),
                             ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -411,7 +424,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                 }
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Obriši"),
+                              child: Text("Obriši", style: TextStyle(color: white)),
                             ),
                           ],
                         );
@@ -515,28 +528,66 @@ class _AdminScreenState extends State<AdminScreen> {
                               ),
                               DataCell(Text(
                                   ("${userItem.firstName.toString() ?? ""} ${userItem.lastName.toString() ?? ""}"))),
-                              DataCell(Row(
-                                children: [
-                                  if (userItem.photo != null)
+                              DataCell(
+                                Row(
+                                  children: [
                                     Padding(
                                       padding: EdgeInsets.only(right: 8.0),
-                                      child: Image.memory(
-                                        Uint8List.fromList(base64Decode(
-                                            userItem.photo!.data!)),
-                                        width: 40,
-                                        height: 40,
+                                      child: FutureBuilder<String>(
+                                        future: loadPhoto(
+                                            userItem.photo?.guidId ?? ''),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<String> snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return CircularProgressIndicator(); 
+                                          } else if (snapshot.hasError) {
+                                            return Text(
+                                                'Greška prilikom učitavanja slike'); 
+                                          } else {
+                                            final imageUrl = snapshot.data;
+
+                                            if (imageUrl != null &&
+                                                imageUrl.isNotEmpty) {
+                                              return Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical:
+                                                        8.0), 
+                                                child: FadeInImage(
+                                                  image: NetworkImage(
+                                                    imageUrl,
+                                                    headers: Authorization
+                                                        .createHeaders(),
+                                                  ),
+                                                  placeholder: MemoryImage(
+                                                      kTransparentImage),
+                                                  fadeInDuration:
+                                                      const Duration(
+                                                          milliseconds: 300),
+                                                  fit: BoxFit.fill,
+                                                  width: 80,
+                                                  height: 105,
+                                                ),
+                                              );
+                                            } else {
+                                              return Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 8.0),
+                                                child: Image.asset(
+                                                  'assets/images/user1.jpg',
+                                                  width: 80,
+                                                  height: 105,
+                                                  fit: BoxFit.fill,
+                                                ),
+                                              );
+                                            }
+                                          }
+                                        },
                                       ),
-                                    )
-                                  else
-                                    Padding(
-                                      padding: EdgeInsets.only(right: 8.0),
-                                      child: Image.asset(
-                                          'assets/images/user1.jpg',
-                                          width: 70,
-                                          height: 100),
                                     ),
-                                ],
-                              )),
+                                  ],
+                                ),
+                              ),
                               DataCell(Center(
                                 child: Text(
                                     userItem.phoneNumber?.toString() ?? ""),
@@ -549,7 +600,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                 child: userItem.isActive == true
                                     ? Icon(
                                         Icons.check_circle_outline,
-                                        color: primaryColor,
+                                        color: green,
                                       )
                                     : Icon(
                                         Icons.close_outlined,
@@ -561,7 +612,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                 child: userItem.isVerified == true
                                     ? Icon(
                                         Icons.check_circle_outline,
-                                        color: primaryColor,
+                                        color: green,
                                       )
                                     : Icon(
                                         Icons.close_outlined,
@@ -602,7 +653,6 @@ class _AdminScreenState extends State<AdminScreen> {
       _pickedFile = null;
     }
 
-
     return Container(
       height: 450,
       width: 950,
@@ -615,29 +665,76 @@ class _AdminScreenState extends State<AdminScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(35),
                 child: Column(children: [
-                  Container(
-                    alignment: Alignment.center,
-                    width: double.infinity,
-                    height: 180,
-                    color: primaryColor,
-                    child: (_pickedFile != null)
-                        ? Image.file(
-                            File(_pickedFile!.path),
-                            width: 230,
-                            height: 200,
-                            fit: BoxFit.cover,
-                          )
-                        : (userToEdit != null &&
-                                userToEdit.photo != null)
-                            ? Image.memory(
-                                Uint8List.fromList(base64Decode(
-                                    userToEdit.photo!.data!)),
-                                width: 230,
-                                height: 200,
-                                fit: BoxFit.cover,
-                              )
-                            : const Text('Please select an image'),
-                  ),
+                  ValueListenableBuilder<File?>(
+                      valueListenable: _pickedFileNotifier,
+                      builder: (context, pickedFile, _) {
+                        return Container(
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          height: 180,
+                          color: primaryColor,
+                          child: FutureBuilder<String>(
+                            future: _pickedFile != null
+                                ? Future.value(_pickedFile!.path)
+                                : loadPhoto(isEditing
+                                    ? (userToEdit?.photo?.guidId ?? '')
+                                    : ''),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<String> snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('Molimo odaberite fotografiju');
+                              } else {
+                                final imageUrl = snapshot.data;
+
+                                if (imageUrl != null && imageUrl.isNotEmpty) {
+                                  return Container(
+                                    child: FadeInImage(
+                                      image: _pickedFile != null
+                                          ? FileImage(_pickedFile!)
+                                              as ImageProvider<Object>
+                                          : NetworkImage(
+                                              imageUrl,
+                                              headers:
+                                                  Authorization.createHeaders(),
+                                            ) as ImageProvider<Object>,
+                                      placeholder:
+                                          MemoryImage(kTransparentImage),
+                                      fadeInDuration:
+                                          const Duration(milliseconds: 300),
+                                      fit: BoxFit.cover,
+                                      width: 230,
+                                      height: 200,
+                                    ),
+                                  );
+                                } else {
+                                  // Ako uređujete korisnika, pokažite poruku za odabir slike
+                                  // Inače, prikažite podrazumevanu sliku iz assetsa
+                                  return isEditing
+                                      ? Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 8.0),
+                                          child: const Text(
+                                              'Please select an image'),
+                                        )
+                                      : Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 8.0),
+                                          child: Image.asset(
+                                            'assets/images/default_user_image.jpg',
+                                            width: 230,
+                                            height: 200,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        );
+                                }
+                              }
+                            },
+                          ),
+                        );
+                      }),
                   const SizedBox(height: 35),
                   Center(
                     child: SizedBox(
@@ -652,8 +749,8 @@ class _AdminScreenState extends State<AdminScreen> {
                                 20.0), // Zaobljenost rubova
                           ),
                         ),
-                        child: Text('Select An Image',
-                            style: TextStyle(fontSize: 12)),
+                        child: const Text('Select An Image',
+                            style: TextStyle(fontSize: 12, color: white)),
                       ),
                     ),
                   )
@@ -788,30 +885,40 @@ class _AdminScreenState extends State<AdminScreen> {
                   SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: _isActive,
-                        onChanged: (bool? value) {
-                          _isActive = !_isActive;
-                        },
-                      ),
-                      Text('Aktivan'),
-                    ],
+                  ValueListenableBuilder<bool>(
+                    valueListenable: _isActiveNotifier,
+                    builder: (context, isActive, child) {
+                      return Row(
+                        children: [
+                          Checkbox(
+                            value: isActive,
+                            onChanged: (bool? value) {
+                              _isActiveNotifier.value = !isActive;
+                            },
+                          ),
+                          Text('Aktivan'),
+                        ],
+                      );
+                    },
                   ),
                   SizedBox(
                     height: 10,
                   ),
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: _isVerified,
-                        onChanged: (bool? value) {
-                          _isVerified = !_isVerified;
-                        },
-                      ),
-                      Text('Verifikovan'),
-                    ],
+                  ValueListenableBuilder<bool>(
+                    valueListenable: _isVerifiedNotifier,
+                    builder: (context, isVerified, child) {
+                      return Row(
+                        children: [
+                          Checkbox(
+                            value: isVerified,
+                            onChanged: (bool? value) {
+                              _isVerifiedNotifier.value = !isVerified;
+                            },
+                          ),
+                          Text('Verifikovan'),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),
@@ -830,7 +937,7 @@ class _AdminScreenState extends State<AdminScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: myButtonColor),
+          style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
           onPressed: () {
             if (currentPage > 1) {
               setState(() {
@@ -839,11 +946,11 @@ class _AdminScreenState extends State<AdminScreen> {
               });
             }
           },
-          child: const Icon(Icons.arrow_left_outlined),
+          child: const Icon(Icons.arrow_left_outlined,color: white,),
         ),
         const SizedBox(width: 10),
         ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: myButtonColor),
+          style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
           onPressed: () {
             if (hasNextPage) {
               setState(() {
@@ -852,7 +959,7 @@ class _AdminScreenState extends State<AdminScreen> {
               });
             }
           },
-          child: const Icon(Icons.arrow_right_outlined),
+          child: const Icon(Icons.arrow_right_outlined,color: white,),
         ),
       ],
     );

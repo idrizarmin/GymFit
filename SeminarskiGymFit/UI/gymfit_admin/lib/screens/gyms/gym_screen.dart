@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gymfit_admin/helpers/constants.dart';
 import 'package:gymfit_admin/helpers/show_error_dialog.dart';
@@ -7,7 +6,6 @@ import 'package:gymfit_admin/models/post.dart';
 import 'package:gymfit_admin/providers/gym_provider.dart';
 import 'package:gymfit_admin/providers/post_provider.dart';
 import 'package:gymfit_admin/screens/components/header.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class GymScreen extends StatefulWidget {
@@ -213,7 +211,7 @@ class _GymScreenState extends State<GymScreen> {
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Zatvori")),
+                              child: Text("Zatvori", style: TextStyle(color: white))),
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor,
@@ -223,7 +221,7 @@ class _GymScreenState extends State<GymScreen> {
                                   EditGym(gyms[0]!.id);
                                 }
                               },
-                              child: Text("Spremi"))
+                              child: Text("Spremi", style: TextStyle(color: white)))
                         ],
                       );
                     });
@@ -297,22 +295,22 @@ class _GymScreenState extends State<GymScreen> {
                   actions: <Widget>[
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: myButtonColor),
+                          backgroundColor: primaryColor),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text("Zatvori"),
+                      child: Text("Zatvori", style: TextStyle(color: white)),
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: myButtonColor,
+                        backgroundColor: primaryColor,
                       ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           InsertPost();
                         }
                       },
-                      child: Text("Spremi"),
+                      child: Text("Spremi", style: TextStyle(color: white)),
                     ),
                   ],
                 );
@@ -354,11 +352,11 @@ class _GymScreenState extends State<GymScreen> {
                       actions: <Widget>[
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: myButtonColor),
+                              backgroundColor: primaryColor),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text("OK"),
+                          child: Text("OK", style: TextStyle(color: white)),
                         ),
                       ],
                     );
@@ -374,11 +372,11 @@ class _GymScreenState extends State<GymScreen> {
                       actions: <Widget>[
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor),
+                                backgroundColor: primaryColor),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Ok"))
+                            child: Text("Ok", style: TextStyle(color: white)))
                       ],
                     );
                   });
@@ -394,14 +392,14 @@ class _GymScreenState extends State<GymScreen> {
                       actions: <Widget>[
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor),
+                                backgroundColor: primaryColor),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Zatvori")),
+                            child: Text("Zatvori", style: TextStyle(color: white))),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor),
+                                backgroundColor: primaryColor),
                             onPressed: () {
                                if (_formKey.currentState!.validate()){
                                 EditPost(selectedPosts[0].id);
@@ -410,7 +408,7 @@ class _GymScreenState extends State<GymScreen> {
                                }
                               
                             },
-                            child: Text("Spremi")),
+                            child: Text("Spremi", style: TextStyle(color: white))),
                       ],
                     );
                   });
@@ -456,7 +454,7 @@ class _GymScreenState extends State<GymScreen> {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Text("OK"),
+                                child: Text("OK", style: TextStyle(color: white)),
                               ),
                             ]);
                       });
@@ -479,7 +477,7 @@ class _GymScreenState extends State<GymScreen> {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Odustani"),
+                            child: Text("Odustani", style: TextStyle(color: white)),
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -491,7 +489,7 @@ class _GymScreenState extends State<GymScreen> {
                               }
                               Navigator.of(context).pop();
                             },
-                            child: Text("Obriši"),
+                            child: Text("Obriši", style: TextStyle(color: white)),
                           ),
                         ],
                       );

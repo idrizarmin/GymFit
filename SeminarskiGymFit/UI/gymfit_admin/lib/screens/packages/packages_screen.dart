@@ -188,15 +188,15 @@ class _PackagesScreenState extends State<PackagesScreen> {
                   actions: <Widget>[
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: myButtonColor),
+                          backgroundColor: primaryColor),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: Text("Zatvori"),
+                      child: Text("Zatvori", style: TextStyle(color: white)),
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: myButtonColor,
+                        backgroundColor: primaryColor,
                       ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
@@ -204,7 +204,7 @@ class _PackagesScreenState extends State<PackagesScreen> {
                             Navigator.of(context).pop();
                         }
                       },
-                      child: Text("Spremi"),
+                      child: Text("Spremi", style: TextStyle(color: white)),
                     ),
                   ],
                 );
@@ -246,11 +246,11 @@ class _PackagesScreenState extends State<PackagesScreen> {
                       actions: <Widget>[
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: myButtonColor),
+                              backgroundColor: primaryColor),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text("OK"),
+                          child: Text("OK", style: TextStyle(color: white)),
                         ),
                       ],
                     );
@@ -266,11 +266,11 @@ class _PackagesScreenState extends State<PackagesScreen> {
                       actions: <Widget>[
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor),
+                                backgroundColor: primaryColor),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Ok"))
+                            child: Text("Ok", style: TextStyle(color: white)))
                       ],
                     );
                   });
@@ -286,20 +286,20 @@ class _PackagesScreenState extends State<PackagesScreen> {
                       actions: <Widget>[
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor),
+                                backgroundColor: primaryColor),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Zatvori")),
+                            child: Text("Zatvori", style: TextStyle(color: white))),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor),
+                                backgroundColor: primaryColor),
                             onPressed: () {
                               EditPackage(selectedpackages[0].id);
                               Navigator.of(context).pop();
                               selectedpackages = [];
                             },
-                            child: Text("Spremi")),
+                            child: Text("Spremi", style: TextStyle(color: white))),
                       ],
                     );
                   });
@@ -345,7 +345,7 @@ class _PackagesScreenState extends State<PackagesScreen> {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Text("OK"),
+                                child: Text("OK", style: TextStyle(color: white)),
                               ),
                             ]);
                       });
@@ -368,7 +368,7 @@ class _PackagesScreenState extends State<PackagesScreen> {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Odustani"),
+                            child: Text("Odustani", style: TextStyle(color: white)),
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -380,7 +380,7 @@ class _PackagesScreenState extends State<PackagesScreen> {
                               }
                               Navigator.of(context).pop();
                             },
-                            child: Text("Obriši"),
+                            child: Text("Obriši", style: TextStyle(color: white)),
                           ),
                         ],
                       );

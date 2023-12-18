@@ -37,6 +37,9 @@ class _TrainerScreenState extends State<TrainerScreen> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
+  ValueNotifier<File?> _pickedFileNotifier = ValueNotifier(null);
+ late ValueNotifier<bool> _isActiveNotifier;
+  late ValueNotifier<bool> _isVerifiedNotifier;
   DateTime selectedDate = DateTime.now();
   String _selectedIsActive = 'Svi';
   String _selectedIsVerified = 'Svi';
@@ -47,7 +50,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
   int currentPage = 1;
   int itemsPerPage = 100000000;
   File? _image;
-  XFile? _pickedFile;
+  File? _pickedFile;
   final _picker = ImagePicker();
   File? selectedImage;
 
@@ -56,6 +59,10 @@ class _TrainerScreenState extends State<TrainerScreen> {
     super.initState();
     _userProvider = context.read<UserProvider>();
     _photoProvider = context.read<PhotoProvider>();
+        _isActiveNotifier = ValueNotifier<bool>(_isActive);
+    _isVerifiedNotifier = ValueNotifier<bool>(_isVerified);
+    _pickedFileNotifier = ValueNotifier<File?>(_pickedFile);
+
 
     loadUsers(
         UserSearchObject(name: _searchController.text, PageSize: itemsPerPage),
@@ -70,13 +77,11 @@ class _TrainerScreenState extends State<TrainerScreen> {
   }
 
   Future<void> _pickImage() async {
-  final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+  final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
 
   if (pickedFile != null) {
-    setState(() {
-      _pickedFile = pickedFile;
-      _image = File(pickedFile.path);
-    });
+    _pickedFileNotifier.value = File(pickedFile.path);
+    _pickedFile = File(pickedFile.path);
   }
 }
 
@@ -185,19 +190,6 @@ class _TrainerScreenState extends State<TrainerScreen> {
       }
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
-    }
-  }
-
-  Widget displayImage(String base64String) {
-    if (base64String == null) {
-      return Placeholder(); 
-    } else {
-      List<int> bytes = base64Decode(base64String);
-
-      return Image.memory(
-        Uint8List.fromList(bytes),
-        fit: BoxFit.cover, 
-      );
     }
   }
 
@@ -377,7 +369,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text("Zatvori")),
+                          child: Text("Zatvori", style: TextStyle(color: white))),
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: primaryColor,
@@ -387,7 +379,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
                               InsertUser();
                             }
                           },
-                          child: Text("Spremi"))
+                          child: Text("Spremi", style: TextStyle(color: white)))
                     ],
                   );
                 });
@@ -427,11 +419,11 @@ class _TrainerScreenState extends State<TrainerScreen> {
                       actions: <Widget>[
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: myButtonColor),
+                              backgroundColor: primaryColor),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text("OK"),
+                          child: Text("OK", style: TextStyle(color: white)),
                         ),
                       ],
                     );
@@ -447,11 +439,11 @@ class _TrainerScreenState extends State<TrainerScreen> {
                       actions: <Widget>[
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor),
+                                backgroundColor: primaryColor),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Ok"))
+                            child: Text("Ok", style: TextStyle(color: white)))
                       ],
                     );
                   });
@@ -467,20 +459,20 @@ class _TrainerScreenState extends State<TrainerScreen> {
                       actions: <Widget>[
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor),
+                                backgroundColor: primaryColor),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Zatvori")),
+                            child: Text("Zatvori", style: TextStyle(color: white))),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor),
+                                backgroundColor: primaryColor),
                             onPressed: () {
                               EditUser(selectedUsers[0].id);
                               selectedUsers=[];
                               Navigator.of(context).pop();
                             },
-                            child: Text("Spremi")),
+                            child: Text("Spremi", style: TextStyle(color: white))),
                       ],
                     );
                   });
@@ -521,12 +513,12 @@ class _TrainerScreenState extends State<TrainerScreen> {
                             actions: <Widget>[
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: myButtonColor,
+                                  backgroundColor: primaryColor,
                                 ),
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Text("OK"),
+                                child: Text("OK" , style: TextStyle(color: white)),
                               ),
                             ]);
                       });
@@ -544,12 +536,12 @@ class _TrainerScreenState extends State<TrainerScreen> {
                           actions: <Widget>[
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: myButtonColor,
+                                backgroundColor: primaryColor,
                               ),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Odustani"),
+                              child: Text("Odustani", style: TextStyle(color: white)),
                             ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -561,7 +553,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
                                 }
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Obriši"),
+                              child: Text("Obriši", style: TextStyle(color: white)),
                             ),
                           ],
                         );
@@ -739,7 +731,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
                                 child: userItem.isActive == true
                                     ? Icon(
                                         Icons.check_circle_outline,
-                                        color: primaryColor,
+                                        color: green,
                                       )
                                     : Icon(
                                         Icons.close_outlined,
@@ -751,7 +743,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
                                 child: userItem.isVerified == true
                                     ? Icon(
                                         Icons.check_circle_outline,
-                                        color: primaryColor,
+                                        color: green,
                                       )
                                     : Icon(
                                         Icons.close_outlined,
@@ -804,29 +796,76 @@ class _TrainerScreenState extends State<TrainerScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(35),
                 child: Column(children: [
-                  Container(
-                    alignment: Alignment.center,
-                    width: double.infinity,
-                    height: 180,
-                    color: primaryColor,
-                    child: (_pickedFile != null)
-                        ? Image.file(
-                            File(_pickedFile!.path),
-                            width: 230,
-                            height: 200,
-                            fit: BoxFit.cover,
-                          )
-                        : (userToEdit != null &&
-                                userToEdit.photo != null)
-                            ? Image.memory(
-                                Uint8List.fromList(base64Decode(
-                                    userToEdit.photo!.data!)),
-                                width: 230,
-                                height: 200,
-                                fit: BoxFit.cover,
-                              )
-                            : const Text('Please select an image'),
-                  ),
+                  ValueListenableBuilder<File?>(
+                      valueListenable: _pickedFileNotifier,
+                      builder: (context, pickedFile, _) {
+                        return Container(
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          height: 180,
+                          color: primaryColor,
+                          child: FutureBuilder<String>(
+                            future: _pickedFile != null
+                                ? Future.value(_pickedFile!.path)
+                                : loadPhoto(isEditing
+                                    ? (userToEdit?.photo?.guidId ?? '')
+                                    : ''),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<String> snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('Molimo odaberite fotografiju');
+                              } else {
+                                final imageUrl = snapshot.data;
+
+                                if (imageUrl != null && imageUrl.isNotEmpty) {
+                                  return Container(
+                                    child: FadeInImage(
+                                      image: _pickedFile != null
+                                          ? FileImage(_pickedFile!)
+                                              as ImageProvider<Object>
+                                          : NetworkImage(
+                                              imageUrl,
+                                              headers:
+                                                  Authorization.createHeaders(),
+                                            ) as ImageProvider<Object>,
+                                      placeholder:
+                                          MemoryImage(kTransparentImage),
+                                      fadeInDuration:
+                                          const Duration(milliseconds: 300),
+                                      fit: BoxFit.cover,
+                                      width: 230,
+                                      height: 200,
+                                    ),
+                                  );
+                                } else {
+                                  // Ako uređujete korisnika, pokažite poruku za odabir slike
+                                  // Inače, prikažite podrazumevanu sliku iz assetsa
+                                  return isEditing
+                                      ? Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 8.0),
+                                          child: const Text(
+                                              'Please select an image'),
+                                        )
+                                      : Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 8.0),
+                                          child: Image.asset(
+                                            'assets/images/default_user_image.jpg',
+                                            width: 230,
+                                            height: 200,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        );
+                                }
+                              }
+                            },
+                          ),
+                        );
+                      }),
                   const SizedBox(height: 35),
                   Center(
                     child: SizedBox(
@@ -842,7 +881,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
                           ),
                         ),
                         child: Text('Select An Image',
-                            style: TextStyle(fontSize: 12)),
+                            style: TextStyle(fontSize: 12, color: white)),
                       ),
                     ),
                   )
@@ -977,30 +1016,40 @@ class _TrainerScreenState extends State<TrainerScreen> {
                   SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: _isActive,
-                        onChanged: (bool? value) {
-                          _isActive = !_isActive;
-                        },
-                      ),
-                      Text('Aktivan'),
-                    ],
+                   ValueListenableBuilder<bool>(
+                    valueListenable: _isActiveNotifier,
+                    builder: (context, isActive, child) {
+                      return Row(
+                        children: [
+                          Checkbox(
+                            value: isActive,
+                            onChanged: (bool? value) {
+                              _isActiveNotifier.value = !isActive;
+                            },
+                          ),
+                          Text('Aktivan'),
+                        ],
+                      );
+                    },
                   ),
                   SizedBox(
                     height: 10,
                   ),
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: _isVerified,
-                        onChanged: (bool? value) {
-                          _isVerified = !_isVerified;
-                        },
-                      ),
-                      Text('Verifikovan'),
-                    ],
+                  ValueListenableBuilder<bool>(
+                    valueListenable: _isVerifiedNotifier,
+                    builder: (context, isVerified, child) {
+                      return Row(
+                        children: [
+                          Checkbox(
+                            value: isVerified,
+                            onChanged: (bool? value) {
+                              _isVerifiedNotifier.value = !isVerified;
+                            },
+                          ),
+                          Text('Verifikovan'),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),
@@ -1019,7 +1068,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: myButtonColor),
+          style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
           onPressed: () {
             if (currentPage > 1) {
               setState(() {
@@ -1028,11 +1077,11 @@ class _TrainerScreenState extends State<TrainerScreen> {
               });
             }
           },
-          child: const Icon(Icons.arrow_left_outlined),
+          child: const Icon(Icons.arrow_left_outlined, color: white,),
         ),
         const SizedBox(width: 10),
         ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: myButtonColor),
+          style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
           onPressed: () {
             if (hasNextPage) {
               setState(() {
@@ -1041,7 +1090,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
               });
             }
           },
-          child: const Icon(Icons.arrow_right_outlined),
+          child: const Icon(Icons.arrow_right_outlined, color: white,),
         ),
       ],
     );

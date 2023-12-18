@@ -38,9 +38,11 @@ class MyMaterialApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         buttonTheme: (ButtonThemeData(
           buttonColor: myButtonColor,
+          
         )),
         scaffoldBackgroundColor: bgColor,
         canvasColor: secondaryColor,
+       
       ),
       home: const Scaffold(
         body: LoginScreen(),

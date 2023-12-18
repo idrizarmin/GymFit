@@ -44,6 +44,10 @@ namespace GymFit.Application
                 await CurrentRepository.AddAsync(photo);
                 await UnitOfWork.SaveChangesAsync();
 
+                //var user = await UnitOfWork.UserRepository.GetByIdAsync(1);
+
+                //user.PhotoId = photo.Id;
+
             }
 
             return imageIds;

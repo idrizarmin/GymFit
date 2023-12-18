@@ -148,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderSide: const BorderSide(color: Colors.red),
                       ),
                       labelStyle: const TextStyle(
-                        color: primaryColor,
+                        color:  Color.fromRGBO(41, 209, 32, 1),
                       ),
                     ),
                   ),

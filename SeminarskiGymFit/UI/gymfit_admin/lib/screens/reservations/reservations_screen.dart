@@ -315,7 +315,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                     Colors.green,
                   ), // Boja za status 2
                   Legend(
-                    'Nepotvrđene',
+                    'Otkazane',
                     Colors.orange,
                   ), // Boja za status 3
                   Legend('Zavrsene', Colors.red), 
@@ -355,7 +355,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Zatvori")),
+                              child: Text("Zatvori",style: TextStyle(color: white ))),
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor,
@@ -365,7 +365,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                   InsertReservation();
                                 }
                               },
-                              child: Text("Spremi"))
+                              child: Text("Spremi",style: TextStyle(color: white )))
                         ],
                       );
                     });
