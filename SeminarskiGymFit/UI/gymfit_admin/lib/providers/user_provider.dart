@@ -250,6 +250,37 @@ Future<dynamic> insertUser(Map<String, dynamic> userData) async {
   }
 }
 
+Future<dynamic> updateUser(Map<String, dynamic> updatedUserData) async {
+  try {
+    var uri = Uri.parse('$apiUrl/User');
+    Map<String, String> headers = Authorization.createHeaders();
+
+    var request = http.MultipartRequest('PUT', uri);
+
+    // Convert dynamic values to strings
+    var stringUpdatedUserData = updatedUserData.map((key, value) => MapEntry(key, value.toString()));
+
+    // Add converted fields to the request
+    request.fields.addAll(stringUpdatedUserData);
+
+    // Add the photo to the request if it exists in the updated data
+    if (updatedUserData.containsKey('ProfilePhoto')) {
+      request.files.add(updatedUserData['ProfilePhoto']);
+    }
+
+    var response = await http.Response.fromStream(await request.send());
+
+    if (response.statusCode == 200) {
+      return "OK";
+    } else {
+      throw Exception('Error updating user: ${response.body}');
+    }
+  } catch (e) {
+    throw Exception('Error updating user: $e');
+  }
+}
+
+
   Future<dynamic> edit(dynamic resource) async {
     var uri = Uri.parse('$apiUrl/User');
     Map<String, String> headers = Authorization.createHeaders();

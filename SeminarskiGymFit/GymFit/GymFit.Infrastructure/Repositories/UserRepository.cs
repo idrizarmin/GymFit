@@ -18,19 +18,19 @@ namespace GymFit.Infrastructure
         }
         public int getCountOfUsersAsync(CancellationToken cancellationToken = default)
         {
-            return DbSet.AsNoTracking().Count();
+            return DbSet.Where(s=> s.Role == Role.Korisnik).AsNoTracking().Count();
         }
 
         public int getCountOfUsersActiveAsync(CancellationToken cancellationToken = default)
         {
-            return DbSet.Where(s => s.IsActive == true).AsNoTracking().Count();
+            return DbSet.Where(s => s.IsActive == true && s.Role == Role.Korisnik).AsNoTracking().Count();
 
         }
         
 
         public int getCountOfUsersInactiveAsync(CancellationToken cancellationToken = default)
         {
-            return DbSet.Where(s => s.IsActive == false).AsNoTracking().Count();
+            return DbSet.Where(s => s.IsActive == false && s.Role == Role.Korisnik).AsNoTracking().Count();
         }
 
        public async Task<List<User>> GetUsersForSelection(CancellationToken cancellationToken = default)
@@ -86,6 +86,12 @@ namespace GymFit.Infrastructure
                 
                  
         }
+
+        public override async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        {
+            return await DbSet.Include(s => s.Photo).Where(u=> u.Id== id).FirstOrDefaultAsync(cancellationToken);
+        }
+
 
         public Task<List<User>> GetAllUsers(CancellationToken cancellationToken = default)
         {

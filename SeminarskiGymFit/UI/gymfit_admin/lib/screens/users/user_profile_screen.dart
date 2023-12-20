@@ -1,10 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:gymfit_admin/helpers/constants.dart';
 import 'package:gymfit_admin/helpers/show_error_dialog.dart';
-import 'package:gymfit_admin/models/searchObjects/user_search.dart';
 import 'package:gymfit_admin/models/user.dart';
 import 'package:gymfit_admin/providers/login_provider.dart';
 import 'package:gymfit_admin/providers/photo_provider.dart';
@@ -15,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:http/http.dart' as http;
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({Key? key}) : super(key: key);
@@ -38,13 +36,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   final TextEditingController _birthDateController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _searchController = TextEditingController();
   ValueNotifier<File?> _pickedFileNotifier = ValueNotifier(null);
   final int userId = 0;
   DateTime selectedDate = DateTime.now();
-
-  String _selectedIsActive = 'Svi';
-  String _selectedIsVerified = 'Svi';
   int? selectedGender;
   int? selectedCinemaId;
   int? selectedRole;
@@ -52,10 +46,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   bool _isVerified = false;
   bool isAllSelected = false;
   int currentPage = 1;
+  int pageSize = 20;
 
-  File? _image;
   File? _pickedFile;
-  final _picker = ImagePicker();
   File? selectedImage;
 
   @override
@@ -67,53 +60,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     _photoProvider = context.read<PhotoProvider>();
     _pickedFileNotifier = ValueNotifier<File?>(_pickedFile);
 
-
     loadAdmin();
-    loadUsers(
-        UserSearchObject(
-          name: _searchController.text,
-        ),
-        _selectedIsActive,
-        _selectedIsVerified);
-
-    _searchController.addListener(() {
-      final searchQuery = _searchController.text;
-      loadUsers(UserSearchObject(name: searchQuery), _selectedIsActive,
-          _selectedIsVerified);
-    });
   }
 
- Future<void> _pickImage() async {
+  Future<void> _pickImage() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       _pickedFileNotifier.value = File(pickedFile.path);
       _pickedFile = File(pickedFile.path);
-    }
-  }
-
-  void loadUsers(UserSearchObject searchObject, String selectedIsActive,
-      String selectedIsVerified) async {
-    searchObject.isActive = selectedIsActive == 'Aktivni'
-        ? true
-        : selectedIsActive == 'Neaktivni'
-            ? false
-            : null;
-
-    searchObject.isVerified = selectedIsVerified == 'Verifikovani'
-        ? true
-        : selectedIsVerified == 'Neverifikovani'
-            ? false
-            : null;
-    try {
-      var usersResponse =
-          await _userProvider.getAdminsPaged(searchObject: searchObject);
-      setState(() {
-        users = usersResponse;
-      });
-    } on Exception catch (e) {
-      showErrorDialog(context, e.toString().substring(11));
     }
   }
 
@@ -128,47 +84,56 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       showErrorDialog(context, e.toString().substring(11));
     }
   }
-Future<String> loadPhoto(String guidId) async {
+
+  Future<String> loadPhoto(String guidId) async {
     return await _photoProvider.getPhoto(guidId);
   }
-  void EditUser(int id) async {
-    try {
-      var imageFile = File(_image!.path);
-      List<int> imageBytes = imageFile.readAsBytesSync();
-      String imageBase64 = base64Encode(imageBytes);
 
-      var newUser = {
-        "id": id,
-        "firstName": _firstNameController.text,
-        "lastName": _lastNameController.text,
-        "email": _emailController.text,
-        "dateOfBirth": _birthDateController.text,
-        "phoneNumber": _phoneNumberController.text,
-        "gender": selectedGender,
-        "isActive": _isActive,
-        "role": selectedRole,
-        "isVerified": _isVerified,
-        "password": _passwordController.text,
+  void editUser(int id) async {
+    try {
+      Map<String, dynamic> userData = {
+        "Id": id.toString(),
+        'FirstName': _firstNameController.text,
+        'LastName': _lastNameController.text,
+        'Email': _emailController.text,
+        'Password': _passwordController.text,
+        'PhoneNumber': _phoneNumberController.text,
+        'Address': '',
+        'ProfessionalTitle': '',
+        'Gender': selectedGender.toString(),
+        'DateOfBirth':
+            DateTime.parse(_birthDateController.text).toUtc().toIso8601String(),
+        'Role': '1',
+        'LastSignInAt': DateTime.now().toUtc().toIso8601String(),
+        'IsVerified': _isVerified.toString(),
+        'IsActive': _isActive.toString(),
       };
-      var user = await _userProvider.edit(newUser);
-      if (user == "OK") {
-        Navigator.of(context).pop();
-        loadUsers(UserSearchObject(name: _searchController.text),
-            _selectedIsActive, _selectedIsVerified);
+      if (_pickedFile != null) {
+        userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+          'ProfilePhoto',
+          _pickedFile!.readAsBytesSync(),
+          filename: 'profile_photo.jpg',
+        );
       }
-    } on Exception catch (e) {
-      showErrorDialog(context, e.toString().substring(11));
+      // Send the request
+      var response = await _userProvider.updateUser(userData);
+
+      if (response == "OK") {
+        Navigator.of(context).pop();
+      } else {
+        // Handle error
+        showErrorDialog(context, 'Greška prilikom uređivanja');
+      }
+    } catch (e) {
+      // Handle exceptions
+      showErrorDialog(context, e.toString());
     }
   }
 
   void DeleteUser(int id) async {
     try {
       var user = await _userProvider.delete(id);
-      if (user == "OK") {
-        //Navigator.of(context).pop();
-        loadUsers(UserSearchObject(name: _searchController.text),
-            _selectedIsActive, _selectedIsVerified);
-      }
+      if (user == "OK") {}
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
     }
@@ -176,161 +141,170 @@ Future<String> loadPhoto(String guidId) async {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SafeArea(
-      child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Container(
-                padding: const EdgeInsets.only(bottom: defaultPadding / 2),
-                decoration: const BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Color.fromARGB(255, 18, 16, 50),
-                      width: 2.0,
-                    ),
-                  ),
-                ),
-                child: const Header(pageTitle: "Korisnički račun")),
-            SizedBox(
-              height: 20,
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                                      padding: EdgeInsets.only(right: 8.0),
-                                      child: FutureBuilder<String>(
-                                        future: loadPhoto(
-                                            admin!.photo?.guidId ?? ''),
-                                        builder: (BuildContext context,
-                                            AsyncSnapshot<String> snapshot) {
-                                          if (snapshot.connectionState ==
-                                              ConnectionState.waiting) {
-                                            return CircularProgressIndicator(); 
-                                          } else if (snapshot.hasError) {
-                                            return Text(
-                                                'Greška prilikom učitavanja slike'); 
-                                          } else {
-                                            final imageUrl = snapshot.data;
+    if (admin == null) {
+      return CircularProgressIndicator();
+    }
 
-                                            if (imageUrl != null &&
-                                                imageUrl.isNotEmpty) {
-                                              return Container(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical:
-                                                        8.0), 
-                                                child: FadeInImage(
-                                                  image: NetworkImage(
-                                                    imageUrl,
-                                                    headers: Authorization
-                                                        .createHeaders(),
-                                                  ),
-                                                  placeholder: MemoryImage(
-                                                      kTransparentImage),
-                                                  fadeInDuration:
-                                                      const Duration(
-                                                          milliseconds: 300),
-                                                  fit: BoxFit.fill,
-                                                  width: 80,
-                                                  height: 105,
-                                                ),
-                                              );
-                                            } else {
-                                              return Container(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 8.0),
-                                                child: Image.asset(
-                                                  'assets/images/user1.jpg',
-                                                  width: 80,
-                                                  height: 105,
-                                                  fit: BoxFit.fill,
-                                                ),
-                                              );
-                                            }
-                                          }
-                                        },
-                                      ),
-                                    ),
-                    SizedBox(
-                      width: 30,
-                    ),
-                    Container(
-                      transformAlignment: Alignment.center,
-                      width: 500,
-                      child: Column(
-                        children: [
-                          _buildUserData("Ime: ", admin?.firstName ?? "--"),
-                          _buildUserData("Prezime : ", admin?.lastName ?? "--"),
-                          _buildUserData("Email: ", admin?.email ?? "--"),
-                          _buildUserData(
-                              "Broj telefona: ", admin?.phoneNumber ?? "--"),
-                          _buildUserData(
-                              "Datum rođenja: ",
-                              admin?.dateOfBirth == null
-                                  ? "--"
-                                  : DateFormat('dd/MM/yyyy')
-                                      .format(DateTime.parse(admin!.dateOfBirth!))
-                                      .toString()),
-                          _buildUserData("Spol: ",
-                              admin?.gender == 0 ? "Muski" : "Zesnki" ?? "--"),
-                        ],
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(bottom: defaultPadding / 2),
+                  decoration: const BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Color.fromARGB(255, 18, 16, 50),
+                        width: 2.0,
                       ),
                     ),
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: primaryColor,
+                  ),
+                  child: const Header(pageTitle: "Korisnički račun"),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(right: 8.0),
+                          child: FutureBuilder<String>(
+                            future: loadPhoto(admin!.photo?.guidId ?? ''),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<String> snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('Greška prilikom učitavanja slike');
+                              } else {
+                                final imageUrl = snapshot.data;
+
+                                if (imageUrl != null && imageUrl.isNotEmpty) {
+                                  return Container(
+                                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                                    child: ClipOval(
+                                      child: FadeInImage(
+                                        image: NetworkImage(
+                                          imageUrl,
+                                          headers: Authorization.createHeaders(),
+                                        ),
+                                        placeholder: MemoryImage(kTransparentImage),
+                                        fadeInDuration: const Duration(milliseconds: 300),
+                                        fit: BoxFit.cover,
+                                        width: 200, // Adjust the width as needed
+                                        height: 200, // Adjust the height as needed
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  return Container(
+                                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                                    child: ClipOval(
+                                      child: Image.asset(
+                                        'assets/images/user1.jpg',
+                                        width: 120, // Adjust the width as needed
+                                        height: 120, // Adjust the height as needed
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                          ),
                         ),
-                        onPressed: () {},
-                        child: Text("Promjena lozinke",style: TextStyle(color: white))),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: primaryColor,
+                        const SizedBox(
+                          width: 30,
                         ),
-                        onPressed: () {
-                          showDialog(
+                        Container(
+                          transformAlignment: Alignment.center,
+                          width: 500,
+                          child: Column(
+                            children: [
+                              _buildUserData("Ime: ", admin?.firstName ?? "--"),
+                              _buildUserData("Prezime : ", admin?.lastName ?? "--"),
+                              _buildUserData("Email: ", admin?.email ?? "--"),
+                              _buildUserData("Broj telefona: ", admin?.phoneNumber ?? "--"),
+                              _buildUserData(
+                                "Datum rođenja: ",
+                                admin?.dateOfBirth == null
+                                    ? "--"
+                                    : DateFormat('dd/MM/yyyy')
+                                    .format(
+                                      DateTime.parse(admin!.dateOfBirth!))
+                                    .toString(),
+                              ),
+                              _buildUserData("Spol: ", admin?.gender == 0 ? "Muski" : "Zenski" ?? "--"),
+                            ],
+                          ),
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor,
+                          ),
+                          onPressed: () {},
+                          child: Text("Promjena lozinke", style: TextStyle(color: white)),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor,
+                          ),
+                          onPressed: () {
+                            showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   backgroundColor: secondaryColor,
                                   title: Text("Uredi klijenta"),
                                   content: AddUserForm(
-                                      isEditing: true, userToEdit: admin),
+                                    isEditing: true, userToEdit: admin),
                                   actions: <Widget>[
                                     ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor: primaryColor),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text("Zatvori",style: TextStyle(color: white))),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: primaryColor),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text("Zatvori", style: TextStyle(color: white))),
                                     ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor: primaryColor),
-                                        onPressed: () {
-                                          EditUser(selectedUsers[0].id);
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text("Spremi",style: TextStyle(color: white))),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: primaryColor),
+                                      onPressed: () {
+                                        editUser(selectedUsers[0].id);
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text("Spremi", style: TextStyle(color: white))),
                                   ],
                                 );
                               });
-                        },
-                        child: Text("Uredi profil",style: TextStyle(color: white))),
-                  ],
+                          },
+                          child: Text("Uredi profil", style: TextStyle(color: white)),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ])),
-    ));
+          ),
+        ),
+      ),
+    );
   }
+
+
 
   Widget _buildUserData(String label, String value) {
     return Column(
@@ -356,17 +330,27 @@ Future<String> loadPhoto(String guidId) async {
     );
   }
 
-  Widget AddUserForm({bool isEditing = false, User? userToEdit}) {
+ Widget AddUserForm({bool isEditing = false, User? userToEdit}) {
     if (userToEdit != null) {
-      _firstNameController.text = userToEdit.firstName ?? '';
-      _lastNameController.text = userToEdit.lastName ?? '';
-      _emailController.text = userToEdit.email ?? '';
+      _firstNameController.text = userToEdit.firstName;
+      _lastNameController.text = userToEdit.lastName;
+      _emailController.text = userToEdit.email;
       _phoneNumberController.text = userToEdit.phoneNumber ?? '';
       _birthDateController.text = userToEdit.dateOfBirth ?? '';
-      selectedRole = userToEdit.role;
       selectedGender = userToEdit.gender;
       _isActive = userToEdit.isActive;
       _isVerified = userToEdit.isVerified;
+      _passwordController.text = '';
+      _pickedFile = null;
+    } else {
+      _firstNameController.text = '';
+      _lastNameController.text = '';
+      _emailController.text = '';
+      _phoneNumberController.text = '';
+      _birthDateController.text = '';
+      selectedGender = null;
+      _isVerified = false;
+      _isActive = false;
       _passwordController.text = '';
       _pickedFile = null;
     }
@@ -467,7 +451,7 @@ Future<String> loadPhoto(String guidId) async {
                                 20.0), // Zaobljenost rubova
                           ),
                         ),
-                        child: const Text('Select An Image',
+                        child: Text('Select An Image',
                             style: TextStyle(fontSize: 12, color: white)),
                       ),
                     ),
@@ -530,6 +514,16 @@ Future<String> loadPhoto(String guidId) async {
                     controller: _passwordController,
                     decoration: InputDecoration(labelText: 'Sifra'),
                   ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 30,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   TextFormField(
                     controller: _birthDateController,
                     decoration: InputDecoration(
@@ -559,7 +553,7 @@ Future<String> loadPhoto(String guidId) async {
                       return null;
                     },
                   ),
-                    DropdownButtonFormField<int>(
+                  DropdownButtonFormField<int>(
                     value: selectedGender,
                     onChanged: (newValue) {
                       setState(() {
@@ -590,13 +584,13 @@ Future<String> loadPhoto(String guidId) async {
                       return null;
                     },
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                 
                 ],
               ),
             ),
-            SizedBox(
-              width: 30,
-            ),
-            
           ],
         ),
       ),

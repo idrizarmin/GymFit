@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gymfit_admin/helpers/constants.dart';
@@ -51,9 +49,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
   int currentPage = 1;
   int pageSize = 20;
   int hasNextPage = 0;
-  File? _image;
   File? _pickedFile;
-  final _picker = ImagePicker();
   File? selectedImage;
 
   @override
@@ -195,36 +191,59 @@ class _TrainerScreenState extends State<TrainerScreen> {
     showErrorDialog(context, e.toString());
   }
 }
-  void EditUser(int id) async {
+ void editUser(int id) async {
     try {
-      var imageFile = File(_image!.path);
-      List<int> imageBytes = imageFile.readAsBytesSync();
-      String imageBase64 = base64Encode(imageBytes);
-
-      var newUser = {
-        "id": id,
-        "firstName": _firstNameController.text,
-        "lastName": _lastNameController.text,
-        "email": _emailController.text,
-        "password": _passwordController.text,
-        "phoneNumber": _phoneNumberController.text,
-        "address": null,
-        "professionalTitle": null,
-        "gender": selectedGender,
-        "birthDate": _birthDateController.text,
-        "role": 2,
-        "lastSignInAt": DateTime.now().toUtc().toIso8601String(),
-        "isVerified": _isVerified,
-        "isActive": _isActive,
-        "profilePhoto": imageBase64,
+      Map<String, dynamic> userData = {
+        "Id": id.toString(),
+        'FirstName': _firstNameController.text,
+        'LastName': _lastNameController.text,
+        'Email': _emailController.text,
+        'Password': _passwordController.text,
+        'PhoneNumber': _phoneNumberController.text,
+        'Address': '',
+        'ProfessionalTitle': '',
+        'Gender': selectedGender.toString(),
+        'DateOfBirth':
+            DateTime.parse(_birthDateController.text).toUtc().toIso8601String(),
+        'Role': '2',
+        'LastSignInAt': DateTime.now().toUtc().toIso8601String(),
+        'IsVerified': _isVerified.toString(),
+        'IsActive': _isActive.toString(),
       };
-      var user = await _userProvider.edit(newUser);
-      if (user == "OK") {
-        loadUsers(UserSearchObject(name: _searchController.text),
-            _selectedIsActive, _selectedIsVerified);
+      if (_pickedFile != null) {
+        userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+          'ProfilePhoto',
+          _pickedFile!.readAsBytesSync(),
+          filename: 'profile_photo.jpg',
+        );
       }
-    } on Exception catch (e) {
-      showErrorDialog(context, e.toString().substring(11));
+      // Send the request
+      var response = await _userProvider.updateUser(userData);
+
+      if (response == "OK") {
+        Navigator.of(context).pop();
+        loadUsers(
+          UserSearchObject(
+            name: _searchController.text,
+            spol: null,
+            isActive: null,
+            isVerified: null,
+            PageNumber: currentPage,
+            PageSize: pageSize,
+          ),
+          _selectedIsActive,
+          _selectedIsVerified,
+        );
+        setState(() {
+          selectedGender = null;
+        });
+      } else {
+        // Handle error
+        showErrorDialog(context, 'Greška prilikom uređivanja');
+      }
+    } catch (e) {
+      // Handle exceptions
+      showErrorDialog(context, e.toString());
     }
   }
 
@@ -239,17 +258,6 @@ class _TrainerScreenState extends State<TrainerScreen> {
       showErrorDialog(context, e.toString().substring(11));
     }
   }
-
-  void loadUsersByPage(int page, int pageSize) {
-    UserSearchObject searchObject =
-        UserSearchObject(name: _searchController.text);
-
-    searchObject.PageNumber = page;
-    searchObject.PageSize = pageSize;
-    loadUsers(searchObject, _selectedIsActive, _selectedIsVerified);
-  }
-
- 
 
   @override
   Widget build(BuildContext context) {
@@ -464,7 +472,6 @@ class _TrainerScreenState extends State<TrainerScreen> {
                           style: ElevatedButton.styleFrom(
                               backgroundColor: primaryColor),
                           onPressed: () {
-                            Navigator.of(context).pop();
                           },
                           child: Text("OK", style: TextStyle(color: white)),
                         ),
@@ -511,7 +518,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor),
                             onPressed: () {
-                              EditUser(selectedUsers[0].id);
+                              editUser(selectedUsers[0].id);
                               selectedUsers=[];
                               Navigator.of(context).pop();
                             },
@@ -704,7 +711,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
                                 Row(
                                   children: [
                                     Padding(
-                                      padding: EdgeInsets.only(right: 8.0),
+                                      padding: const EdgeInsets.only(right: 8.0),
                                       child: FutureBuilder<String>(
                                         future: loadPhoto(
                                             userItem.photo?.guidId ?? ''),
@@ -712,19 +719,19 @@ class _TrainerScreenState extends State<TrainerScreen> {
                                             AsyncSnapshot<String> snapshot) {
                                           if (snapshot.connectionState ==
                                               ConnectionState.waiting) {
-                                            return CircularProgressIndicator(); // ili neki drugi indikator učitavanja
+                                            return const CircularProgressIndicator(); // ili neki drugi indikator učitavanja
                                           } else if (snapshot.hasError) {
-                                            return Text(
-                                                'Greška prilikom učitavanja slike'); // ili obradi grešku kako želiš
+                                            return const Text(
+                                                '--'); 
                                           } else {
                                             final imageUrl = snapshot.data;
 
                                             if (imageUrl != null &&
                                                 imageUrl.isNotEmpty) {
                                               return Container(
-                                                padding: EdgeInsets.symmetric(
+                                                padding: const EdgeInsets.symmetric(
                                                     vertical:
-                                                        8.0), // Prilagodi vrednost prema potrebi
+                                                        8.0), 
                                                 child: FadeInImage(
                                                   image: NetworkImage(
                                                     imageUrl,
@@ -804,9 +811,9 @@ class _TrainerScreenState extends State<TrainerScreen> {
 
   Widget AddUserForm({bool isEditing = false, User? userToEdit}) {
     if (userToEdit != null) {
-      _firstNameController.text = userToEdit.firstName ?? '';
-      _lastNameController.text = userToEdit.lastName ?? '';
-      _emailController.text = userToEdit.email ?? '';
+      _firstNameController.text = userToEdit.firstName;
+      _lastNameController.text = userToEdit.lastName ;
+      _emailController.text = userToEdit.email;
       _phoneNumberController.text = userToEdit.phoneNumber ?? '';
       _birthDateController.text = userToEdit.dateOfBirth ?? '';
       selectedGender = userToEdit.gender;

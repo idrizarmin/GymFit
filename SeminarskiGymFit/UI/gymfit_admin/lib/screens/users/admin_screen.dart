@@ -48,9 +48,7 @@ class _AdminScreenState extends State<AdminScreen> {
   int currentPage = 1;
   int pageSize = 20;
   int hasNextPage = 0;
-  File? _image;
   File? _pickedFile;
-  final _picker = ImagePicker();
   File? selectedImage;
 
   @override
@@ -139,7 +137,6 @@ class _AdminScreenState extends State<AdminScreen> {
         'IsActive': _isActive.toString(),
       };
 
-      // Add the photo to the user data
       userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
         'ProfilePhoto',
         _pickedFile!.readAsBytesSync(),
@@ -172,35 +169,57 @@ class _AdminScreenState extends State<AdminScreen> {
     }
   }
 
-  void EditUser(int id) async {
+  void editUser(int id) async {
     try {
-      var imageFile = File(_image!.path);
-      List<int> imageBytes = imageFile.readAsBytesSync();
-      String imageBase64 = base64Encode(imageBytes);
-
-      var newUser = {
-        "id": id,
-        "firstName": _firstNameController.text,
-        "lastName": _lastNameController.text,
-        "email": _emailController.text,
-        "password": _passwordController.text,
-        "phoneNumber": _phoneNumberController.text,
-        "address": null,
-        "professionalTitle": null,
-        "gender": selectedGender,
-        "dateOfBirth": _birthDateController.text,
-        "role": 0,
-        "lastSignInAt": DateTime.now().toUtc().toIso8601String(),
-        "isVerified": _isVerified,
-        "isActive": _isActive,
-        "profilePhoto": imageBase64,
+      Map<String, dynamic> userData = {
+        "Id": id.toString(),
+        'FirstName': _firstNameController.text,
+        'LastName': _lastNameController.text,
+        'Email': _emailController.text,
+        'Password': _passwordController.text,
+        'PhoneNumber': _phoneNumberController.text,
+        'Address': '',
+        'ProfessionalTitle': '',
+        'Gender': selectedGender.toString(),
+        'DateOfBirth':
+            DateTime.parse(_birthDateController.text).toUtc().toIso8601String(),
+        'Role': '0',
+        'LastSignInAt': DateTime.now().toUtc().toIso8601String(),
+        'IsVerified': _isVerified.toString(),
+        'IsActive': _isActive.toString(),
       };
-      var user = await _userProvider.edit(newUser);
-      if (user == "OK") {
-        loadUsers(UserSearchObject(name: _searchController.text));
+      if (_pickedFile != null) {
+        userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+          'ProfilePhoto',
+          _pickedFile!.readAsBytesSync(),
+          filename: 'profile_photo.jpg',
+        );
       }
-    } on Exception catch (e) {
-      showErrorDialog(context, e.toString().substring(11));
+      // Send the request
+      var response = await _userProvider.updateUser(userData);
+
+      if (response == "OK") {
+        Navigator.of(context).pop();
+        loadUsers(
+          UserSearchObject(
+            name: _searchController.text,
+            spol: null,
+            isActive: null,
+            isVerified: null,
+            PageNumber: currentPage,
+            PageSize: pageSize,
+          ),
+        );
+        setState(() {
+          selectedGender = null;
+        });
+      } else {
+        // Handle error
+        showErrorDialog(context, 'Greška prilikom uređivanja');
+      }
+    } catch (e) {
+      // Handle exceptions
+      showErrorDialog(context, e.toString());
     }
   }
 
@@ -386,9 +405,8 @@ class _AdminScreenState extends State<AdminScreen> {
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor),
                             onPressed: () {
-                              EditUser(selectedUsers[0].id);
+                              editUser(selectedUsers[0].id);
                               selectedUsers = [];
-                              Navigator.of(context).pop();
                             },
                             child:
                                 Text("Spremi", style: TextStyle(color: white))),

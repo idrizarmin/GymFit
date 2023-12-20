@@ -16,7 +16,7 @@ namespace GymFit.Infrastructure
             //SeedGyms(modelBuilder);
             //SeedPackages(modelBuilder);
             //SeedUserPackages(modelBuilder);
-            
+
         }
 
         private void SeedCountries(ModelBuilder modelBuilder)
@@ -271,7 +271,7 @@ namespace GymFit.Infrastructure
 
               },
               new() {
-                  Id = 1,
+                  Id = 2,
                   CreatedAt = _dateTime,
                   ModifiedAt = null,
                   description = "Premium članarina, neogranicen broj posjeta",

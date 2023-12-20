@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -11,12 +10,10 @@ import 'package:gymfit_admin/providers/user_provider.dart';
 import 'package:gymfit_admin/screens/components/header.dart';
 import 'package:gymfit_admin/utils/authorization.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
-import 'package:http_parser/http_parser.dart' show MediaType;
 
 class UsersScreen extends StatefulWidget {
   const UsersScreen({Key? key}) : super(key: key);
@@ -53,9 +50,7 @@ class _UsersScreenState extends State<UsersScreen> {
   int currentPage = 1;
   int pageSize = 20;
   int hasNextPage = 0;
-  File? _image;
   File? _pickedFile;
-  final _picker = ImagePicker();
   File? selectedImage;
 
   @override
@@ -68,21 +63,20 @@ class _UsersScreenState extends State<UsersScreen> {
     _pickedFileNotifier = ValueNotifier<File?>(_pickedFile);
 
     loadUsers(
-        UserSearchObject(name: _searchController.text, 
-        PageSize: pageSize,
-        PageNumber:   currentPage
-        ),
-        _selectedIsActive,
-        _selectedIsVerified,
-        );
+      UserSearchObject(
+          name: _searchController.text,
+          PageSize: pageSize,
+          PageNumber: currentPage),
+      _selectedIsActive,
+      _selectedIsVerified,
+    );
 
     _searchController.addListener(() {
       final searchQuery = _searchController.text;
-      loadUsers(UserSearchObject(name: searchQuery), _selectedIsActive,
+      loadUsers(UserSearchObject(name: searchQuery,PageNumber: currentPage, PageSize: pageSize), _selectedIsActive,
           _selectedIsVerified);
     });
   }
-
 
   Future<void> _pickImage() async {
     final pickedFile =
@@ -113,9 +107,8 @@ class _UsersScreenState extends State<UsersScreen> {
           await _userProvider.getPaged(searchObject: searchObject);
       setState(() {
         users = usersResponse;
-        hasNextPage= users.length;
-        for (var element in users) {
-        }
+        hasNextPage = users.length;
+       
       });
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
@@ -126,86 +119,7 @@ class _UsersScreenState extends State<UsersScreen> {
     return await _photoProvider.getPhoto(guidId);
   }
 
-void insertUser() async {
-  try {
-    if (_pickedFile == null) {
-      // Show an alert dialog when no image is selected.
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Alert'),
-            content: Text('Please select an image.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close the dialog
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-      return;
-    }
-
-    Map<String, dynamic> userData = {
-      'FirstName': _firstNameController.text,
-      'LastName': _lastNameController.text,
-      'Email': _emailController.text,
-      'Password': _passwordController.text,
-      'PhoneNumber': _phoneNumberController.text,
-      'Address': '',
-      'ProfessionalTitle': '',
-      'Gender': selectedGender.toString(),
-      'DateOfBirth': DateTime.parse(_birthDateController.text)
-          .toUtc()
-          .toIso8601String(),
-      'Role': '1',
-      'LastSignInAt': DateTime.now().toUtc().toIso8601String(),
-      'IsVerified': _isVerified.toString(),
-      'IsActive': _isActive.toString(),
-      
-    };
-
-  // Add the photo to the user data
-    userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
-  'ProfilePhoto',
-  _pickedFile!.readAsBytesSync(),
-  filename: 'profile_photo.jpg',
-);
-
-    // Send the request
-    var response = await _userProvider.insertUser(userData);
-
-    if (response == "OK") {
-      // Successful response
-      Navigator.of(context).pop();
-      loadUsers(
-        UserSearchObject(
-          name: _searchController.text,
-          spol: null,
-          isActive: null,
-          isVerified: null,
-          PageNumber: currentPage,
-          PageSize: pageSize,
-        ),
-        _selectedIsActive,
-        _selectedIsVerified,
-      );
-    } else {
-      // Handle error
-      showErrorDialog(context, 'Error inserting user');
-    }
-  } catch (e) {
-    // Handle exceptions
-    showErrorDialog(context, e.toString());
-  }
-}
-
-
-  void InsertUser() async {
+  void insertUser() async {
     try {
       if (_pickedFile == null) {
         // Show an alert dialog when no image is selected.
@@ -229,127 +143,115 @@ void insertUser() async {
         return;
       }
 
-      // Check if _pickedFile is not null before reading its bytes
-      List<int> imageBytes = await _pickedFile!.readAsBytes();
-
-      // Convert the bytes to a base64-encoded string
-      String base64Image = base64Encode(imageBytes);
-
-      var newUser = {
-        "id": 0,
-        "firstName": _firstNameController.text,
-        "lastName": _lastNameController.text,
-        "email": _emailController.text,
-        "password": _passwordController.text,
-        "phoneNumber": _phoneNumberController.text,
-        "address": null,
-        "professionalTitle": null,
-        "gender": selectedGender,
-        "birthDate": _birthDateController.text,
-        "role": 1,
-        "lastSignInAt": DateTime.now().toUtc().toIso8601String(),
-        "isVerified": _isVerified,
-        "isActive": _isActive,
-        "profilePhoto": base64Image,
+      Map<String, dynamic> userData = {
+        "Id": null,
+        'FirstName': _firstNameController.text,
+        'LastName': _lastNameController.text,
+        'Email': _emailController.text,
+        'Password': _passwordController.text,
+        'PhoneNumber': _phoneNumberController.text,
+        'Address': '',
+        'ProfessionalTitle': '',
+        'Gender': selectedGender.toString(),
+        'DateOfBirth':
+            DateTime.parse(_birthDateController.text).toUtc().toIso8601String(),
+        'Role': '1',
+        'LastSignInAt': DateTime.now().toUtc().toIso8601String(),
+        'IsVerified': _isVerified.toString(),
+        'IsActive': _isActive.toString(),
       };
-      var user = await _userProvider.insert(newUser);
-      if (user == "OK") {
+
+      // Add the photo to the user data
+      userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+        'ProfilePhoto',
+        _pickedFile!.readAsBytesSync(),
+        filename: 'profile_photo.jpg',
+      );
+
+      // Send the request
+      var response = await _userProvider.insertUser(userData);
+
+      if (response == "OK") {
+        // Successful response
         Navigator.of(context).pop();
-        loadUsers(UserSearchObject(name: _searchController.text),
-            _selectedIsActive, _selectedIsVerified);
+        loadUsers(
+          UserSearchObject(
+            name: _searchController.text,
+            spol: null,
+            isActive: null,
+            isVerified: null,
+            PageNumber: currentPage,
+            PageSize: pageSize,
+          ),
+          _selectedIsActive,
+          _selectedIsVerified,
+        );
+        setState(() {
+          selectedGender = null;
+        });
+      } else {
+        // Handle error
+        showErrorDialog(context, 'Greška prilikom dodavanja');
       }
-    } on Exception catch (e) {
-      showErrorDialog(context, e.toString().substring(11));
+    } catch (e) {
+      // Handle exceptions
+      showErrorDialog(context, e.toString());
     }
   }
 
-  // void InsertUser() async {
-  //   try {
-  //     if (_pickedFile == null) {
-  //       // Show an alert dialog when no image is selected.
-  //       showDialog(
-  //         context: context,
-  //         builder: (BuildContext context) {
-  //           return AlertDialog(
-  //             title: Text('Alert'),
-  //             content: Text('Please select an image.'),
-  //             actions: [
-  //               TextButton(
-  //                 onPressed: () {
-  //                   Navigator.pop(context); // Close the dialog
-  //                 },
-  //                 child: Text('OK'),
-  //               ),
-  //             ],
-  //           );
-  //         },
-  //       );
-  //       return;
-  //     }
-  //     var uri = Uri.parse('$apiUrl/User');
-  //     var request = http.MultipartRequest('POST', uri);
-
-  //     // Add text fields (non-file data) to the request
-  //     request.fields['id'] = '0';
-  //     request.fields['firstName'] = _firstNameController.text;
-  //     request.fields['lastName'] = _lastNameController.text;
-  //     request.fields['email'] = _emailController.text;
-  //     request.fields['password'] = _passwordController.text;
-  //     request.fields['phoneNumber'] = _phoneNumberController.text;
-  //     request.fields['birthDate'] = _birthDateController.text;
-  //     request.fields['role'] = 1.toString();
-  //     request.fields['isVerified'] = _isVerified.toString();
-  //     request.fields['isActive'] = _isActive.toString();
-  //     var file =
-  //         await http.MultipartFile.fromPath('profilePhoto', _pickedFile!.path);
-  //     request.files.add(file);
-
-  //     // Send the request
-  //     var response = await request.send();
-
-  //     if (response.statusCode == 200) {
-  //       Navigator.of(context).pop();
-  //       loadUsers(UserSearchObject(name: _searchController.text),
-  //           _selectedIsActive, _selectedIsVerified);
-  //     } else {
-  //       // Handle the error response
-  //       throw Exception('Error during insertion');
-  //     }
-  //   } on Exception catch (e) {
-  //     showErrorDialog(context, e.toString().substring(11));
-  //   }
-  // }
-
-  void EditUser(int id) async {
+  void editUser(int id) async {
     try {
-      var imageFile = File(_image!.path);
-      List<int> imageBytes = imageFile.readAsBytesSync();
-      String imageBase64 = base64Encode(imageBytes);
-
-      var newUser = {
-        "id": id,
-        "firstName": _firstNameController.text,
-        "lastName": _lastNameController.text,
-        "email": _emailController.text,
-        "password": _passwordController.text,
-        "phoneNumber": _phoneNumberController.text,
-        "address": null,
-        "professionalTitle": null,
-        "gender": selectedGender,
-        "dateOfBirth": _birthDateController.text,
-        "role": 1,
-        "lastSignInAt": DateTime.now().toUtc().toIso8601String(),
-        "isVerified": _isVerified,
-        "isActive": _isActive,
-        "profilePhoto": imageBase64,
+      Map<String, dynamic> userData = {
+        "Id": id.toString(),
+        'FirstName': _firstNameController.text,
+        'LastName': _lastNameController.text,
+        'Email': _emailController.text,
+        'Password': _passwordController.text,
+        'PhoneNumber': _phoneNumberController.text,
+        'Address': '',
+        'ProfessionalTitle': '',
+        'Gender': selectedGender.toString(),
+        'DateOfBirth':
+            DateTime.parse(_birthDateController.text).toUtc().toIso8601String(),
+        'Role': '1',
+        'LastSignInAt': DateTime.now().toUtc().toIso8601String(),
+        'IsVerified': _isVerified.toString(),
+        'IsActive': _isActive.toString(),
       };
-      var user = await _userProvider.edit(newUser);
-      if (user == "OK") {
-        loadUsers(UserSearchObject(name: _searchController.text),
-            _selectedIsActive, _selectedIsVerified);
+      if (_pickedFile != null) {
+        userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+          'ProfilePhoto',
+          _pickedFile!.readAsBytesSync(),
+          filename: 'profile_photo.jpg',
+        );
       }
-    } on Exception catch (e) {
-      showErrorDialog(context, e.toString().substring(11));
+      // Send the request
+      var response = await _userProvider.updateUser(userData);
+
+      if (response == "OK") {
+        Navigator.of(context).pop();
+        loadUsers(
+          UserSearchObject(
+            name: _searchController.text,
+            spol: null,
+            isActive: null,
+            isVerified: null,
+            PageNumber: currentPage,
+            PageSize: pageSize,
+          ),
+          _selectedIsActive,
+          _selectedIsVerified,
+        );
+        setState(() {
+          selectedGender = null;
+        });
+      } else {
+        // Handle error
+        showErrorDialog(context, 'Greška prilikom uređivanja');
+      }
+    } catch (e) {
+      // Handle exceptions
+      showErrorDialog(context, e.toString());
     }
   }
 
@@ -615,6 +517,10 @@ void insertUser() async {
                             backgroundColor: primaryColor,
                           ),
                           onPressed: () {
+                            setState(() {
+                              _isActive = false;
+                              _isVerified = false;
+                            });
                             Navigator.of(context).pop();
                           },
                           child:
@@ -626,6 +532,10 @@ void insertUser() async {
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               insertUser();
+                              setState(() {
+                                _isActive = false;
+                                _isVerified = false;
+                              });
                             }
                           },
                           child: Text("Spremi", style: TextStyle(color: white)))
@@ -710,6 +620,10 @@ void insertUser() async {
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor),
                             onPressed: () {
+                              setState(() {
+                                _isActive = false;
+                                _isVerified = false;
+                              });
                               Navigator.of(context).pop();
                             },
                             child: Text("Zatvori",
@@ -718,9 +632,12 @@ void insertUser() async {
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor),
                             onPressed: () {
-                              EditUser(selectedUsers[0].id);
-                              selectedUsers = [];
-                              Navigator.of(context).pop();
+                              editUser(selectedUsers[0].id);
+                              setState(() {
+                                selectedUsers = [];
+                                _isActive = false;
+                                _isVerified = false;
+                              });
                             },
                             child:
                                 Text("Spremi", style: TextStyle(color: white))),
@@ -910,7 +827,7 @@ void insertUser() async {
                                 ),
                               ),
                               DataCell(Text(
-                                  ("${userItem.firstName.toString() ?? ""} ${userItem.lastName.toString() ?? ""}"))),
+                                  ("${userItem.firstName.toString()} ${userItem.lastName.toString()}"))),
                               DataCell(
                                 Row(
                                   children: [
@@ -977,7 +894,7 @@ void insertUser() async {
                                 child: Text(
                                     userItem.phoneNumber?.toString() ?? ""),
                               )),
-                              DataCell(Text(userItem.email.toString() ?? "")),
+                              DataCell(Text(userItem.email.toString())),
                               DataCell(Text(
                                   userItem.gender == 0 ? "Male" : "Female")),
                               DataCell(Container(
@@ -1015,9 +932,9 @@ void insertUser() async {
 
   Widget AddUserForm({bool isEditing = false, User? userToEdit}) {
     if (userToEdit != null) {
-      _firstNameController.text = userToEdit.firstName ?? '';
-      _lastNameController.text = userToEdit.lastName ?? '';
-      _emailController.text = userToEdit.email ?? '';
+      _firstNameController.text = userToEdit.firstName;
+      _lastNameController.text = userToEdit.lastName;
+      _emailController.text = userToEdit.email;
       _phoneNumberController.text = userToEdit.phoneNumber ?? '';
       _birthDateController.text = userToEdit.dateOfBirth ?? '';
       selectedGender = userToEdit.gender;
@@ -1281,7 +1198,6 @@ void insertUser() async {
                               _isActiveNotifier.value =
                                   !_isActiveNotifier.value;
                               _isActive = _isActiveNotifier.value;
-
                             },
                           ),
                           Text('Aktivan'),
@@ -1348,11 +1264,9 @@ void insertUser() async {
         ElevatedButton(
           style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
           onPressed: () {
-
             setState(() {
               if (hasNextPage == pageSize) {
                 currentPage++;
-              
               }
             });
             if (hasNextPage == pageSize) {
@@ -1373,6 +1287,4 @@ void insertUser() async {
       ],
     );
   }
-
-  
 }
