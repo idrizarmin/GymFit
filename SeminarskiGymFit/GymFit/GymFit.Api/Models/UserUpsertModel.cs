@@ -1,4 +1,5 @@
 ﻿using GymFit.Core;
+using Microsoft.AspNetCore.Http;
 
 namespace GymFit.Api.Models
 {
@@ -20,6 +21,6 @@ namespace GymFit.Api.Models
         public bool IsVerified { get; set; }
         public bool IsActive { get; set; }
 
-        public string? ProfilePhoto { get; set; }
+        public IFormFile ProfilePhoto { get; set; }
     }
 }

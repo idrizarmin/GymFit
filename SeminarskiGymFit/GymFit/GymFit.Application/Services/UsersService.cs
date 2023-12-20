@@ -13,10 +13,12 @@ namespace GymFit.Application
     public class UsersService : BaseService<User, UserDto, UserUpsertDto, UserSearchObject, IUserRepository>, IUserService
     {
         private readonly ICryptoService _cryptoService;
+        private readonly IPhotosService _photosService;
 
-        public UsersService(IMapper mapper, IUnitOfWork unitOfWork, IValidator<UserUpsertDto> validator, ICryptoService cryptoService) : base(mapper, unitOfWork, validator)
+        public UsersService(IMapper mapper, IUnitOfWork unitOfWork, IValidator<UserUpsertDto> validator, ICryptoService cryptoService, IPhotosService photosService) : base(mapper, unitOfWork, validator)
         {
             _cryptoService = cryptoService;
+            _photosService = photosService;
         }
         public async Task<UserSensitiveDto?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
         {
@@ -80,14 +82,15 @@ namespace GymFit.Application
             entity.PasswordSalt = _cryptoService.GenerateSalt();
             entity.PasswordHash = _cryptoService.GenerateHash(dto.Password!, entity.PasswordSalt);
 
-            if (dto.profilePhoto != null)
+            //if (dto.profilePhoto != null)
                 
-                entity.Photo = Mapper.Map<Photo>(dto.profilePhoto);
+            //    entity.Photo = Mapper.Map<Photo>(dto.profilePhoto);
 
             await CurrentRepository.AddAsync(entity, cancellationToken);
             await UnitOfWork.SaveChangesAsync(cancellationToken);
             return Mapper.Map<UserDto>(entity);
         }
+
         public override async Task<UserDto> UpdateAsync(UserUpsertDto dto, CancellationToken cancellationToken = default)
         {
             var user = await CurrentRepository.GetByIdAsync(dto.Id.Value, cancellationToken);
@@ -102,8 +105,8 @@ namespace GymFit.Application
                 user.PasswordHash = _cryptoService.GenerateHash(dto.Password, user.PasswordSalt);
             }
 
-            if (dto.profilePhoto != null)
-                user.Photo = Mapper.Map<Photo>(dto.profilePhoto);
+            //if (dto.profilePhoto != null)
+            //    user.Photo = Mapper.Map<Photo>(dto.profilePhoto);
 
             CurrentRepository.Update(user);
             await UnitOfWork.SaveChangesAsync(cancellationToken);

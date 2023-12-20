@@ -6,5 +6,8 @@ namespace GymFit.Infrastructure.Interfaces
     {
         Task<byte[]?> GetOriginalContet(Guid id);
         Task<byte[]?> GetThumbnailContent(Guid id);
+
+        Task<int> getPhotoId(Guid guidId,CancellationToken cancellationToken = default);
+
     }
 }

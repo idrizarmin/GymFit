@@ -15,6 +15,6 @@
         public DateTime DateOfBirth { get; set; }
         public Role Role { get; set; }
 
-        public PhotoUpsertDto? profilePhoto { get; set; }
+        public int photoId { get; set; }
     }
 }

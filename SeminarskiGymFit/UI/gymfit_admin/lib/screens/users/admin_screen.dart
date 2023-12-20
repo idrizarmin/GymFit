@@ -14,6 +14,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:http/http.dart' as http;
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({Key? key}) : super(key: key);
@@ -45,7 +46,8 @@ class _AdminScreenState extends State<AdminScreen> {
   bool _isVerified = false;
   bool isAllSelected = false;
   int currentPage = 1;
-  int itemsPerPage = 100000000;
+  int pageSize = 20;
+  int hasNextPage = 0;
   File? _image;
   File? _pickedFile;
   final _picker = ImagePicker();
@@ -59,8 +61,10 @@ class _AdminScreenState extends State<AdminScreen> {
     _isActiveNotifier = ValueNotifier<bool>(_isActive);
     _isVerifiedNotifier = ValueNotifier<bool>(_isVerified);
     _pickedFileNotifier = ValueNotifier<File?>(_pickedFile);
-    loadUsers(
-        UserSearchObject(name: _searchController.text, PageSize: itemsPerPage));
+    loadUsers(UserSearchObject(
+        name: _searchController.text,
+        PageSize: pageSize,
+        PageNumber: currentPage));
 
     _searchController.addListener(() {
       final searchQuery = _searchController.text;
@@ -94,36 +98,77 @@ class _AdminScreenState extends State<AdminScreen> {
     }
   }
 
-  void InsertUser() async {
+  void insertUser() async {
     try {
-      var imageFile = File(_image!.path);
-      List<int> imageBytes = imageFile.readAsBytesSync();
-      String imageBase64 = base64Encode(imageBytes);
-
-      var newUser = {
-        "id": 0,
-        "firstName": _firstNameController.text,
-        "lastName": _lastNameController.text,
-        "email": _emailController.text,
-        "password": _passwordController.text,
-        "phoneNumber": _phoneNumberController.text,
-        "address": null,
-        "professionalTitle": null,
-        "gender": selectedGender,
-        "birthDate": _birthDateController.text,
-        "role": 0,
-        "lastSignInAt": DateTime.now().toUtc().toIso8601String(),
-        "isVerified": _isVerified,
-        "isActive": _isActive,
-        "profilePhoto": imageBase64,
-      };
-      var user = await _userProvider.insert(newUser);
-      if (user == "OK") {
-        Navigator.of(context).pop();
-        loadUsers(UserSearchObject(name: _searchController.text));
+      if (_pickedFile == null) {
+        // Show an alert dialog when no image is selected.
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Alert'),
+              content: Text('Please select an image.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close the dialog
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+        return;
       }
-    } on Exception catch (e) {
-      showErrorDialog(context, e.toString().substring(11));
+
+      Map<String, dynamic> userData = {
+        'FirstName': _firstNameController.text,
+        'LastName': _lastNameController.text,
+        'Email': _emailController.text,
+        'Password': _passwordController.text,
+        'PhoneNumber': _phoneNumberController.text,
+        'Address': '',
+        'ProfessionalTitle': '',
+        'Gender': selectedGender.toString(),
+        'DateOfBirth':
+            DateTime.parse(_birthDateController.text).toUtc().toIso8601String(),
+        'Role': '0',
+        'LastSignInAt': DateTime.now().toUtc().toIso8601String(),
+        'IsVerified': _isVerified.toString(),
+        'IsActive': _isActive.toString(),
+      };
+
+      // Add the photo to the user data
+      userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+        'ProfilePhoto',
+        _pickedFile!.readAsBytesSync(),
+        filename: 'profile_photo.jpg',
+      );
+
+      // Send the request
+      var response = await _userProvider.insertUser(userData);
+
+      if (response == "OK") {
+        // Successful response
+        Navigator.of(context).pop();
+        loadUsers(
+          UserSearchObject(
+            name: _searchController.text,
+            spol: null,
+            isActive: null,
+            isVerified: null,
+            PageNumber: currentPage,
+            PageSize: pageSize,
+          ),
+        );
+      } else {
+        // Handle error
+        showErrorDialog(context, 'Error inserting user');
+      }
+    } catch (e) {
+      // Handle exceptions
+      showErrorDialog(context, e.toString());
     }
   }
 
@@ -240,14 +285,15 @@ class _AdminScreenState extends State<AdminScreen> {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text("Zatvori", style: TextStyle(color: white))),
+                          child:
+                              Text("Zatvori", style: TextStyle(color: white))),
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: primaryColor,
                           ),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              InsertUser();
+                              insertUser();
                             }
                           },
                           child: Text("Spremi", style: TextStyle(color: white)))
@@ -334,7 +380,8 @@ class _AdminScreenState extends State<AdminScreen> {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Zatvori", style: TextStyle(color: white))),
+                            child: Text("Zatvori",
+                                style: TextStyle(color: white))),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor),
@@ -343,7 +390,8 @@ class _AdminScreenState extends State<AdminScreen> {
                               selectedUsers = [];
                               Navigator.of(context).pop();
                             },
-                            child: Text("Spremi", style: TextStyle(color: white))),
+                            child:
+                                Text("Spremi", style: TextStyle(color: white))),
                       ],
                     );
                   });
@@ -389,7 +437,8 @@ class _AdminScreenState extends State<AdminScreen> {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Text("OK", style: TextStyle(color: white)),
+                                child:
+                                    Text("OK", style: TextStyle(color: white)),
                               ),
                             ]);
                       });
@@ -412,7 +461,8 @@ class _AdminScreenState extends State<AdminScreen> {
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Odustani", style: TextStyle(color: white)),
+                              child: Text("Odustani",
+                                  style: TextStyle(color: white)),
                             ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -424,7 +474,8 @@ class _AdminScreenState extends State<AdminScreen> {
                                 }
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Obriši", style: TextStyle(color: white)),
+                              child: Text("Obriši",
+                                  style: TextStyle(color: white)),
                             ),
                           ],
                         );
@@ -540,10 +591,10 @@ class _AdminScreenState extends State<AdminScreen> {
                                             AsyncSnapshot<String> snapshot) {
                                           if (snapshot.connectionState ==
                                               ConnectionState.waiting) {
-                                            return CircularProgressIndicator(); 
+                                            return CircularProgressIndicator();
                                           } else if (snapshot.hasError) {
                                             return Text(
-                                                'Greška prilikom učitavanja slike'); 
+                                                'Greška prilikom učitavanja slike');
                                           } else {
                                             final imageUrl = snapshot.data;
 
@@ -551,8 +602,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                                 imageUrl.isNotEmpty) {
                                               return Container(
                                                 padding: EdgeInsets.symmetric(
-                                                    vertical:
-                                                        8.0), 
+                                                    vertical: 8.0),
                                                 child: FadeInImage(
                                                   image: NetworkImage(
                                                     imageUrl,
@@ -891,9 +941,11 @@ class _AdminScreenState extends State<AdminScreen> {
                       return Row(
                         children: [
                           Checkbox(
-                            value: isActive,
+                            value: _isActiveNotifier.value,
                             onChanged: (bool? value) {
-                              _isActiveNotifier.value = !isActive;
+                              _isActiveNotifier.value =
+                                  !_isActiveNotifier.value;
+                              _isActive = _isActiveNotifier.value;
                             },
                           ),
                           Text('Aktivan'),
@@ -910,9 +962,11 @@ class _AdminScreenState extends State<AdminScreen> {
                       return Row(
                         children: [
                           Checkbox(
-                            value: isVerified,
+                            value: _isVerifiedNotifier.value,
                             onChanged: (bool? value) {
-                              _isVerifiedNotifier.value = !isVerified;
+                              _isVerifiedNotifier.value =
+                                  !_isVerifiedNotifier.value;
+                              _isVerified = _isVerifiedNotifier.value;
                             },
                           ),
                           Text('Verifikovan'),
@@ -930,9 +984,6 @@ class _AdminScreenState extends State<AdminScreen> {
   }
 
   Widget buildPagination() {
-    final endIndex = (currentPage * itemsPerPage).clamp(0, users.length);
-    final hasNextPage = endIndex < users.length;
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -942,24 +993,42 @@ class _AdminScreenState extends State<AdminScreen> {
             if (currentPage > 1) {
               setState(() {
                 currentPage--;
-                loadUsers(UserSearchObject());
               });
+              loadUsers(
+                UserSearchObject(
+                  PageNumber: currentPage,
+                  PageSize: pageSize,
+                ),
+              );
             }
           },
-          child: const Icon(Icons.arrow_left_outlined,color: white,),
+          child: const Icon(
+            Icons.arrow_left_outlined,
+            color: white,
+          ),
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 16),
         ElevatedButton(
           style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
           onPressed: () {
-            if (hasNextPage) {
-              setState(() {
+            setState(() {
+              if (hasNextPage == pageSize) {
                 currentPage++;
-                loadUsers(UserSearchObject());
-              });
+              }
+            });
+            if (hasNextPage == pageSize) {
+              loadUsers(
+                UserSearchObject(
+                    PageNumber: currentPage,
+                    PageSize: pageSize,
+                    name: _searchController.text),
+              );
             }
           },
-          child: const Icon(Icons.arrow_right_outlined,color: white,),
+          child: const Icon(
+            Icons.arrow_right_outlined,
+            color: white,
+          ),
         ),
       ],
     );

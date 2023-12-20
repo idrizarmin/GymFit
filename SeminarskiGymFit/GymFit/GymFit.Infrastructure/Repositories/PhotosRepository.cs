@@ -19,5 +19,13 @@ namespace GymFit.Infrastructure
         {
             return await DbSet.Where(i => i.GuidId == id).Select(i => i.ThumbnailContent).SingleOrDefaultAsync();
         }
+
+        public async Task<int> getPhotoId(Guid guidId, CancellationToken cancellationToken = default)
+        {
+            var photo = await DbSet.Where(i=> i.GuidId == guidId).FirstOrDefaultAsync();
+
+            return photo.Id;
+            
+        }
     }
 }

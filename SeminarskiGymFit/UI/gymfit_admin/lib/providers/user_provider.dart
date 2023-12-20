@@ -219,19 +219,36 @@ Future<List<UserForSelection>> getTrainersForSelection(
       throw Exception('Failed to load data');
     }
   }
-  @override
-  Future<dynamic> insert(dynamic resource) async {
+
+Future<dynamic> insertUser(Map<String, dynamic> userData) async {
+  try {
     var uri = Uri.parse('$apiUrl/User');
     Map<String, String> headers = Authorization.createHeaders();
 
-    var jsonRequest = jsonEncode(resource);
-    var response = await http.post(uri, headers: headers, body: jsonRequest);
+    var request = http.MultipartRequest('POST', uri);
+
+    // Convert dynamic values to strings
+    var stringUserData = userData.map((key, value) => MapEntry(key, value.toString()));
+
+    // Add converted fields to the request
+    request.fields.addAll(stringUserData);
+
+    // Add the photo to the request
+    if (userData.containsKey('ProfilePhoto')) {
+      request.files.add(userData['ProfilePhoto']);
+    }
+
+    var response = await http.Response.fromStream(await request.send());
+
     if (response.statusCode == 200) {
       return "OK";
     } else {
-      throw Exception('Greška prilikom unosa');
+      throw Exception('Error inserting user: ${response.body}');
     }
+  } catch (e) {
+    throw Exception('Error inserting user: $e');
   }
+}
 
   Future<dynamic> edit(dynamic resource) async {
     var uri = Uri.parse('$apiUrl/User');
@@ -269,9 +286,9 @@ Future<List<UserForSelection>> getTrainersForSelection(
     final response = await http.get(uri, headers: headers);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
-      return data.map((d) => fromJson(d)).cast<User>();
+      
 
-
+      return fromJson(data);
     } else {
       throw Exception('Failed to load data');
     }

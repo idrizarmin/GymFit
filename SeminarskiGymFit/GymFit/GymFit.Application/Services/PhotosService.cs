@@ -1,17 +1,14 @@
 ﻿using AutoMapper;
 using Azure;
 using FluentValidation;
-
 using GymFit.Application.Interfaces;
 using GymFit.Core;
 using GymFit.Infrastructure;
 using GymFit.Infrastructure.Interfaces;
 using SixLabors.ImageSharp.Formats.Jpeg;
 
-using static System.Net.Mime.MediaTypeNames;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-
 
 namespace GymFit.Application
 {
@@ -44,9 +41,8 @@ namespace GymFit.Application
                 await CurrentRepository.AddAsync(photo);
                 await UnitOfWork.SaveChangesAsync();
 
-                //var user = await UnitOfWork.UserRepository.GetByIdAsync(1);
+                imageIds.Add(photo.GuidId);
 
-                //user.PhotoId = photo.Id;
 
             }
 
@@ -85,6 +81,11 @@ namespace GymFit.Application
             }
 
             return await CurrentRepository.GetThumbnailContent(id);
+        }
+
+        public async Task<int> getPhotoIdAsync(Guid guidId, CancellationToken cancellationToken = default)
+        {
+            return await CurrentRepository.getPhotoId(guidId, cancellationToken);
         }
     }
 }

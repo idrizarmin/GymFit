@@ -15,6 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:http/http.dart' as http;
 
 class TrainerScreen extends StatefulWidget {
   const TrainerScreen({Key? key}) : super(key: key);
@@ -48,7 +49,8 @@ class _TrainerScreenState extends State<TrainerScreen> {
   bool _isVerified = false;
   bool isAllSelected = false;
   int currentPage = 1;
-  int itemsPerPage = 100000000;
+  int pageSize = 20;
+  int hasNextPage = 0;
   File? _image;
   File? _pickedFile;
   final _picker = ImagePicker();
@@ -65,7 +67,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
 
 
     loadUsers(
-        UserSearchObject(name: _searchController.text, PageSize: itemsPerPage),
+        UserSearchObject(name: _searchController.text, PageSize: pageSize),
         _selectedIsActive,
         _selectedIsVerified);
 
@@ -77,13 +79,15 @@ class _TrainerScreenState extends State<TrainerScreen> {
   }
 
   Future<void> _pickImage() async {
-  final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
-  if (pickedFile != null) {
-    _pickedFileNotifier.value = File(pickedFile.path);
-    _pickedFile = File(pickedFile.path);
+    if (pickedFile != null) {
+      _pickedFileNotifier.value = File(pickedFile.path);
+      _pickedFile = File(pickedFile.path);
+    }
   }
-}
+
 
   void loadUsers(UserSearchObject searchObject, String selectedIsActive,
       String selectedIsVerified) async {
@@ -114,40 +118,83 @@ class _TrainerScreenState extends State<TrainerScreen> {
     return await _photoProvider.getPhoto(guidId);
   }
 
-  void InsertUser() async {
-    try {
-      var imageFile = File(_image!.path);
-      List<int> imageBytes = imageFile.readAsBytesSync();
-      String imageBase64 = base64Encode(imageBytes);
-
-      var newUser = {
-        "id": 0,
-        "firstName": _firstNameController.text,
-        "lastName": _lastNameController.text,
-        "email": _emailController.text,
-        "password": _passwordController.text,
-        "phoneNumber": _phoneNumberController.text,
-        "address": null,
-        "professionalTitle": null,
-        "gender": selectedGender,
-        "dateOfBirth": _birthDateController.text,
-        "role": 2,
-        "lastSignInAt": DateTime.now().toUtc().toIso8601String(),
-        "isVerified": _isVerified,
-        "isActive": _isActive,
-        "profilePhoto": imageBase64,
-      };
-      var user = await _userProvider.insert(newUser);
-      if (user == "OK") {
-        Navigator.of(context).pop();
-        loadUsers(UserSearchObject(name: _searchController.text),
-            _selectedIsActive, _selectedIsVerified);
-      }
-    } on Exception catch (e) {
-      showErrorDialog(context, e.toString().substring(11));
+ void insertUser() async {
+  try {
+    if (_pickedFile == null) {
+      // Show an alert dialog when no image is selected.
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Alert'),
+            content: Text('Please select an image.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
     }
-  }
 
+    Map<String, dynamic> userData = {
+      'FirstName': _firstNameController.text,
+      'LastName': _lastNameController.text,
+      'Email': _emailController.text,
+      'Password': _passwordController.text,
+      'PhoneNumber': _phoneNumberController.text,
+      'Address': '',
+      'ProfessionalTitle': '',
+      'Gender': selectedGender.toString(),
+      'DateOfBirth': DateTime.parse(_birthDateController.text)
+          .toUtc()
+          .toIso8601String(),
+      'Role': '2',
+      'LastSignInAt': DateTime.now().toUtc().toIso8601String(),
+      'IsVerified': _isVerified.toString(),
+      'IsActive': _isActive.toString(),
+      
+    };
+
+  // Add the photo to the user data
+    userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+  'ProfilePhoto',
+  _pickedFile!.readAsBytesSync(),
+  filename: 'profile_photo.jpg',
+);
+
+    // Send the request
+    var response = await _userProvider.insertUser(userData);
+
+    if (response == "OK") {
+      // Successful response
+      Navigator.of(context).pop();
+      loadUsers(
+        UserSearchObject(
+          name: _searchController.text,
+          spol: null,
+          isActive: null,
+          isVerified: null,
+          PageNumber: currentPage,
+          PageSize: pageSize,
+        ),
+        _selectedIsActive,
+        _selectedIsVerified,
+      );
+    } else {
+      // Handle error
+      showErrorDialog(context, 'Error inserting user');
+    }
+  } catch (e) {
+    // Handle exceptions
+    showErrorDialog(context, e.toString());
+  }
+}
   void EditUser(int id) async {
     try {
       var imageFile = File(_image!.path);
@@ -202,11 +249,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
     loadUsers(searchObject, _selectedIsActive, _selectedIsVerified);
   }
 
-  List<User> getCurrentPageUsers() {
-    final startIndex = (currentPage - 1) * itemsPerPage;
-    final endIndex = (currentPage * itemsPerPage).clamp(0, users.length);
-    return users.sublist(startIndex, endIndex);
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -276,7 +319,9 @@ class _TrainerScreenState extends State<TrainerScreen> {
                       loadUsers(
                           UserSearchObject(
                               spol: selectedGender,
-                              name: _searchController.text),
+                              name: _searchController.text,
+                              PageNumber: currentPage,
+                              PageSize: pageSize),
                           _selectedIsActive,
                           _selectedIsVerified);
                     });
@@ -341,8 +386,6 @@ class _TrainerScreenState extends State<TrainerScreen> {
     );
   }
 
-  
-
   Row buildButtons(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -376,7 +419,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
                           ),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              InsertUser();
+                              insertUser();
                             }
                           },
                           child: Text("Spremi", style: TextStyle(color: white)))
@@ -1016,15 +1059,18 @@ class _TrainerScreenState extends State<TrainerScreen> {
                   SizedBox(
                     height: 20,
                   ),
-                   ValueListenableBuilder<bool>(
+                    ValueListenableBuilder<bool>(
                     valueListenable: _isActiveNotifier,
                     builder: (context, isActive, child) {
                       return Row(
                         children: [
                           Checkbox(
-                            value: isActive,
+                            value: _isActiveNotifier.value,
                             onChanged: (bool? value) {
-                              _isActiveNotifier.value = !isActive;
+                              _isActiveNotifier.value =
+                                  !_isActiveNotifier.value;
+                              _isActive = _isActiveNotifier.value;
+
                             },
                           ),
                           Text('Aktivan'),
@@ -1041,9 +1087,11 @@ class _TrainerScreenState extends State<TrainerScreen> {
                       return Row(
                         children: [
                           Checkbox(
-                            value: isVerified,
+                            value: _isVerifiedNotifier.value,
                             onChanged: (bool? value) {
-                              _isVerifiedNotifier.value = !isVerified;
+                              _isVerifiedNotifier.value =
+                                  !_isVerifiedNotifier.value;
+                              _isVerified = _isVerifiedNotifier.value;
                             },
                           ),
                           Text('Verifikovan'),
@@ -1061,9 +1109,6 @@ class _TrainerScreenState extends State<TrainerScreen> {
   }
 
   Widget buildPagination() {
-    final endIndex = (currentPage * itemsPerPage).clamp(0, users.length);
-    final hasNextPage = endIndex < users.length;
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -1073,26 +1118,49 @@ class _TrainerScreenState extends State<TrainerScreen> {
             if (currentPage > 1) {
               setState(() {
                 currentPage--;
-                loadUsersByPage(currentPage, itemsPerPage);
               });
+              loadUsers(
+                  UserSearchObject(
+                    PageNumber: currentPage,
+                    PageSize: pageSize,
+                  ),
+                  _selectedIsActive,
+                  _selectedIsVerified);
             }
           },
-          child: const Icon(Icons.arrow_left_outlined, color: white,),
+          child: const Icon(
+            Icons.arrow_left_outlined,
+            color: white,
+          ),
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 16),
         ElevatedButton(
           style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
           onPressed: () {
-            if (hasNextPage) {
-              setState(() {
+
+            setState(() {
+              if (hasNextPage == pageSize) {
                 currentPage++;
-                loadUsersByPage(currentPage, itemsPerPage);
-              });
+              
+              }
+            });
+            if (hasNextPage == pageSize) {
+              loadUsers(
+                  UserSearchObject(
+                      PageNumber: currentPage,
+                      PageSize: pageSize,
+                      name: _searchController.text),
+                  _selectedIsActive,
+                  _selectedIsVerified);
             }
           },
-          child: const Icon(Icons.arrow_right_outlined, color: white,),
+          child: const Icon(
+            Icons.arrow_right_outlined,
+            color: white,
+          ),
         ),
       ],
     );
   }
+
 }

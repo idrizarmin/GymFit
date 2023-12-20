@@ -13,9 +13,11 @@ namespace GymFit.Api.Controllers
     public class UserController : BaseCrudController<UserDto, UserUpsertDto, UserSearchObject, IUserService>
     {
         private readonly IMapper _mapper;
-        public UserController(IMapper mapper, IUserService service, ILogger<UserController> logger) : base(service, logger)
+        private readonly IPhotosService _photosService;
+        public UserController(IMapper mapper, IUserService service, IPhotosService photosService, ILogger<UserController> logger) : base(service, logger)
         {
             _mapper = mapper;
+            _photosService = photosService;
         }
         [NonAction]
         public override Task<IActionResult> Post(UserUpsertDto upsertDto, CancellationToken cancellationToken = default) => base.Post(upsertDto, cancellationToken);
@@ -140,23 +142,42 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
-
         [HttpPost]
-        public async Task<IActionResult> Post(UserUpsertModel model, CancellationToken cancellationToken = default)
-        {
+        public async Task<IActionResult> Post([FromForm]UserUpsertModel model, CancellationToken cancellationToken = default)
+         {
             try
             {
                 var upsertDto = _mapper.Map<UserUpsertDto>(model);
 
-                if (!string.IsNullOrEmpty(model.ProfilePhoto))
+                if (model.ProfilePhoto != null && model.ProfilePhoto.Length > 0)
                 {
-                    byte[] photoData = Convert.FromBase64String(model.ProfilePhoto);
-
-                    upsertDto.profilePhoto = new PhotoUpsertDto
+                    var formFile = model.ProfilePhoto;
+                    //ako ne radilo pokusat uklonit memory stream 
+                    using (var memoryStream = new MemoryStream())
                     {
-                        Data = photoData,
-                        ContentType = "image/png"
-                    };
+                        await formFile.CopyToAsync(memoryStream);
+                        var photoData = memoryStream.ToArray();
+
+                        var photoInputModel = new PhotoInputModel
+                        {
+                            FileName = formFile.FileName,
+                            Type = formFile.ContentType,
+                            Content = formFile.OpenReadStream()
+                        };
+
+                        //var imageIds = await _photosService.ProcessAsync(model.ProfilePhoto.Select(i => new PhotoInputModel
+                        //{
+                        //    FileName = i.FileName,
+                        //    Type = i.ContentType,
+                        //    Content = i.OpenReadStream()
+                        //}));
+
+                        var guidId  =  await _photosService.ProcessAsync(new List<PhotoInputModel> { photoInputModel });
+
+                        var photoId = await _photosService.getPhotoIdAsync(guidId[0], cancellationToken);    
+
+                        upsertDto.photoId = photoId;
+                    }
                 }
 
                 var user = await Service.AddAsync(upsertDto, cancellationToken);
@@ -169,35 +190,65 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
-        
-        [HttpPut]
-        public async Task<IActionResult> Put(UserUpsertModel model, CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                var upsertDto = _mapper.Map<UserUpsertDto>(model);
 
-                if (!string.IsNullOrEmpty(model.ProfilePhoto))
-                {
-                    byte[] photoData = Convert.FromBase64String(model.ProfilePhoto);
 
-                    upsertDto.profilePhoto = new PhotoUpsertDto
-                    {
-                        Data = photoData,
-                        ContentType = "image/png"
-                    };
-                }
+        //[HttpPost]
+        //public async Task<IActionResult> Post(UserUpsertModel model, CancellationToken cancellationToken = default)
+        //{
+        //    try
+        //    {
+        //        var upsertDto = _mapper.Map<UserUpsertDto>(model);
 
-                await Service.UpdateAsync(upsertDto, cancellationToken);
+        //        if (!string.IsNullOrEmpty(model.ProfilePhoto.ToString()))
+        //        {
+        //            byte[] photoData = Convert.FromBase64String(model.ProfilePhoto);
 
-                return Ok(upsertDto);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error while trying to get top users");
-                return BadRequest();
-            }
-        }
+        //            upsertDto.profilePhoto = new PhotoUpsertDto
+        //            {
+        //                Data = photoData,
+        //                ContentType = "image/png"
+        //            };
+        //        }
+
+        //        var user = await Service.AddAsync(upsertDto, cancellationToken);
+
+        //        return Ok(user);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Logger.LogError(e, "Error while trying to add a user");
+        //        return BadRequest();
+        //    }
+        //}
+
+        //[HttpPut]
+        //public async Task<IActionResult> Put(UserUpsertModel model, CancellationToken cancellationToken = default)
+        //{
+        //    try
+        //    {
+        //        var upsertDto = _mapper.Map<UserUpsertDto>(model);
+
+        //        if (!string.IsNullOrEmpty(model.ProfilePhoto))
+        //        {
+        //            byte[] photoData = Convert.FromBase64String(model.ProfilePhoto);
+
+        //            upsertDto.profilePhoto = new PhotoUpsertDto
+        //            {
+        //                Data = photoData,
+        //                ContentType = "image/png"
+        //            };
+        //        }
+
+        //        await Service.UpdateAsync(upsertDto, cancellationToken);
+
+        //        return Ok(upsertDto);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Logger.LogError(e, "Error while trying to get top users");
+        //        return BadRequest();
+        //    }
+        //}
         [HttpPut("ChangePassword")]
         public async Task<IActionResult> ChangepPassword([FromBody] UserChangePasswordDto dto, CancellationToken cancellationtoken = default)
         {

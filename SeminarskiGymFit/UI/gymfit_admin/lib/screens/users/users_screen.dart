@@ -11,10 +11,12 @@ import 'package:gymfit_admin/providers/user_provider.dart';
 import 'package:gymfit_admin/screens/components/header.dart';
 import 'package:gymfit_admin/utils/authorization.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:http_parser/http_parser.dart' show MediaType;
 
 class UsersScreen extends StatefulWidget {
   const UsersScreen({Key? key}) : super(key: key);
@@ -52,7 +54,6 @@ class _UsersScreenState extends State<UsersScreen> {
   int pageSize = 20;
   int hasNextPage = 0;
   File? _image;
-  // XFile? _pickedFile;
   File? _pickedFile;
   final _picker = ImagePicker();
   File? selectedImage;
@@ -67,9 +68,13 @@ class _UsersScreenState extends State<UsersScreen> {
     _pickedFileNotifier = ValueNotifier<File?>(_pickedFile);
 
     loadUsers(
-        UserSearchObject(name: _searchController.text, PageSize: pageSize),
+        UserSearchObject(name: _searchController.text, 
+        PageSize: pageSize,
+        PageNumber:   currentPage
+        ),
         _selectedIsActive,
-        _selectedIsVerified);
+        _selectedIsVerified,
+        );
 
     _searchController.addListener(() {
       final searchQuery = _searchController.text;
@@ -78,25 +83,16 @@ class _UsersScreenState extends State<UsersScreen> {
     });
   }
 
-  // Future<void> _pickImage() async {
-  //   final XFile? pickedFile =
-  //       await _picker.pickImage(source: ImageSource.gallery);
 
-  //   if (pickedFile != null) {
-  //     setState(() {
-  //       _pickedFile = pickedFile;
-  //       _image = File(pickedFile.path);
-  //     });
-  //   }
-  // }
- Future<void> _pickImage() async {
-  final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+  Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
-  if (pickedFile != null) {
-    _pickedFileNotifier.value = File(pickedFile.path);
-    _pickedFile = File(pickedFile.path);
+    if (pickedFile != null) {
+      _pickedFileNotifier.value = File(pickedFile.path);
+      _pickedFile = File(pickedFile.path);
+    }
   }
-}
 
   void loadUsers(UserSearchObject searchObject, String selectedIsActive,
       String selectedIsVerified) async {
@@ -117,8 +113,8 @@ class _UsersScreenState extends State<UsersScreen> {
           await _userProvider.getPaged(searchObject: searchObject);
       setState(() {
         users = usersResponse;
+        hasNextPage= users.length;
         for (var element in users) {
-          print(element.photo!.guidId);
         }
       });
     } on Exception catch (e) {
@@ -130,21 +126,114 @@ class _UsersScreenState extends State<UsersScreen> {
     return await _photoProvider.getPhoto(guidId);
   }
 
- Future<void> uploadImages(List<http.MultipartFile> images) async {
-    try {
-      List<String> imageIds = await _photoProvider.uploadImages(images);
-      // Handle the uploaded image IDs as needed
-    } catch (e) {
-      // Handle the error
-      print('Error uploading images: $e');
+void insertUser() async {
+  try {
+    if (_pickedFile == null) {
+      // Show an alert dialog when no image is selected.
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Alert'),
+            content: Text('Please select an image.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
     }
+
+    Map<String, dynamic> userData = {
+      'FirstName': _firstNameController.text,
+      'LastName': _lastNameController.text,
+      'Email': _emailController.text,
+      'Password': _passwordController.text,
+      'PhoneNumber': _phoneNumberController.text,
+      'Address': '',
+      'ProfessionalTitle': '',
+      'Gender': selectedGender.toString(),
+      'DateOfBirth': DateTime.parse(_birthDateController.text)
+          .toUtc()
+          .toIso8601String(),
+      'Role': '1',
+      'LastSignInAt': DateTime.now().toUtc().toIso8601String(),
+      'IsVerified': _isVerified.toString(),
+      'IsActive': _isActive.toString(),
+      
+    };
+
+  // Add the photo to the user data
+    userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+  'ProfilePhoto',
+  _pickedFile!.readAsBytesSync(),
+  filename: 'profile_photo.jpg',
+);
+
+    // Send the request
+    var response = await _userProvider.insertUser(userData);
+
+    if (response == "OK") {
+      // Successful response
+      Navigator.of(context).pop();
+      loadUsers(
+        UserSearchObject(
+          name: _searchController.text,
+          spol: null,
+          isActive: null,
+          isVerified: null,
+          PageNumber: currentPage,
+          PageSize: pageSize,
+        ),
+        _selectedIsActive,
+        _selectedIsVerified,
+      );
+    } else {
+      // Handle error
+      showErrorDialog(context, 'Error inserting user');
+    }
+  } catch (e) {
+    // Handle exceptions
+    showErrorDialog(context, e.toString());
   }
+}
+
 
   void InsertUser() async {
     try {
-      var imageFile = File(_image!.path);
-      List<int> imageBytes = imageFile.readAsBytesSync();
-      String imageBase64 = base64Encode(imageBytes);
+      if (_pickedFile == null) {
+        // Show an alert dialog when no image is selected.
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Alert'),
+              content: Text('Please select an image.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close the dialog
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+        return;
+      }
+
+      // Check if _pickedFile is not null before reading its bytes
+      List<int> imageBytes = await _pickedFile!.readAsBytes();
+
+      // Convert the bytes to a base64-encoded string
+      String base64Image = base64Encode(imageBytes);
 
       var newUser = {
         "id": 0,
@@ -161,7 +250,7 @@ class _UsersScreenState extends State<UsersScreen> {
         "lastSignInAt": DateTime.now().toUtc().toIso8601String(),
         "isVerified": _isVerified,
         "isActive": _isActive,
-        "profilePhoto": imageBase64,
+        "profilePhoto": base64Image,
       };
       var user = await _userProvider.insert(newUser);
       if (user == "OK") {
@@ -173,6 +262,63 @@ class _UsersScreenState extends State<UsersScreen> {
       showErrorDialog(context, e.toString().substring(11));
     }
   }
+
+  // void InsertUser() async {
+  //   try {
+  //     if (_pickedFile == null) {
+  //       // Show an alert dialog when no image is selected.
+  //       showDialog(
+  //         context: context,
+  //         builder: (BuildContext context) {
+  //           return AlertDialog(
+  //             title: Text('Alert'),
+  //             content: Text('Please select an image.'),
+  //             actions: [
+  //               TextButton(
+  //                 onPressed: () {
+  //                   Navigator.pop(context); // Close the dialog
+  //                 },
+  //                 child: Text('OK'),
+  //               ),
+  //             ],
+  //           );
+  //         },
+  //       );
+  //       return;
+  //     }
+  //     var uri = Uri.parse('$apiUrl/User');
+  //     var request = http.MultipartRequest('POST', uri);
+
+  //     // Add text fields (non-file data) to the request
+  //     request.fields['id'] = '0';
+  //     request.fields['firstName'] = _firstNameController.text;
+  //     request.fields['lastName'] = _lastNameController.text;
+  //     request.fields['email'] = _emailController.text;
+  //     request.fields['password'] = _passwordController.text;
+  //     request.fields['phoneNumber'] = _phoneNumberController.text;
+  //     request.fields['birthDate'] = _birthDateController.text;
+  //     request.fields['role'] = 1.toString();
+  //     request.fields['isVerified'] = _isVerified.toString();
+  //     request.fields['isActive'] = _isActive.toString();
+  //     var file =
+  //         await http.MultipartFile.fromPath('profilePhoto', _pickedFile!.path);
+  //     request.files.add(file);
+
+  //     // Send the request
+  //     var response = await request.send();
+
+  //     if (response.statusCode == 200) {
+  //       Navigator.of(context).pop();
+  //       loadUsers(UserSearchObject(name: _searchController.text),
+  //           _selectedIsActive, _selectedIsVerified);
+  //     } else {
+  //       // Handle the error response
+  //       throw Exception('Error during insertion');
+  //     }
+  //   } on Exception catch (e) {
+  //     showErrorDialog(context, e.toString().substring(11));
+  //   }
+  // }
 
   void EditUser(int id) async {
     try {
@@ -331,7 +477,9 @@ class _UsersScreenState extends State<UsersScreen> {
                       loadUsers(
                           UserSearchObject(
                               spol: selectedGender,
-                              name: _searchController.text),
+                              name: _searchController.text,
+                              PageNumber: currentPage,
+                              PageSize: pageSize),
                           _selectedIsActive,
                           _selectedIsVerified);
                     });
@@ -379,7 +527,9 @@ class _UsersScreenState extends State<UsersScreen> {
                                 : _selectedIsActive == 'Neaktivni'
                                     ? false
                                     : null,
-                            name: _searchController.text),
+                            name: _searchController.text,
+                            PageNumber: currentPage,
+                            PageSize: pageSize),
                         _selectedIsActive,
                         _selectedIsVerified);
                   },
@@ -425,7 +575,9 @@ class _UsersScreenState extends State<UsersScreen> {
                                 : _selectedIsVerified == 'Neverifikovani'
                                     ? false
                                     : null,
-                            name: _searchController.text),
+                            name: _searchController.text,
+                            PageNumber: currentPage,
+                            PageSize: pageSize),
                         _selectedIsActive,
                         _selectedIsVerified);
                   },
@@ -465,17 +617,18 @@ class _UsersScreenState extends State<UsersScreen> {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text("Zatvori",style: TextStyle(color: white ))),
+                          child:
+                              Text("Zatvori", style: TextStyle(color: white))),
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: primaryColor,
                           ),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              InsertUser();
+                              insertUser();
                             }
                           },
-                          child: Text("Spremi" ,style: TextStyle(color: white )))
+                          child: Text("Spremi", style: TextStyle(color: white)))
                     ],
                   );
                 });
@@ -559,7 +712,8 @@ class _UsersScreenState extends State<UsersScreen> {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Zatvori",style: TextStyle(color: white ))),
+                            child: Text("Zatvori",
+                                style: TextStyle(color: white))),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor),
@@ -568,7 +722,8 @@ class _UsersScreenState extends State<UsersScreen> {
                               selectedUsers = [];
                               Navigator.of(context).pop();
                             },
-                            child: Text("Spremi",style: TextStyle(color: white ))),
+                            child:
+                                Text("Spremi", style: TextStyle(color: white))),
                       ],
                     );
                   });
@@ -614,7 +769,8 @@ class _UsersScreenState extends State<UsersScreen> {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Text("OK", style: TextStyle(color: white)),
+                                child:
+                                    Text("OK", style: TextStyle(color: white)),
                               ),
                             ]);
                       });
@@ -637,7 +793,8 @@ class _UsersScreenState extends State<UsersScreen> {
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Odustani", style: TextStyle(color: white)),
+                              child: Text("Odustani",
+                                  style: TextStyle(color: white)),
                             ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -649,7 +806,8 @@ class _UsersScreenState extends State<UsersScreen> {
                                 }
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Obriši", style: TextStyle(color: white)),
+                              child: Text("Obriši",
+                                  style: TextStyle(color: white)),
                             ),
                           ],
                         );
@@ -1118,9 +1276,12 @@ class _UsersScreenState extends State<UsersScreen> {
                       return Row(
                         children: [
                           Checkbox(
-                            value: isActive,
+                            value: _isActiveNotifier.value,
                             onChanged: (bool? value) {
-                              _isActiveNotifier.value = !isActive;
+                              _isActiveNotifier.value =
+                                  !_isActiveNotifier.value;
+                              _isActive = _isActiveNotifier.value;
+
                             },
                           ),
                           Text('Aktivan'),
@@ -1137,9 +1298,11 @@ class _UsersScreenState extends State<UsersScreen> {
                       return Row(
                         children: [
                           Checkbox(
-                            value: isVerified,
+                            value: _isVerifiedNotifier.value,
                             onChanged: (bool? value) {
-                              _isVerifiedNotifier.value = !isVerified;
+                              _isVerifiedNotifier.value =
+                                  !_isVerifiedNotifier.value;
+                              _isVerified = _isVerifiedNotifier.value;
                             },
                           ),
                           Text('Verifikovan'),
@@ -1176,15 +1339,20 @@ class _UsersScreenState extends State<UsersScreen> {
                   _selectedIsVerified);
             }
           },
-          child: const Icon(Icons.arrow_left_outlined, color: white,),
+          child: const Icon(
+            Icons.arrow_left_outlined,
+            color: white,
+          ),
         ),
         SizedBox(width: 16),
         ElevatedButton(
           style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
           onPressed: () {
+
             setState(() {
               if (hasNextPage == pageSize) {
                 currentPage++;
+              
               }
             });
             if (hasNextPage == pageSize) {
@@ -1197,9 +1365,14 @@ class _UsersScreenState extends State<UsersScreen> {
                   _selectedIsVerified);
             }
           },
-          child: const Icon(Icons.arrow_right_outlined, color: white,),
+          child: const Icon(
+            Icons.arrow_right_outlined,
+            color: white,
+          ),
         ),
       ],
     );
   }
+
+  
 }

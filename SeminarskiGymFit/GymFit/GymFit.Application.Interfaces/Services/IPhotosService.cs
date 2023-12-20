@@ -7,5 +7,7 @@ namespace GymFit.Application.Interfaces
     {
         Task<List<Guid>> ProcessAsync(IEnumerable<PhotoInputModel> image);
         Task<byte[]?> GetImageAsync(Guid id, bool original);
+
+        Task<int> getPhotoIdAsync(Guid guidId, CancellationToken cancellationToken = default);
     }
 }
