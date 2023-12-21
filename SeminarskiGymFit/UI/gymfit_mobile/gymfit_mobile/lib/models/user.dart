@@ -13,8 +13,8 @@ class User {
   late int gender;
   late bool isActive;
   late bool isVerified;
-  late Photo? profilePhoto;
-  late int? profilePhotoId;
+  late Photo? photo;
+  late int? photoId;
   late bool isSelected = false;
 
   User({
@@ -30,8 +30,8 @@ class User {
     this.phoneNumber,
     this.token,
     this.role,
-    this.profilePhoto,
-     this.profilePhotoId,
+    this.photo,
+    this.photoId,
     required this.isSelected,
   });
 
@@ -48,11 +48,11 @@ class User {
     isActive = json['isActive'] as bool;
     isVerified = json['isVerified'] as bool;
     dateOfBirth = json['dateOfBirth'];
-    profilePhotoId = json['profilePhotoId'];
-     if (json['profilePhoto'] != null) {
-      profilePhoto = Photo.fromJson(json['profilePhoto']);
+    photoId = json['photoId'];
+    if (json['photo'] != null) {
+      photo = Photo.fromJson(json['photo']);
     } else {
-      profilePhoto = null;
+      photo = null;
     }
   }
 
@@ -64,7 +64,7 @@ class User {
     data['phoneNumber'] = phoneNumber;
     data['password'] = password;
     data['email'] = email;
-    data['profilePhotoId'] = profilePhotoId;
+    data['profilePhotoId'] = photoId;
     data['token'] = token;
     data['role'] = role;
     data['gender'] = gender;

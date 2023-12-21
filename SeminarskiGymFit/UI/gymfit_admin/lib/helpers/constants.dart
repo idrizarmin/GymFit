@@ -11,6 +11,7 @@ const bgColor = Color.fromARGB(186, 37, 46, 83);
 const myWhite = Color.fromARGB(185, 255, 255, 255);
 const white = Colors.white;
 const green = Color.fromRGBO(36, 228, 19, 1);
+const darkGreen = Color.fromRGBO(27, 158, 15, 1);
 
 const defaultPadding= 16.0;
 

@@ -34,8 +34,6 @@ class ReservationProvider extends BaseProvider<Reservation> {
     }
     uri = uri.replace(queryParameters: queryParameters);
     final response = await http.get(uri, headers: headers);
-    print(response.body);
-    print(response.statusCode);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
       var items = data;

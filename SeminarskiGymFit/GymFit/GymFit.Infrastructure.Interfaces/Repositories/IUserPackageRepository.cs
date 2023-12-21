@@ -6,6 +6,7 @@ namespace GymFit.Infrastructure.Interfaces
     {
         Task<UserPackage> GetUserPackage(int id,CancellationToken cancellationToken = default);
         Task<List<UserPackage>> GetAllUserPackages(CancellationToken cancellationToken = default);
+        Task<List<int>> GetCountByMonth(BarChartSearchObject searchObject, CancellationToken cancellationToken = default);
 
     }
 }

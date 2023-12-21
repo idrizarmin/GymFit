@@ -22,8 +22,6 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
-  List<User> users = <User>[];
-  List<User> selectedUsers = <User>[];
   late UserProvider _userProvider;
   late LoginProvider _loginProvider;
   late PhotoProvider _photoProvider;
@@ -36,20 +34,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   final TextEditingController _birthDateController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
   ValueNotifier<File?> _pickedFileNotifier = ValueNotifier(null);
   final int userId = 0;
   DateTime selectedDate = DateTime.now();
   int? selectedGender;
   int? selectedCinemaId;
   int? selectedRole;
-  bool _isActive = false;
-  bool _isVerified = false;
   bool isAllSelected = false;
   int currentPage = 1;
   int pageSize = 20;
 
   File? _pickedFile;
-  File? selectedImage;
 
   @override
   void initState() {
@@ -105,8 +101,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             DateTime.parse(_birthDateController.text).toUtc().toIso8601String(),
         'Role': '1',
         'LastSignInAt': DateTime.now().toUtc().toIso8601String(),
-        'IsVerified': _isVerified.toString(),
-        'IsActive': _isActive.toString(),
+        'IsVerified': "true",
+        'IsActive': "true",
       };
       if (_pickedFile != null) {
         userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
@@ -190,29 +186,38 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
                                 if (imageUrl != null && imageUrl.isNotEmpty) {
                                   return Container(
-                                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 8.0),
                                     child: ClipOval(
                                       child: FadeInImage(
                                         image: NetworkImage(
                                           imageUrl,
-                                          headers: Authorization.createHeaders(),
+                                          headers:
+                                              Authorization.createHeaders(),
                                         ),
-                                        placeholder: MemoryImage(kTransparentImage),
-                                        fadeInDuration: const Duration(milliseconds: 300),
+                                        placeholder:
+                                            MemoryImage(kTransparentImage),
+                                        fadeInDuration:
+                                            const Duration(milliseconds: 300),
                                         fit: BoxFit.cover,
-                                        width: 200, // Adjust the width as needed
-                                        height: 200, // Adjust the height as needed
+                                        width:
+                                            200, // Adjust the width as needed
+                                        height:
+                                            200, // Adjust the height as needed
                                       ),
                                     ),
                                   );
                                 } else {
                                   return Container(
-                                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 8.0),
                                     child: ClipOval(
                                       child: Image.asset(
                                         'assets/images/user1.jpg',
-                                        width: 120, // Adjust the width as needed
-                                        height: 120, // Adjust the height as needed
+                                        width:
+                                            120, // Adjust the width as needed
+                                        height:
+                                            120, // Adjust the height as needed
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -231,67 +236,29 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           child: Column(
                             children: [
                               _buildUserData("Ime: ", admin?.firstName ?? "--"),
-                              _buildUserData("Prezime : ", admin?.lastName ?? "--"),
+                              _buildUserData(
+                                  "Prezime : ", admin?.lastName ?? "--"),
                               _buildUserData("Email: ", admin?.email ?? "--"),
-                              _buildUserData("Broj telefona: ", admin?.phoneNumber ?? "--"),
+                              _buildUserData("Broj telefona: ",
+                                  admin?.phoneNumber ?? "--"),
                               _buildUserData(
                                 "Datum rođenja: ",
                                 admin?.dateOfBirth == null
                                     ? "--"
                                     : DateFormat('dd/MM/yyyy')
-                                    .format(
-                                      DateTime.parse(admin!.dateOfBirth!))
-                                    .toString(),
+                                        .format(
+                                            DateTime.parse(admin!.dateOfBirth!))
+                                        .toString(),
                               ),
-                              _buildUserData("Spol: ", admin?.gender == 0 ? "Muski" : "Zenski" ?? "--"),
+                              _buildUserData(
+                                  "Spol: ",
+                                  admin?.gender == 0
+                                      ? "Muski"
+                                      : "Zenski" ?? "--"),
                             ],
                           ),
                         ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
-                          ),
-                          onPressed: () {},
-                          child: Text("Promjena lozinke", style: TextStyle(color: white)),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
-                          ),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  backgroundColor: secondaryColor,
-                                  title: Text("Uredi klijenta"),
-                                  content: AddUserForm(
-                                    isEditing: true, userToEdit: admin),
-                                  actions: <Widget>[
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: primaryColor),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text("Zatvori", style: TextStyle(color: white))),
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: primaryColor),
-                                      onPressed: () {
-                                        editUser(selectedUsers[0].id);
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text("Spremi", style: TextStyle(color: white))),
-                                  ],
-                                );
-                              });
-                          },
-                          child: Text("Uredi profil", style: TextStyle(color: white)),
-                        ),
+                        _buildEditProfileButton(context),
                       ],
                     ),
                   ),
@@ -304,7 +271,57 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-
+  ElevatedButton _buildEditProfileButton(BuildContext context) {
+  return ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: primaryColor,
+    ),
+    onPressed: () {
+      if (admin != null) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: secondaryColor,
+              title: Text("Uredi podatke"),
+              content: AddUserForm(isEditing: true, userToEdit: admin),
+              actions: <Widget>[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Zatvori", style: TextStyle(color: white)),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                  ),
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      editUser(admin!.id);
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => UserProfileScreen(),
+                        ),
+                      );
+                    }
+                  },
+                  child: Text("Spremi", style: TextStyle(color: white)),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+       showErrorDialog(context, "POkušajte se ponovno prijaviti");
+      }
+    },
+    child: Text("Uredi profil", style: TextStyle(color: white)),
+  );
+}
 
   Widget _buildUserData(String label, String value) {
     return Column(
@@ -330,7 +347,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
- Widget AddUserForm({bool isEditing = false, User? userToEdit}) {
+  Widget AddUserForm({bool isEditing = false, User? userToEdit}) {
     if (userToEdit != null) {
       _firstNameController.text = userToEdit.firstName;
       _lastNameController.text = userToEdit.lastName;
@@ -338,8 +355,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       _phoneNumberController.text = userToEdit.phoneNumber ?? '';
       _birthDateController.text = userToEdit.dateOfBirth ?? '';
       selectedGender = userToEdit.gender;
-      _isActive = userToEdit.isActive;
-      _isVerified = userToEdit.isVerified;
       _passwordController.text = '';
       _pickedFile = null;
     } else {
@@ -349,8 +364,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       _phoneNumberController.text = '';
       _birthDateController.text = '';
       selectedGender = null;
-      _isVerified = false;
-      _isActive = false;
       _passwordController.text = '';
       _pickedFile = null;
     }
@@ -587,7 +600,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   SizedBox(
                     height: 20,
                   ),
-                 
                 ],
               ),
             ),

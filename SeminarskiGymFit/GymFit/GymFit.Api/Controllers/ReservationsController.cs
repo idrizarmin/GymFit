@@ -1,6 +1,6 @@
-﻿using GymFit.Application;
-using GymFit.Application.Interfaces;
+﻿using GymFit.Application.Interfaces;
 using GymFit.Core;
+using GymFit.Infrastructure.Interfaces;
 using GymFit.Infrastructure.Interfaces.SearchObjects;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +28,7 @@ namespace GymFit.Api.Controllers
             }
         }
         [HttpGet("GetByMonth")] 
-        public async Task<IActionResult> GetReservationsByMonth([FromQuery] ReservationBarChartSearchObject searchObject, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetReservationsByMonth([FromQuery] BarChartSearchObject searchObject, CancellationToken cancellationToken)
         {
             try
             {

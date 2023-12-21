@@ -29,7 +29,7 @@ namespace GymFit.Infrastructure
             && (s.ReservationDate.Year == currentDate.Year)).AsNoTracking().Count();
         }
        
-        public async Task<List<int>> GetCountByMonth(ReservationBarChartSearchObject searchObject, CancellationToken cancellationToken = default)
+        public async Task<List<int>> GetCountByMonth(BarChartSearchObject searchObject, CancellationToken cancellationToken = default)
         {
 
             var counts = await DbSet

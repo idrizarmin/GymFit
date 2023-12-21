@@ -74,7 +74,6 @@ class _ReservationScreenState extends State<ReservationScreen> {
       if (mounted) {
         setState(() {
           users = usersResponse;
-          print(users);
         });
       }
     } on Exception catch (e) {
@@ -88,7 +87,6 @@ class _ReservationScreenState extends State<ReservationScreen> {
       if (mounted) {
         setState(() {
           trainers = usersResponse;
-          print(users);
         });
       }
     } on Exception catch (e) {

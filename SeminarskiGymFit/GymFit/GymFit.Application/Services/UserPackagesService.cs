@@ -43,5 +43,10 @@ namespace GymFit.Application
                 }
             }
         }
+
+        public async Task<List<int>> GetCountByMonthAsync(BarChartSearchObject searchObject, CancellationToken cancellationToken = default)
+        {
+            return await CurrentRepository.GetCountByMonth(searchObject, cancellationToken);
+        }
     }
 }

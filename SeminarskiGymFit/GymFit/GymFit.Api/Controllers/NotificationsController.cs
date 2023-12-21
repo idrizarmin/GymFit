@@ -26,11 +26,11 @@ namespace GymFit.Api.Controllers
             }
         }
         [HttpPut("SetNotificationsAsSeen")]
-        public async Task<IActionResult> SetNotificaationAsSeen(int userId, CancellationToken cancellationToken)
+        public async Task<IActionResult> SetNotificaationAsSeen(int id, CancellationToken cancellationToken)
         {
             try
             {
-                var message = await Service.SetNotificationsAsSeenAsMessageAsync(userId, cancellationToken);
+                var message = await Service.SetNotificationsAsSeenAsMessageAsync(id, cancellationToken);
                 return Ok(message);
             }
             catch (Exception e)

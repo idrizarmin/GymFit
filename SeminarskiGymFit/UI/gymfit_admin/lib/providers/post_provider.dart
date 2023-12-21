@@ -27,12 +27,9 @@ class PostProvider extends BaseProvider<Post> {
     var headers = Authorization.createHeaders();
 
     final response = await http.get(uri, headers: headers);
-    print('body ${response.body}');
     if (response.statusCode == 200) {
-      print("in if");
       var data = json.decode(response.body);
       var items = data['items'];
-      print(items);
       return items.map((d) => fromJson(d)).cast<Post>().toList();
     } else {
       throw Exception('Failed to load data');

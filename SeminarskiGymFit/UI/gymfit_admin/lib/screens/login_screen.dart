@@ -28,18 +28,33 @@ class _LoginScreenState extends State<LoginScreen> {
     userProvider = context.read<LoginProvider>();
   }
 
-  void login() async {
-    try {
-      await userProvider.loginAsync(
-          _emailController.text, _passwordController.text);
-      if (context.mounted) {
-        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
-        print("$context");
-      }
-    } on Exception catch (e) {
-      showErrorDialog(context, e.toString().substring(11));
+ void login() async {
+  try {
+    await userProvider.loginAsync(_emailController.text, _passwordController.text);
+    if (context.mounted) {
+      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+      print("$context");
     }
+  } catch (e) {
+    print(e);
+    showErrorDialog(context, getErrorMessage(e));
   }
+}
+
+String getErrorMessage(dynamic exception) {
+  // Check the type or content of the exception and return an appropriate message
+  if (exception.toString().contains('GymFit.Core.UserNotFoundException') ||exception.toString().contains('UserWrongCredentialsException')) {
+    // Example: If the error message contains 'invalid_credentials'
+    return 'Neispravni korisnički podaci. Pokušajte ponovo.';
+  } else if (exception.toString().contains('The remote computer refused the network connection')) {
+    // Example: If it's a custom exception from the server
+    return 'Došlo je do greške na serveru. Pokušajte kasnije.';
+  } else {
+    // Fallback for other exceptions
+    return 'Došlo je do nepoznate greške. Pokušajte ponovo.';
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromRGBO(41, 209, 32, 1),
+                          backgroundColor: darkGreen,
                           minimumSize: const Size.fromHeight(50),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -172,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: const Text(
                           "Prijava",
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 20,color: white
                           ),
                         ),
                       ),

@@ -1,18 +1,19 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:gymfit_mobile/helpers/app_decoration.dart';
 import 'package:gymfit_mobile/helpers/constants.dart';
 import 'package:gymfit_mobile/helpers/theme_helper.dart';
 import 'package:gymfit_mobile/models/user.dart';
 import 'package:gymfit_mobile/providers/login_provider.dart';
+import 'package:gymfit_mobile/providers/photo_provider.dart';
 import 'package:gymfit_mobile/providers/user_provider.dart';
+import 'package:gymfit_mobile/utils/authorization.dart';
 import 'package:gymfit_mobile/utils/error_dialog.dart';
-import 'package:gymfit_mobile/widgets/custom_image_view.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'package:transparent_image/transparent_image.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({Key? key}) : super(key: key);
@@ -32,6 +33,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   final TextEditingController _birthDateController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  ValueNotifier<File?> _pickedFileNotifier = ValueNotifier(null);
+
   final int userId = 0;
   User? user;
   DateTime selectedDate = DateTime.now();
@@ -42,10 +45,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   int? selectedRole;
   bool _isActive = false;
   bool _isVerified = false;
-  File? _image;
-  XFile? _pickedFile;
-  final _picker = ImagePicker();
+  File? _pickedFile;
+
   File? selectedImage;
+  late PhotoProvider _photoProvider;
 
   @override
   void initState() {
@@ -53,17 +56,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     _userProvider = context.read<UserProvider>();
     _loginProvider = context.read<UserLoginProvider>();
+
+    _photoProvider = context.read<PhotoProvider>();
+    _pickedFileNotifier = ValueNotifier<File?>(_pickedFile);
+
     loadUser();
   }
 
   Future<void> _pickImage() async {
-    final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
     if (pickedFile != null) {
-      setState(() {
-        _pickedFile = pickedFile;
-        _image = File(pickedFile.path);
-      });
+      _pickedFile = File(pickedFile.path);
     }
   }
 
@@ -80,32 +85,44 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     }
   }
 
-  void EditUser(int id) async {
+  void editUser(int id) async {
     try {
-      var imageFile = File(_image!.path);
-      List<int> imageBytes = imageFile.readAsBytesSync();
-      String imageBase64 = base64Encode(imageBytes);
-
-      var newUser = {
-        "id": id,
-        "firstName": _firstNameController.text,
-        "lastName": _lastNameController.text,
-        "email": _emailController.text,
-        "dateOfBirth": _birthDateController.text,
-        "phoneNumber": _phoneNumberController.text,
-        "gender": selectedGender,
-        "isActive": _isActive,
-        "role": selectedRole,
-        "isVerified": _isVerified,
-        "password": _passwordController.text,
-        "profilePhoto": imageBase64
+      Map<String, dynamic> userData = {
+        "Id": id.toString(),
+        'FirstName': _firstNameController.text,
+        'LastName': _lastNameController.text,
+        'Email': _emailController.text,
+        'Password': _passwordController.text,
+        'PhoneNumber': _phoneNumberController.text,
+        'Address': '',
+        'ProfessionalTitle': '',
+        'Gender': selectedGender.toString(),
+        'DateOfBirth':
+            DateTime.parse(_birthDateController.text).toUtc().toIso8601String(),
+        'Role': '1',
+        'LastSignInAt': DateTime.now().toUtc().toIso8601String(),
+        'IsVerified': _isVerified.toString(),
+        'IsActive': _isActive.toString(),
       };
-      var user = await _userProvider.edit(newUser);
-      if (user == "OK") {
-        Navigator.of(context).pop();
+      if (_pickedFile != null) {
+        userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+          'ProfilePhoto',
+          _pickedFile!.readAsBytesSync(),
+          filename: 'profile_photo.jpg',
+        );
       }
-    } on Exception catch (e) {
-      showErrorDialog(context, e.toString().substring(11));
+      // Send the request
+      var response = await _userProvider.updateUser(userData);
+
+      if (response == "OK") {
+        Navigator.of(context).pop();
+      } else {
+        // Handle error
+        showErrorDialog(context, 'Greška prilikom uređivanja');
+      }
+    } catch (e) {
+      // Handle exceptions
+      showErrorDialog(context, e.toString());
     }
   }
 
@@ -118,9 +135,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     }
   }
 
+  Future<String> loadPhoto(String guidId) async {
+    return await _photoProvider.getPhoto(guidId);
+  }
+
   @override
   Widget build(BuildContext context) {
     mediaQueryData = MediaQuery.of(context);
+    if (user == null) {
+      return CircularProgressIndicator();
+    }
 
     return SafeArea(
       child: Scaffold(
@@ -134,10 +158,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 Container(
                   alignment: Alignment.center,
                   width: double.maxFinite,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 1,
-                  ),
+                  // padding: EdgeInsets.symmetric(
+                  //   horizontal: 10,
+                  //   vertical: 1,
+                  // ),
                   decoration: AppDecoration.fillBlack,
                   child: Text(
                     "Korisnički profil",
@@ -161,11 +185,36 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         children: [
           Row(
             children: [
-              CustomImageView(
-                imagePath:
-                    "assets/images/notFound.png", // Replace with the actual image path
-                width: 100,
-                height: 100,
+             Padding(
+                padding: EdgeInsets.only(right: 8.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Container(
+                    width: 90,
+                    height: 120,
+                    color: primary,
+                    child: FutureBuilder<String>(
+                      future: loadPhoto(user!.photo?.guidId ?? ''),
+                      builder:
+                          (BuildContext context, AsyncSnapshot<String> snapshot) {
+                        final imageUrl = snapshot.data;
+
+                        return FadeInImage(
+                          image: imageUrl != null && imageUrl.isNotEmpty
+                              ? NetworkImage(
+                                  imageUrl,
+                                  headers: Authorization.createHeaders(),
+                                )
+                              : AssetImage('assets/images/notFound.png')
+                                  as ImageProvider<Object>,
+                          placeholder: MemoryImage(kTransparentImage),
+                          fadeInDuration: const Duration(milliseconds: 100),
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                  ),
+                ),
               ),
               SizedBox(width: 16),
               Column(
@@ -260,7 +309,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      EditUser(user!.id);
+                      editUser(user!.id);
                     }
                   },
                   child: Padding(
@@ -282,8 +331,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       ), // Adjust font size
     );
   }
-
-  
 
   Widget AddUserForm({bool isEditing = false, User? userToEdit}) {
     if (userToEdit != null) {
@@ -307,29 +354,96 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         key: _formKey,
         child: ListView(
           children: [
-            Container(
-              height: 150,
-              width: 150,
-              color: teal,
-              child: Center(
-                child: (_pickedFile != null)
-                    ? Image.file(
-                        File(_pickedFile!.path),
-                        width: 150,
-                        height: 150,
-                        fit: BoxFit.cover,
-                      )
-                    : (userToEdit != null && userToEdit.profilePhoto != null)
-                        ? Image.memory(
-                            Uint8List.fromList(
-                                base64Decode(userToEdit.profilePhoto!.data)),
-                            width: 230,
-                            height: 200,
-                            fit: BoxFit.cover,
-                          )
-                        : const Text('Please select an image'),
-              ),
-            ),
+            Column(children: [
+              ValueListenableBuilder<File?>(
+                  valueListenable: _pickedFileNotifier,
+                  builder: (context, pickedFile, _) {
+                    return Container(
+                      alignment: Alignment.center,
+                      width: double.infinity,
+                      height: 180,
+                      color: primary,
+                      child: FutureBuilder<String>(
+                        future: _pickedFile != null
+                            ? Future.value(_pickedFile!.path)
+                            : loadPhoto(isEditing
+                                ? (userToEdit?.photo?.guidId ?? '')
+                                : ''),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<String> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Molimo odaberite fotografiju');
+                          } else {
+                            final imageUrl = snapshot.data;
+
+                            if (imageUrl != null && imageUrl.isNotEmpty) {
+                              return Container(
+                                child: FadeInImage(
+                                  image: _pickedFile != null
+                                      ? FileImage(_pickedFile!)
+                                          as ImageProvider<Object>
+                                      : NetworkImage(
+                                          imageUrl,
+                                          headers:
+                                              Authorization.createHeaders(),
+                                        ) as ImageProvider<Object>,
+                                  placeholder: MemoryImage(kTransparentImage),
+                                  fadeInDuration:
+                                      const Duration(milliseconds: 300),
+                                  fit: BoxFit.cover,
+                                  width: 230,
+                                  height: 200,
+                                ),
+                              );
+                            } else {
+                              // Ako uređujete korisnika, pokažite poruku za odabir slike
+                              // Inače, prikažite podrazumevanu sliku iz assetsa
+                              return isEditing
+                                  ? Container(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 8.0),
+                                      child:
+                                          const Text('Please select an image'),
+                                    )
+                                  : Container(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 8.0),
+                                      child: Image.asset(
+                                        'assets/images/default_user_image.jpg',
+                                        width: 230,
+                                        height: 200,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    );
+                            }
+                          }
+                        },
+                      ),
+                    );
+                  }),
+              const SizedBox(height: 35),
+              Center(
+                child: SizedBox(
+                  width: 150, // Širina dugmeta
+                  height: 35, // Visina dugmeta
+                  child: ElevatedButton(
+                    onPressed: () => _pickImage(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(20.0), // Zaobljenost rubova
+                      ),
+                    ),
+                    child: Text('Select An Image',
+                        style: TextStyle(fontSize: 12, color: white)),
+                  ),
+                ),
+              )
+            ]),
             const SizedBox(height: 35),
             Center(
               child: SizedBox(

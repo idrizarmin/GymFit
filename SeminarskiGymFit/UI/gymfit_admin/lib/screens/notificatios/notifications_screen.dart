@@ -100,7 +100,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       var usersResponse = await _userProvider.getusersForSelection();
       setState(() {
         users = usersResponse;
-        print(users);
       });
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));

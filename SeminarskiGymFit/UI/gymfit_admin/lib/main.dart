@@ -6,6 +6,7 @@ import 'package:gymfit_admin/providers/login_provider.dart';
 import 'package:gymfit_admin/providers/notification_provider.dart';
 import 'package:gymfit_admin/providers/package_provider.dart';
 import 'package:gymfit_admin/providers/photo_provider.dart';
+import 'package:gymfit_admin/providers/user_package_provider.dart';
 import 'package:gymfit_admin/providers/user_provider.dart';
 import 'package:gymfit_admin/screens/home_screen.dart';
 import 'package:gymfit_admin/screens/login_screen.dart';
@@ -21,6 +22,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => NotificationProvider()),
       ChangeNotifierProvider(create: (_) => PackageProvider()),
       ChangeNotifierProvider(create: (_) => PhotoProvider()),
+      ChangeNotifierProvider(create: (_) => UserPackageProvider()),
       
     ],
     child: const MyMaterialApp(),

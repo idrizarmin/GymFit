@@ -8,6 +8,7 @@ import 'package:gymfit_mobile/helpers/theme_helper.dart';
 import 'package:gymfit_mobile/providers/login_provider.dart';
 import 'package:gymfit_mobile/providers/notification_provider.dart';
 import 'package:gymfit_mobile/providers/package_provider.dart';
+import 'package:gymfit_mobile/providers/photo_provider.dart';
 import 'package:gymfit_mobile/providers/post_provider.dart';
 import 'package:gymfit_mobile/providers/reservation_provider.dart';
 import 'package:gymfit_mobile/providers/user_package_provider.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
          ChangeNotifierProvider(create: (_) => NotificationProvider()),
          ChangeNotifierProvider(create: (_) => PackageProvider()),
          ChangeNotifierProvider(create: (_) => UserPackageProvider()),
+         ChangeNotifierProvider(create: (_) => PhotoProvider()),
       ],
       child: MaterialApp(
         theme: theme,

@@ -31,6 +31,7 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
   late UserLoginProvider _loginProvider;
   int? _userId;
   int unreadNotifications = 0;
+  bool notificationsLoaded = false;
 
   @override
   void initState() {
@@ -45,168 +46,170 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
 
   void loadUser() async {
     var id = _loginProvider.getUserId();
-    print(id);
     _userId = id;
   }
 
-  void setAsSeen() async {
-    if (_userId != null) {
-      _notificationProvider.setAsSeen(_userId!);
-    }
+  void setAsSeen(int id) async {
+    await _notificationProvider.setAsSeen(id);
   }
 
-  Future<int> loadNotifications() async {
+  void loadNotifications() async {
     try {
       NotificationsSearchObject searchObject =
-          NotificationsSearchObject(userId: _userId, PageSize: 1000);
+          NotificationsSearchObject(userId: _userId, PageSize: 10000);
 
       var notificationsResponse =
           await _notificationProvider.getPaged(searchObject: searchObject);
-      int unreadNotifications = notificationsResponse
+      unreadNotifications = notificationsResponse
           .where((notification) => notification.Read == false)
           .length;
-      print(unreadNotifications);
-      return unreadNotifications;
+
+      // Notify the FutureBuilder that notifications are loaded
+      setState(() {
+        notificationsLoaded = true;
+      });
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
-      return 0;
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    mediaQueryData = MediaQuery.of(context);
-    return SafeArea(
-      child: Scaffold(
-        appBar: _buildAppbar(context),
-        body: Navigator(
-          key: navigatorKey,
-          initialRoute: AppRoutes.homePage,
-          onGenerateRoute: (routeSetting) => PageRouteBuilder(
-            pageBuilder: (ctx, ani, ani1) => getCurrentPage(routeSetting.name!),
-            transitionDuration: Duration(seconds: 0),
-          ),
+ @override
+Widget build(BuildContext context) {
+  mediaQueryData = MediaQuery.of(context);
+
+  return SafeArea(
+    child: Scaffold(
+      appBar: _buildAppbar(context),
+      body: Navigator(
+        key: navigatorKey,
+        initialRoute: AppRoutes.homePage,
+        onGenerateRoute: (routeSetting) => PageRouteBuilder(
+          pageBuilder: (ctx, ani, ani1) => getCurrentPage(routeSetting.name!),
+          transitionDuration: Duration(seconds: 0),
         ),
-        bottomNavigationBar: _buildBottomBar(),
       ),
-    );
-  }
+      bottomNavigationBar: _buildBottomBar(),
+    ),
+  );
+}
+
 
   AppBar _buildAppbar(BuildContext context) {
-    return AppBar(
-      backgroundColor: appTheme.bgSecondary,
-      automaticallyImplyLeading: false, // Remove back button
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox( width: 100,),
-          Image.asset(
-            "assets/images/logo1.png",
-            height: 50,
-            width: 110,
-            fit: BoxFit.contain,
-          ),
-        ],
-      ),
-      actions: [
-        // Notifications Icon
-        IconButton(
-          icon: FutureBuilder<int>(
-            future: loadNotifications(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                int unreadNotifications = snapshot.data ?? 0;
-                return Stack(
-                  children: [
-                    Icon(
-                      Icons.notifications,
-                      color: appTheme.blue,
-                    ),
-                    if (unreadNotifications > 0)
-                      Positioned(
-                        top: -5,
-                        left: 0,
-                        child: Container(
-                          padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.red,
-                          ),
-                          child: Text(
-                            unreadNotifications.toString(),
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 255, 255, 255),
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
-                );
-              } else {
-                return Container();
-              }
-            },
-          ),
-          onPressed: () {
-            setAsSeen();
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return NotificationForm();
-              },
-            );
-          },
+  return AppBar(
+    backgroundColor: appTheme.bgSecondary,
+    automaticallyImplyLeading: false, // Remove back button
+    title: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: 100,
         ),
-        // Menu Icon
-        IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: () {
-            final RenderBox overlay =
-                Overlay.of(context).context.findRenderObject() as RenderBox;
-            showMenu(
-              context: context,
-              color: teal,
-              position: RelativeRect.fromRect(
-                Rect.fromPoints(
-                  Offset(
-                      MediaQuery.of(context).size.width - 50, kToolbarHeight),
-                  Offset(
-                      MediaQuery.of(context).size.width, kToolbarHeight + 20),
-                ),
-                overlay.localToGlobal(Offset.zero) & overlay.size,
-              ),
-              items: [
-                PopupMenuItem(
-                  child: Container(
-                    child: ListTile(
-                      title: Text('Članarine'),
-                      onTap: () {
-                        Navigator.pop(context);
-                        Navigator.pushNamed(
-            navigatorKey.currentContext!, AppRoutes.membershipScreen);
-                      },
+        Image.asset(
+          "assets/images/logo1.png",
+          height: 50,
+          width: 110,
+          fit: BoxFit.contain,
+        ),
+      ],
+    ),
+    actions: [
+      IconButton(
+        icon: Stack(
+          children: [
+            Icon(
+              Icons.notifications,
+              color: appTheme.blue,
+            ),
+            if (unreadNotifications > 0)
+              Positioned(
+                top: -5,
+                left: 0,
+                child: Container(
+                  padding: EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.red,
+                  ),
+                  child: Text(
+                    unreadNotifications.toString(),
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      fontSize: 12,
                     ),
                   ),
                 ),
-                PopupMenuItem(
+              ),
+          ],
+        ),
+        onPressed: () async {
+          setState(() {
+            unreadNotifications = 0;
+          });
+
+          setAsSeen(_userId!);
+
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return NotificationForm();
+            },
+          );
+        },
+      ),
+      // Menu Icon
+      IconButton(
+        icon: Icon(Icons.menu),
+        onPressed: () {
+          final RenderBox overlay =
+              Overlay.of(context).context.findRenderObject() as RenderBox;
+          showMenu(
+            context: context,
+            color: teal,
+            position: RelativeRect.fromRect(
+              Rect.fromPoints(
+                Offset(
+                    MediaQuery.of(context).size.width - 50, kToolbarHeight),
+                Offset(
+                    MediaQuery.of(context).size.width, kToolbarHeight + 20),
+              ),
+              overlay.localToGlobal(Offset.zero) & overlay.size,
+            ),
+            items: [
+              PopupMenuItem(
+                child: Container(
                   child: ListTile(
-                    title: Text('Logout'),
+                    title: Text('Članarine'),
                     onTap: () {
-                      Navigator.pop(context); 
-                      _loginProvider.logout();
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => StartScreen()));
+                      Navigator.pop(context);
+                      Navigator.pushNamed(
+                        navigatorKey.currentContext!,
+                        AppRoutes.membershipScreen,
+                      );
                     },
                   ),
                 ),
-              ],
-            );
-          },
-        ),
-      ],
-    );
-  }
+              ),
+              PopupMenuItem(
+                child: ListTile(
+                  title: Text('Logout'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _loginProvider.logout();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => StartScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    ],
+  );
+}
 
   /// Section Widget
   Widget _buildBottomBar() {
@@ -251,7 +254,7 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
         return UserProfileScreen();
       case AppRoutes.membershipScreen:
         return MembershipScreen();
-       
+
       default:
         return DefaultWidget();
     }

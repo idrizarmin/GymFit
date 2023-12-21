@@ -20,7 +20,7 @@ namespace GymFit.Application
 
             return Mapper.Map<List<ReservationDto>>(reservations);
         }
-        public async Task<List<int>> GetCountByMonthAsync(ReservationBarChartSearchObject searchObject, CancellationToken cancellationToken = default) {
+        public async Task<List<int>> GetCountByMonthAsync(BarChartSearchObject searchObject, CancellationToken cancellationToken = default) {
 
             return await CurrentRepository.GetCountByMonth(searchObject,cancellationToken);
         }

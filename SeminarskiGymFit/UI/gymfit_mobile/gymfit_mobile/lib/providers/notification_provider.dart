@@ -48,7 +48,9 @@ class NotificationProvider extends BaseProvider<Notifications> {
     var uri = Uri.parse('$apiUrl/Notifications/SetNotificationsAsSeen');
     Map<String, String> headers = Authorization.createHeaders();
     final Map<String, String> queryParameters = {};
-    queryParameters['id'] = id.toString();
+     queryParameters['id'] = id.toString();
+    uri = uri.replace(queryParameters: queryParameters);
+    
     var response = await http.put(uri, headers: headers);
 
     if (response.statusCode == 200) {

@@ -12,6 +12,21 @@ namespace GymFit.Api.Controllers
         {
         }
 
+        [HttpGet("GetByMonth")]
+        public async Task<IActionResult> GetReservationsByMonth([FromQuery] BarChartSearchObject searchObject, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await Service.GetCountByMonthAsync(searchObject, cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Problem with getting resources");
+                return BadRequest();
+            }
+        }
+
         [HttpPost("setExpired")]
         public ActionResult setExpired()
         {

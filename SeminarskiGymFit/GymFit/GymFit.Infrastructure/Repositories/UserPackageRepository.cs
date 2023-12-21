@@ -40,5 +40,28 @@ namespace GymFit.Infrastructure
          
         }
 
+        public async Task<List<int>> GetCountByMonth(BarChartSearchObject searchObject, CancellationToken cancellationToken = default)
+        {
+            var counts = await DbSet
+                .Where(r => r.CreatedAt.Year == searchObject.year)
+                .GroupBy(r => r.CreatedAt.Month)
+                .Select(group => new
+                {
+                    Month = group.Key,
+                    Count = group.Count()
+                })
+                .OrderBy(result => result.Month)
+                .ToListAsync(cancellationToken);
+
+            List<int> result = new List<int>();
+
+            for (int month = 1; month <= 12; month++)
+            {
+                var count = counts.FirstOrDefault(c => c.Month == month)?.Count ?? 0;
+                result.Add(count);
+            }
+
+            return result;
+        }
     }
 }

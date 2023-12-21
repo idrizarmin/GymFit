@@ -840,10 +840,10 @@ class _UsersScreenState extends State<UsersScreen> {
                                             AsyncSnapshot<String> snapshot) {
                                           if (snapshot.connectionState ==
                                               ConnectionState.waiting) {
-                                            return CircularProgressIndicator(); // ili neki drugi indikator učitavanja
+                                            return CircularProgressIndicator(); 
                                           } else if (snapshot.hasError) {
                                             return Text(
-                                                'Greška prilikom učitavanja slike'); // ili obradi grešku kako želiš
+                                                'Greška prilikom učitavanja slike'); 
                                           } else {
                                             final imageUrl = snapshot.data;
 
@@ -852,7 +852,7 @@ class _UsersScreenState extends State<UsersScreen> {
                                               return Container(
                                                 padding: EdgeInsets.symmetric(
                                                     vertical:
-                                                        8.0), // Prilagodi vrednost prema potrebi
+                                                        8.0), 
                                                 child: FadeInImage(
                                                   image: NetworkImage(
                                                     imageUrl,
