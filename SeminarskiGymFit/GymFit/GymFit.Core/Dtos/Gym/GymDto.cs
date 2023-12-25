@@ -8,10 +8,6 @@
         public string PhoneNumber { get; set; } = null!;
         public string? Website { get; set; }
 
-        public int CityId { get; set; }
-        public CityDto City { get; set; } = null!;
-
-        public int PhotoId { get; set; }
-        public PhotoDto Photo { get; set; } = null!;
+      
     }
 }

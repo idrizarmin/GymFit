@@ -57,6 +57,7 @@ namespace GymFit.Api.Controllers
                 var dto = await Service.AddAsync(upsertDto, cancellationToken);
                 return Ok(dto);
             }
+
             catch (ValidationException e)
             {
                 Logger.LogError(e, "Problem when updating resource");

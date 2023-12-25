@@ -1,14 +1,20 @@
-
 class UserPackageSearchObject {
   bool? expired;
   int? PageNumber;
   int? PageSize;
   int? userId;
   int? packageId;
-
+  DateTime? fromDate;
+  DateTime? toDate;
 
   UserPackageSearchObject(
-      { this.PageNumber, this.PageSize, this.expired, this.userId, this.packageId });
+      {this.PageNumber,
+      this.PageSize,
+      this.expired,
+      this.userId,
+      this.packageId,
+      this.fromDate,
+      this.toDate});
 
   UserPackageSearchObject.fromJson(Map<String, dynamic> json) {
     expired = json['expired'];

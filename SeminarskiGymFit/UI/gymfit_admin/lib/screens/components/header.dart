@@ -68,27 +68,12 @@ class _ProfileCardState extends State<ProfileCard> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: [
-        const SizedBox(width: 8),
-        SvgPicture.asset(
-          "assets/icons/notification2.svg",
-          color: const Color.fromARGB(255, 255, 167, 43),
-          width: 35,
-          height: 35,
-        ),
-        const SizedBox(width: 15),
-        ClipRRect(
-          borderRadius:
-              BorderRadius.circular(10), // Adjust the radius as needed
-          child: Image.asset(
-            "assets/images/user1.jpg",
-            height: 38,
-          ),
-        ),
-        const SizedBox(),
-        const Padding(
+      children: const [
+        SizedBox(width: 8),
+        
+        SizedBox(),
+        Padding(
           padding: EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-          child: Text("Armin Idriz"),
         ),
         
       ],

@@ -21,10 +21,7 @@ namespace GymFit.Infrastructure
             builder.Property(e => e.GuidId)
            .IsRequired();
 
-            builder.HasMany(c => c.Gyms)
-              .WithOne(c => c.Photo)
-              .HasForeignKey(c => c.PhotoId)
-              .IsRequired();
+           
 
             builder.HasMany(c => c.Users)
               .WithOne(c => c.Photo)

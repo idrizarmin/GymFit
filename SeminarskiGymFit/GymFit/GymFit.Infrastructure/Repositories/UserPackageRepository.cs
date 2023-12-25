@@ -15,7 +15,9 @@ namespace GymFit.Infrastructure
             var packages= await DbSet.Include(s => s.package)
                 .Where(u => (searchObject.expired== null || u.Expired== searchObject.expired)
                 && (searchObject.packageId== 0 ||u.packageId == searchObject.packageId)
-                && (searchObject.userId== 0 ||u.UserId == searchObject.userId))
+                && (searchObject.userId== 0 ||u.UserId == searchObject.userId)
+                &&(searchObject.fromDate== null || u.CreatedAt >= searchObject.fromDate)
+                && (searchObject.toDate == null || u.CreatedAt <= searchObject.toDate))
                 .ToPagedListAsync(searchObject, cancellationToken);
 
             return packages;

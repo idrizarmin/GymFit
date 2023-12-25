@@ -23,10 +23,6 @@ namespace GymFit.Infrastructure
                 .HasForeignKey(e => e.CountryId)
                 .IsRequired();
 
-            builder.HasMany(c => c.Gyms)
-               .WithOne(c => c.City)
-               .HasForeignKey(c => c.CityId)
-               .IsRequired();
            
         }
     }

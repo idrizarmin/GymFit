@@ -12,8 +12,6 @@ namespace GymFit.Application
             RuleFor(c => c.Description).NotEmpty().WithErrorCode(ErrorCodes.NotEmpty);
             RuleFor(c => c.PhoneNumber).NotEmpty().WithErrorCode(ErrorCodes.NotEmpty);
 
-            RuleFor(c => c.PhotoId).NotNull().WithErrorCode(ErrorCodes.NotNull);
-            RuleFor(c => c.CityId).NotNull().WithErrorCode(ErrorCodes.NotNull);
         }
     }
 }

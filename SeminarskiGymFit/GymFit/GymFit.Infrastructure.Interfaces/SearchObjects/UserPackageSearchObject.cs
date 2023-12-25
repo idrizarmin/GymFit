@@ -10,5 +10,9 @@ namespace GymFit.Infrastructure.Interfaces
 
         public int userId { get; set; }
 
+        public DateTime? fromDate { get; set; }
+
+        public DateTime? toDate { get; set; }
+
     }
 }

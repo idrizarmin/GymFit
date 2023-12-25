@@ -32,7 +32,7 @@ class _GymScreenState extends State<GymScreen> {
   late PostProvider _postProvider;
   bool isAllSelected = false;
   List<Gym?> gyms = <Gym>[];
-  Gym? gym; 
+  Gym? gym;
   int currentPage = 1;
   int pageSize = 20;
   int hasNextPage = 0;
@@ -53,7 +53,7 @@ class _GymScreenState extends State<GymScreen> {
         setState(() {
           gym = gymResponse;
           print(gym!.description!);
-          gyms[0]=gym;
+          gyms.add(gym);
         });
       }
     } on Exception catch (e) {
@@ -64,12 +64,14 @@ class _GymScreenState extends State<GymScreen> {
   void EditGym(int id) async {
     try {
       var newGym = {
-        "id": id,
+        "id": 2,
         "name": _nameController.text,
-        "address": false,
-        "description": false,
-        "phoneNumber": null,
-        "website": null,
+        "address": _addresController.text,
+        "description": _descriptionController.text,
+        "phoneNumber": _phoneNumberController.text,
+        "website": _websiteController.text,
+        "createdAt": null,
+        "modifiedAt": null,
       };
       var change = await _gymProvider.edit(newGym);
       if (change == "OK") {
@@ -144,7 +146,7 @@ class _GymScreenState extends State<GymScreen> {
 
   @override
   Widget build(BuildContext context) {
-if (gym == null) {
+    if (gym == null) {
       return _buildLoadingIndicator();
     }
 
@@ -188,11 +190,12 @@ if (gym == null) {
       ),
     );
   }
-Widget _buildLoadingIndicator() {
+
+  Widget _buildLoadingIndicator() {
     return Stack(
       children: [
         Scaffold(
-           backgroundColor: bgColor,
+          backgroundColor: bgColor,
           body: Center(
             child: Container(
               width: 50,
@@ -210,6 +213,7 @@ Widget _buildLoadingIndicator() {
       ],
     );
   }
+
   Row buildButtons(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -239,7 +243,8 @@ Widget _buildLoadingIndicator() {
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Zatvori", style: TextStyle(color: white))),
+                              child: Text("Zatvori",
+                                  style: TextStyle(color: white))),
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor,
@@ -247,9 +252,12 @@ Widget _buildLoadingIndicator() {
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
                                   EditGym(gyms[0]!.id);
+                                  Navigator.of(context).pop();
+                                  loadGyms();
                                 }
                               },
-                              child: Text("Spremi", style: TextStyle(color: white)))
+                              child: Text("Spremi",
+                                  style: TextStyle(color: white)))
                         ],
                       );
                     });
@@ -424,19 +432,20 @@ Widget _buildLoadingIndicator() {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Zatvori", style: TextStyle(color: white))),
+                            child: Text("Zatvori",
+                                style: TextStyle(color: white))),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor),
                             onPressed: () {
-                               if (_formKey.currentState!.validate()){
+                              if (_formKey.currentState!.validate()) {
                                 EditPost(selectedPosts[0].id);
-                              Navigator.of(context).pop();
-                              selectedPosts = [];
-                               }
-                              
+                                Navigator.of(context).pop();
+                                selectedPosts = [];
+                              }
                             },
-                            child: Text("Spremi", style: TextStyle(color: white))),
+                            child:
+                                Text("Spremi", style: TextStyle(color: white))),
                       ],
                     );
                   });
@@ -482,7 +491,8 @@ Widget _buildLoadingIndicator() {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Text("OK", style: TextStyle(color: white)),
+                                child:
+                                    Text("OK", style: TextStyle(color: white)),
                               ),
                             ]);
                       });
@@ -505,7 +515,8 @@ Widget _buildLoadingIndicator() {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Odustani", style: TextStyle(color: white)),
+                            child: Text("Odustani",
+                                style: TextStyle(color: white)),
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -517,7 +528,8 @@ Widget _buildLoadingIndicator() {
                               }
                               Navigator.of(context).pop();
                             },
-                            child: Text("Obriši", style: TextStyle(color: white)),
+                            child:
+                                Text("Obriši", style: TextStyle(color: white)),
                           ),
                         ],
                       );
@@ -699,77 +711,82 @@ Widget _buildLoadingIndicator() {
     );
   }
 
- Widget buildGymInfo(BuildContext context, Gym gym) {
-  return SingleChildScrollView(
-    scrollDirection: Axis.vertical,
-    child: ConstrainedBox(
-      constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.white, style: BorderStyle.solid),
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: DataTable(
-          dataRowColor: MaterialStateProperty.all(
-              const Color.fromARGB(42, 241, 241, 241)),
-          columns: const [
-            DataColumn(
-              label: Expanded(
-                child: Text(
-                  "Naziv",
+  Widget buildGymInfo(BuildContext context, Gym gym) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: ConstrainedBox(
+        constraints:
+            BoxConstraints(minWidth: MediaQuery.of(context).size.width),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.white, style: BorderStyle.solid),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: DataTable(
+            dataRowColor: MaterialStateProperty.all(
+                const Color.fromARGB(42, 241, 241, 241)),
+            columns: const [
+              DataColumn(
+                label: Expanded(
+                  child: Text(
+                    "Naziv",
+                    style: TextStyle(fontStyle: FontStyle.normal),
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  "Opis",
                   style: TextStyle(fontStyle: FontStyle.normal),
                 ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Opis",
-                style: TextStyle(fontStyle: FontStyle.normal),
+              DataColumn(
+                label: Text(
+                  "Adresa",
+                  style: TextStyle(fontStyle: FontStyle.normal),
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Adresa",
-                style: TextStyle(fontStyle: FontStyle.normal),
+              DataColumn(
+                label: Text(
+                  "Broj telefona",
+                  style: TextStyle(fontStyle: FontStyle.normal),
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Broj telefona",
-                style: TextStyle(fontStyle: FontStyle.normal),
+              DataColumn(
+                label: Text(
+                  "Website",
+                  style: TextStyle(fontStyle: FontStyle.normal),
+                ),
               ),
-            ),
-            DataColumn(
-              label: Text(
-                "Website",
-                style: TextStyle(fontStyle: FontStyle.normal),
+            ],
+            rows: [
+              DataRow(
+                cells: [
+                  DataCell(Text(gym.name ?? '')),
+                  DataCell(Text(gym.description ?? '')),
+                  DataCell(Text(gym.address ?? '')),
+                  DataCell(Text(gym.phoneNumber ?? '')),
+                  DataCell(Text(gym.website ?? '')),
+                ],
               ),
-            ),
-          ],
-          rows: [
-            DataRow(
-              cells: [
-                DataCell(Text(gym.name ?? '')),
-                DataCell(Text(gym.description ?? '')),
-                DataCell(Text(gym.address ?? '')),
-                DataCell(Text(gym.phoneNumber ?? '')),
-                DataCell(Text(gym.website ?? '')),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   Widget EditGymForm({
-    bool isEditing = false,
+    bool isEditing = true,
     Gym? gymToEdit,
   }) {
     if (gymToEdit != null) {
-    } else {}
+      _nameController.text = gymToEdit.name;
+      _descriptionController.text = gymToEdit.description ?? " ";
+      _addresController.text = gymToEdit.address ?? "";
+      _websiteController.text = gymToEdit.website ?? "";
+      _phoneNumberController.text = gymToEdit.phoneNumber ?? "";
+    }
 
     return Container(
       height: 450,

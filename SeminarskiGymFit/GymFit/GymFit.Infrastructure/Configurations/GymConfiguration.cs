@@ -24,15 +24,6 @@ namespace GymFit.Infrastructure
             builder.Property(x => x.Website)
                 .IsRequired(false);
 
-            builder.HasOne(e => e.City)
-              .WithMany(e => e.Gyms)
-              .HasForeignKey(e => e.CityId)
-              .IsRequired();
-
-            builder.HasOne(e => e.Photo)
-            .WithMany(e => e.Gyms)
-            .HasForeignKey(e => e.PhotoId)
-            .IsRequired();
 
             builder.HasMany(c => c.Arrivals)
                .WithOne(c => c.Gym)

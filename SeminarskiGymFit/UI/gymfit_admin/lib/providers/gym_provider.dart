@@ -36,7 +36,8 @@ class GymProvider extends BaseProvider<Gym> {
       throw Exception('Failed to load data');
     }
   }
-    @override
+
+  @override
   Future<Gym> getById(int id) async {
     var uri = Uri.parse('$apiUrl/Gyms/$id');
 
@@ -45,7 +46,6 @@ class GymProvider extends BaseProvider<Gym> {
     final response = await http.get(uri, headers: headers);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
-      
 
       return fromJson(data);
     } else {
@@ -66,8 +66,6 @@ class GymProvider extends BaseProvider<Gym> {
       throw Exception('Greška prilikom unosa');
     }
   }
-
- 
 
   @override
   Gym fromJson(data) {

@@ -39,15 +39,23 @@ class _ReportScreenState extends State<ReportScreen> {
   List<Reservation> reservations = <Reservation>[];
 
   Package? _selectedPackage;
+  Package? _selectedPackage1;
   String _selectedIsActive = 'Svi';
   bool? isActive;
   List<Package> packages = <Package>[];
   late PackageProvider _packageProvider;
   late UserPackageProvider _userPackageProvider;
   List<UserPackage> _userPackages = <UserPackage>[];
+  List<UserPackage> _userPackages1 = <UserPackage>[];
+  List<UserPackage> _userPackagesFromTo = <UserPackage>[];
+  final TextEditingController _fromDateController = TextEditingController();
+  final TextEditingController _toDateController = TextEditingController();
+  DateTime? fromDate;
+  DateTime? toDate;
 
   UserForSelection? selectedUser;
   UserForSelection? selectedUser1;
+  UserForSelection? selectedUser2;
   UserForSelection? selectedTrainer;
   int? selectedGender;
   List<UserForSelection> users = <UserForSelection>[];
@@ -75,6 +83,7 @@ class _ReportScreenState extends State<ReportScreen> {
     loadPackages();
     loadUserPackages();
     loadUsers1();
+    loadUserPackages1();
   }
 
   void loadUsers1() async {
@@ -172,6 +181,50 @@ class _ReportScreenState extends State<ReportScreen> {
     }
   }
 
+  void loadUserPackages1() async {
+    try {
+      UserPackageSearchObject searchObject = UserPackageSearchObject(
+        expired: null,
+        PageNumber: 1,
+        PageSize: 10000,
+        userId: selectedUser2?.id,
+        packageId: (_selectedPackage1 != null) ? _selectedPackage1!.id : null,
+      );
+      var Response =
+          await _userPackageProvider.getPaged(searchObject: searchObject);
+      if (mounted) {
+        setState(() {
+          _userPackages1 = Response;
+        });
+      }
+    } on Exception catch (e) {
+      showErrorDialog(context, e.toString().substring(11));
+    }
+  }
+
+  void loadUserPackagesFromTo() async {
+    try {
+      UserPackageSearchObject searchObject = UserPackageSearchObject(
+        expired: null,
+        PageNumber: 1,
+        PageSize: 10000,
+        fromDate: fromDate,
+        toDate: toDate,
+        userId: selectedUser2?.id,
+        packageId: (_selectedPackage1 != null) ? _selectedPackage1!.id : null,
+      );
+      var Response =
+          await _userPackageProvider.getPaged(searchObject: searchObject);
+      if (mounted) {
+        setState(() {
+          _userPackagesFromTo = Response;
+        });
+      }
+    } on Exception catch (e) {
+      showErrorDialog(context, e.toString().substring(11));
+    }
+  }
+
   void loadPackages() async {
     try {
       var response = await _packageProvider.getPaged(
@@ -236,11 +289,11 @@ class _ReportScreenState extends State<ReportScreen> {
                           SizedBox(
                             width: 20,
                           ),
-                          buildReservationsReport(),
+                          buildUsersPaymentReport(),
                           SizedBox(
                             width: 20,
                           ),
-                          buildReservationsReport(),
+                          buildPaymentsReport(),
                         ],
                       )
                     ],
@@ -249,6 +302,295 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Expanded buildPaymentsReport() {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(defaultPadding),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: secondaryColor,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              "Izvještaj o uplatama",
+              style: TextStyle(fontSize: 20),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('  Paket:'),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: DropdownButton<Package>(
+                    isExpanded: true,
+                    value: _selectedPackage1,
+                    items: [
+                      // Dodajte "Sve" kao prvi element u listu
+                      const DropdownMenuItem<Package>(
+                        value: null,
+                        child: Text('  Svi'),
+                      ),
+                      ...packages.map((Package package) {
+                        return DropdownMenuItem<Package>(
+                          value: package,
+                          child: Text(package.name ?? ''),
+                        );
+                      }).toList(),
+                    ],
+                    onChanged: (Package? selectedPackage) {
+                      setState(() {
+                        _selectedPackage1 = selectedPackage;
+                      });
+                      loadUserPackagesFromTo();
+                    },
+                    hint: Text('Izaberite paket'),
+                    underline: Container(),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                // dodati filtere za datum
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: TextFormField(
+                          controller: _fromDateController,
+                          decoration: const InputDecoration(
+                            labelText: '  Datum od:',
+                            hintText: 'Odaberite datum',
+                            labelStyle: TextStyle(color: Colors.white),
+                            hintStyle: TextStyle(color: Colors.white),
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                          ),
+                          onTap: () async {
+                            DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: fromDate,
+                              firstDate: DateTime(1950),
+                              lastDate: DateTime(2101),
+                            );
+
+                            if (pickedDate != null && pickedDate != fromDate) {
+                              setState(() {
+                                fromDate = pickedDate;
+                                _fromDateController.text =
+                                    "  ${pickedDate.day}.${pickedDate.month}.${pickedDate.year}.";
+                              });
+                              loadUserPackagesFromTo();
+                            }
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Obavezan unos!';
+                            }
+                            return null;
+                          },
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: TextFormField(
+                          controller: _toDateController,
+                          decoration: const InputDecoration(
+                            labelText: '  Datum do:',
+                            hintText: 'Odaberite datum',
+                            labelStyle: TextStyle(color: Colors.white),
+                            hintStyle: TextStyle(color: Colors.white),
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                          ),
+                          onTap: () async {
+                            DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: toDate,
+                              firstDate: DateTime(1950),
+                              lastDate: DateTime(2101),
+                            );
+
+                            if (pickedDate != null && pickedDate != toDate) {
+                              setState(() {
+                                toDate = pickedDate;
+                                _toDateController.text =
+                                    "  ${pickedDate.day}.${pickedDate.month}.${pickedDate.year}.";
+                              });
+                              loadUserPackagesFromTo();
+                            }
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Obavezan unos!';
+                            }
+                            return null;
+                          },
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Center(
+                  child: ElevatedButton(
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: primaryColor),
+                    onPressed: _displayPaymentsPdf,
+                    child: Text(
+                      'Prikaži PDF',
+                      style: TextStyle(color: white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Expanded buildUsersPaymentReport() {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(defaultPadding),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: secondaryColor,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              "Izvještaj o uplatama klijenta",
+              style: TextStyle(fontSize: 20),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('  Klijent:'),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: SearchChoices.single(
+                    hint: Text("Odaberite klijenta"),
+                    items: users
+                        .map((user) => DropdownMenuItem(
+                              value: user,
+                              child: Text('${user.firstName} ${user.lastName}'),
+                            ))
+                        .toList(),
+                    value: selectedUser2,
+                    isExpanded: true,
+                    onChanged: (selectedItem) {
+                      setState(() {
+                        selectedUser2 = selectedItem as UserForSelection?;
+                      });
+                      loadUserPackages1();
+                    },
+                    closeButton: 'Zatvori',
+                    searchHint: 'Pretraži korisnike',
+                    underline: Container(),
+                    padding: const EdgeInsets.fromLTRB(20, 6, 0, 0),
+                    displayClearIcon: true,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                const Text('  Paket:'),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: DropdownButton<Package>(
+                    isExpanded: true,
+                    value: _selectedPackage1,
+                    items: [
+                      // Dodajte "Sve" kao prvi element u listu
+                      const DropdownMenuItem<Package>(
+                        value: null,
+                        child: Text('  Svi'),
+                      ),
+                      ...packages.map((Package package) {
+                        return DropdownMenuItem<Package>(
+                          value: package,
+                          child: Text(package.name ?? ''),
+                        );
+                      }).toList(),
+                    ],
+                    onChanged: (Package? selectedPackage) {
+                      setState(() {
+                        _selectedPackage1 = selectedPackage;
+                      });
+                      loadUserPackages1();
+                    },
+                    hint: Text('Izaberite paket'),
+                    underline: Container(),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Center(
+                  child: ElevatedButton(
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: primaryColor),
+                    onPressed: _displayUserPaymentsPdf,
+                    child: Text(
+                      'Prikaži PDF',
+                      style: TextStyle(color: white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -267,7 +609,7 @@ class _ReportScreenState extends State<ReportScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(
-              "Izvještaj o korisnicima",
+              "Izvještaj o klijentima",
               style: TextStyle(fontSize: 20),
             ),
             Column(
@@ -428,18 +770,18 @@ class _ReportScreenState extends State<ReportScreen> {
                 ),
                 const Text('  Paket:'),
                 Container(
-                  padding: EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.white),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: DropdownButton<Package>(
+                    isExpanded: true,
                     value: _selectedPackage,
                     items: [
                       // Dodajte "Sve" kao prvi element u listu
                       DropdownMenuItem<Package>(
                         value: null,
-                        child: Text('Svi'),
+                        child: Text('  Svi'),
                       ),
                       ...packages.map((Package package) {
                         return DropdownMenuItem<Package>(
@@ -674,11 +1016,11 @@ class _ReportScreenState extends State<ReportScreen> {
                     ],
                     for (var reservation in pageReservations)
                       <String>[
-                        '${reservation.description ?? ""}',
-                        '${_formatDate(reservation.ReservationDate)}',
+                        (reservation.description ?? ""),
+                        (_formatDate(reservation.ReservationDate)),
                         '${reservation.StartDate!.hour}:${reservation.StartDate!.minute}0',
                         '${reservation.EndDate!.hour}:${reservation.EndDate!.minute}0',
-                        '${reservation.isUsed ?? false ? "Da" : "Ne"}',
+                        (reservation.isUsed ?? false ? "Da" : "Ne"),
                       ],
                   ],
                   cellAlignments: {
@@ -816,10 +1158,10 @@ class _ReportScreenState extends State<ReportScreen> {
                     <String>['Naziv', 'Pocetak', 'Kraj', 'Iskoristena'],
                     for (var userPackage in pageUserPackages)
                       <String>[
-                        '${userPackage.package!.description ?? ""}',
-                        '${_formatDate(userPackage.activationDate)}',
-                        '${_formatDate(userPackage.expirationDate)}',
-                        '${userPackage.expired ?? false ? "Da" : "Ne"}',
+                        (userPackage.package!.description ?? ""),
+                        (_formatDate(userPackage.activationDate)),
+                        (_formatDate(userPackage.expirationDate)),
+                        (userPackage.expired ?? false ? "Da" : "Ne"),
                       ],
                   ],
                   cellAlignments: {
@@ -944,9 +1286,9 @@ class _ReportScreenState extends State<ReportScreen> {
                     for (var user in pageUser)
                       <String>[
                         '${user.firstName} ${user.lastName}',
-                        '${user.email}',
+                        (user.email),
                         '${user.phoneNumber}',
-                        '${user.isActive ? "Da" : "Ne"}',
+                        (user.isActive ? "Da" : "Ne"),
                       ],
                   ],
                   cellAlignments: {
@@ -990,6 +1332,306 @@ class _ReportScreenState extends State<ReportScreen> {
         builder: (context) => PreviewScreen(doc: doc),
       ),
     );
+  }
+
+  void _displayUserPaymentsPdf() {
+    if (selectedUser2 == null) {
+      showErrorDialog(context, 'Odaberite klijenta.');
+      return;
+    }
+
+    if (_userPackages1.isEmpty) {
+      showErrorDialog(context, "Odabrani klijent nema clanarina");
+      return;
+    }
+    final doc = pw.Document();
+
+    final maxsPerPage = 20;
+
+    for (var i = 0; i < _userPackages1.length; i += maxsPerPage) {
+      final endIndex = (i + maxsPerPage < _userPackages1.length)
+          ? i + maxsPerPage
+          : _userPackages1.length;
+
+      final pageUserPayments = _userPackages1.sublist(i, endIndex);
+
+      doc.addPage(
+        pw.Page(
+          pageFormat: PdfPageFormat.a4,
+          build: (pw.Context context) {
+            return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Row(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Container(
+                      child: pw.Image(
+                        pw.MemoryImage(
+                          File('assets/images/printLogo.png').readAsBytesSync(),
+                        ),
+                        width: 80,
+                        height: 80,
+                      ),
+                      margin: pw.EdgeInsets.only(right: 20),
+                    ),
+                    pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text(
+                          'Gym Name: ${gym?.name ?? ""}',
+                          style: pw.TextStyle(fontSize: 12),
+                        ),
+                        pw.Text('Address: ${gym?.address ?? ""}',
+                            style: pw.TextStyle(fontSize: 10)),
+                        pw.Text('Phone Number: ${gym?.phoneNumber ?? ""}',
+                            style: pw.TextStyle(fontSize: 10)),
+                        pw.Text('Website: ${gym?.website ?? ""}',
+                            style: pw.TextStyle(fontSize: 10)),
+                      ],
+                    ),
+                  ],
+                ),
+                pw.SizedBox(height: 10),
+                pw.Divider(),
+                pw.SizedBox(height: 10),
+                pw.Center(
+                  child: pw.Text(
+                    'Izvjestaj o uplatama',
+                    style: pw.TextStyle(fontSize: 20),
+                  ),
+                ),
+                pw.SizedBox(height: 10),
+                pw.Text(
+                  'Izvjestaj o uplatama za klijenta ${selectedUser2!.firstName} ${selectedUser2!.lastName} ',
+                  style: pw.TextStyle(fontSize: 12),
+                ),
+                if (_selectedPackage != null)
+                  pw.Text(
+                    'Paket:  ${_selectedPackage!.description}',
+                    style: pw.TextStyle(fontSize: 12),
+                  ),
+                pw.Table.fromTextArray(
+                  context: context,
+                  data: <List<String>>[
+                    <String>[
+                      'Naziv',
+                      'Datum uplate',
+                      'Vrijedi do',
+                      'Istekla',
+                      'Cijena',
+                      'Uplaceno'
+                    ],
+                    for (var userPackage in pageUserPayments)
+                      <String>[
+                        (userPackage.package!.description ?? ""),
+                        (_formatDate(userPackage.activationDate)),
+                        (_formatDate(userPackage.expirationDate)),
+                        (userPackage.expired ?? false ? "Da" : "Ne"),
+                        '${userPackage.package!.price}0',
+                        (_formatCurrency(_calculatePackagePrice(userPackage))),
+                      ],
+                  ],
+                  cellAlignments: {
+                    0: pw.Alignment.centerLeft,
+                    1: pw.Alignment.center,
+                    2: pw.Alignment.center,
+                    3: pw.Alignment.center,
+                    4: pw.Alignment.center,
+                  },
+                  border: pw.TableBorder.all(),
+                  headerDecoration: pw.BoxDecoration(
+                    color: PdfColors.grey,
+                  ),
+                  headerHeight: 25,
+                  cellHeight: 25,
+                ),
+                if (endIndex == _userPackages1.length) ...[
+                  pw.SizedBox(height: 10),
+                  pw.Column(
+                    mainAxisAlignment: pw.MainAxisAlignment.end,
+                    children: [
+                      pw.Text('Ukupno uplata: ${_userPackages1.length}'),
+                      pw.SizedBox(height: 20),
+                      pw.Text('Potpis ovlastene osobe'),
+                      pw.SizedBox(height: 20),
+                      pw.Container(width: 100, child: pw.Divider()),
+                    ],
+                  ),
+                  pw.SizedBox(height: 20),
+                ],
+              ],
+            );
+          },
+        ),
+      );
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PreviewScreen(doc: doc),
+      ),
+    );
+  }
+
+  void _displayPaymentsPdf() {
+    if (_userPackagesFromTo.isEmpty) {
+      showErrorDialog(context, "Ne postoji ni jedna clanarina");
+      return;
+    }
+    final doc = pw.Document();
+
+    final maxsPerPage = 20;
+
+    for (var i = 0; i < _userPackagesFromTo.length; i += maxsPerPage) {
+      final endIndex = (i + maxsPerPage < _userPackagesFromTo.length)
+          ? i + maxsPerPage
+          : _userPackagesFromTo.length;
+
+      final pagePayments = _userPackagesFromTo.sublist(i, endIndex);
+
+      doc.addPage(
+        pw.Page(
+          pageFormat: PdfPageFormat.a4,
+          build: (pw.Context context) {
+            return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Row(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Container(
+                      child: pw.Image(
+                        pw.MemoryImage(
+                          File('assets/images/printLogo.png').readAsBytesSync(),
+                        ),
+                        width: 80,
+                        height: 80,
+                      ),
+                      margin: pw.EdgeInsets.only(right: 20),
+                    ),
+                    pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text(
+                          'Gym Name: ${gym?.name ?? ""}',
+                          style: pw.TextStyle(fontSize: 12),
+                        ),
+                        pw.Text('Address: ${gym?.address ?? ""}',
+                            style: pw.TextStyle(fontSize: 10)),
+                        pw.Text('Phone Number: ${gym?.phoneNumber ?? ""}',
+                            style: pw.TextStyle(fontSize: 10)),
+                        pw.Text('Website: ${gym?.website ?? ""}',
+                            style: pw.TextStyle(fontSize: 10)),
+                      ],
+                    ),
+                  ],
+                ),
+                pw.SizedBox(height: 10),
+                pw.Divider(),
+                pw.SizedBox(height: 10),
+                pw.Center(
+                  child: pw.Text(
+                    'Izvjestaj o uplatama',
+                    style: pw.TextStyle(fontSize: 20),
+                  ),
+                ),
+                pw.SizedBox(height: 10),
+                if (_selectedPackage != null)
+                  pw.Text(
+                    'Paket:  ${_selectedPackage!.description}',
+                    style: pw.TextStyle(fontSize: 12),
+                  ),
+                pw.Table.fromTextArray(
+                  context: context,
+                  data: <List<String>>[
+                    <String>[
+                      'Naziv',
+                      'Datum uplate',
+                      'Vrijedi do',
+                      'Paket',
+                      'Cijena',
+                      'Uplaceno'
+                    ],
+                    for (var payment in pagePayments)
+                      <String>[
+                        (payment.package!.description ?? ""),
+                        (_formatDate(payment.activationDate)),
+                        (_formatDate(payment.expirationDate)),
+                        (payment.package!.name!),
+                        '${payment.package!.price}0',
+                        (_formatCurrency(_calculatePackagePrice(payment))),
+                      ],
+                  ],
+                  cellAlignments: {
+                    0: pw.Alignment.centerLeft,
+                    1: pw.Alignment.center,
+                    2: pw.Alignment.center,
+                    3: pw.Alignment.center,
+                    4: pw.Alignment.center,
+                  },
+                  border: pw.TableBorder.all(),
+                  headerDecoration: pw.BoxDecoration(
+                    color: PdfColors.grey,
+                  ),
+                  headerHeight: 25,
+                  cellHeight: 25,
+                ),
+                if (endIndex == _userPackages1.length) ...[
+                  pw.SizedBox(height: 10),
+                  pw.Column(
+                    mainAxisAlignment: pw.MainAxisAlignment.end,
+                    children: [
+                      pw.Text('Ukupno uplata: ${_userPackages1.length}'),
+                      pw.SizedBox(height: 20),
+                      pw.Text('Potpis ovlastene osobe'),
+                      pw.SizedBox(height: 20),
+                      pw.Container(width: 100, child: pw.Divider()),
+                    ],
+                  ),
+                  pw.SizedBox(height: 20),
+                ],
+              ],
+            );
+          },
+        ),
+      );
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PreviewScreen(doc: doc),
+      ),
+    );
+  }
+
+  String _formatCurrency(double amount) {
+    final formatter = NumberFormat.currency(locale: 'en_US', symbol: 'BAM ');
+    return formatter.format(amount);
+  }
+
+  double _calculatePackagePrice(UserPackage userPackage) {
+    // Calculate the difference between expirationDate and activationDate in months
+    int monthsDifference = userPackage.expirationDate!
+            .difference(userPackage.activationDate!)
+            .inDays ~/
+        30;
+
+    // Calculate the total price
+    double totalPrice = monthsDifference * userPackage.package!.price!;
+
+    // Apply discounts if necessary
+    if (monthsDifference >= 6 && monthsDifference < 12) {
+      // 5% discount for more than 6 and less than 12 months
+      totalPrice *= 0.95;
+    } else if (monthsDifference == 12) {
+      // 10% discount for 12 months
+      totalPrice *= 0.9;
+    }
+
+    return totalPrice;
   }
 }
 

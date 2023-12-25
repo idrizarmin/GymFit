@@ -31,6 +31,12 @@ class UserPackageProvider extends BaseProvider<UserPackage> {
       if (searchObject.packageId != null) {
         queryParameters['packageId'] = searchObject.packageId.toString();
       }
+        if (searchObject.fromDate != null) {
+        queryParameters['fromDate'] = searchObject.fromDate.toString();
+      }
+        if (searchObject.toDate != null) {
+        queryParameters['toDate'] = searchObject.toDate.toString();
+      }
     }
     uri = uri.replace(queryParameters: queryParameters);
     final response = await http.get(uri, headers: headers);
