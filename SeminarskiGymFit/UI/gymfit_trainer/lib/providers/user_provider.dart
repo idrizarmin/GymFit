@@ -1,4 +1,3 @@
-
 import 'package:gymfit_trainer/models/seaarchObjects/trainers_search_object.dart';
 import 'package:gymfit_trainer/models/seaarchObjects/user_search_object.dart';
 import 'package:gymfit_trainer/models/user.dart';
@@ -33,8 +32,9 @@ class UserProvider extends BaseProvider {
     }
   }
 
-  Future<List<User>> getTrainers( TrainersSearchObject? searchObject ) async {
-    var uri = Uri.parse('$apiUrl/User/GetPaged');
+ 
+Future<List<User>> getTrainersPaged(TrainersSearchObject? searchObject) async {
+    var uri = Uri.parse('$apiUrl/User/GetTrainersPaged');
     var headers = Authorization.createHeaders();
     final Map<String, String> queryParameters = {};
 
@@ -47,19 +47,20 @@ class UserProvider extends BaseProvider {
         queryParameters['PageSize'] = searchObject.PageSize.toString();
       }
     }
+
     uri = uri.replace(queryParameters: queryParameters);
     final response = await http.get(uri, headers: headers);
     if (response.statusCode == 200) {
-
       var data = json.decode(response.body);
       var items = data['items'];
-
       return items.map((d) => fromJson(d)).cast<User>().toList();
     } else {
       throw Exception('Failed to load data');
     }
   }
+  
 
+  
 Future<List<UserForSelection>> getusersForSelection(
       {UserSearchObject? searchObject}) async {
     var uri = Uri.parse('$apiUrl/User/GetUsersForSelection');
@@ -97,6 +98,37 @@ Future<List<UserForSelection>> getTrainersForSelection(
       throw Exception('Failed to load data');
     }
   }
+
+  Future<dynamic> updateUser(Map<String, dynamic> updatedUserData) async {
+  try {
+    var uri = Uri.parse('$apiUrl/User');
+    Map<String, String> headers = Authorization.createHeaders();
+
+    var request = http.MultipartRequest('PUT', uri);
+
+    // Convert dynamic values to strings
+    var stringUpdatedUserData = updatedUserData.map((key, value) => MapEntry(key, value.toString()));
+
+    // Add converted fields to the request
+    request.fields.addAll(stringUpdatedUserData);
+
+    // Add the photo to the request if it exists in the updated data
+    if (updatedUserData.containsKey('ProfilePhoto')) {
+      request.files.add(updatedUserData['ProfilePhoto']);
+    }
+
+    var response = await http.Response.fromStream(await request.send());
+
+    if (response.statusCode == 200) {
+      return "OK";
+    } else {
+      throw Exception('Error updating user: ${response.body}');
+    }
+  } catch (e) {
+    throw Exception('Error updating user: $e');
+  }
+}
+
   Future<dynamic> delete(int id) async {
     var uri = Uri.parse('$apiUrl/User/${id}');
     Map<String, String> headers = Authorization.createHeaders();

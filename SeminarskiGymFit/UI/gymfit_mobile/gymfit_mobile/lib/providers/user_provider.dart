@@ -59,6 +59,27 @@ Future<List<User>> getTrainersPaged(TrainersSearchObject? searchObject) async {
     }
   }
   
+
+  
+Future<List<UserForSelection>> getusersForSelection(
+      {UserSearchObject? searchObject}) async {
+    var uri = Uri.parse('$apiUrl/User/GetUsersForSelection');
+    var headers = Authorization.createHeaders();
+
+    var response = await http.get(uri, headers: headers);
+
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      if (data is List) {
+        return data.map((d) => UserForSelection.fromJson(d)).toList();
+      } else {
+        throw Exception('Invalid data format');
+      }
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
 Future<List<UserForSelection>> getTrainersForSelection(
       {UserSearchObject? searchObject}) async {
     var uri = Uri.parse('$apiUrl/User/GetTrainersForSelection');

@@ -35,16 +35,30 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void login() async {
-  try {
-    await userProvider.loginAsync(
-        _emailController.text, _passwordController.text);
-    if (context.mounted) {
-      Navigator.pushReplacementNamed(context, AppRoutes.homeContainerScreen);
+    try {
+      await userProvider.loginAsync(
+          _emailController.text, _passwordController.text);
+      if (context.mounted) {
+        Navigator.pushReplacementNamed(context, AppRoutes.homeContainerScreen);
+      }
+    } on Exception catch (e) {
+      showErrorDialog(context, getErrorMessage(e));
+      print(e);
     }
-  } on Exception catch (e) {
-    showErrorDialog(context, e.toString().substring(11));
   }
-}
+
+  String getErrorMessage(dynamic exception) {
+    if (exception.toString().contains('GymFit.Core.UserNotFoundException') ||
+        exception.toString().contains('UserWrongCredentialsException')) {
+      return 'Neispravni korisnički podaci. Pokušajte ponovo.';
+    } else if (exception
+        .toString()
+        .contains('The remote computer refused the network connection')) {
+      return 'Došlo je do greške na serveru. Pokušajte kasnije.';
+    } else {
+      return 'Došlo je do nepoznate greške. Pokušajte ponovo.';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

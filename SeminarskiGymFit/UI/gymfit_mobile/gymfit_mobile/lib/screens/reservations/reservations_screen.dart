@@ -244,7 +244,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
         var newReservation = {
           "id": 0,
           "description": _descriptionController.text,
-          "reservationDate": selectedDate.toUtc().toIso8601String(),
+          "reservationDate": selectedDate.add(const Duration(days: 1)) .toUtc().toIso8601String(),
           "startDate": startDate.toUtc().toIso8601String(),
           "endDate": endDate.toUtc().toIso8601String(),
           "duration": 0,

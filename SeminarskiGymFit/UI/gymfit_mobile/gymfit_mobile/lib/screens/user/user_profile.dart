@@ -7,6 +7,7 @@ import 'package:gymfit_mobile/models/user.dart';
 import 'package:gymfit_mobile/providers/login_provider.dart';
 import 'package:gymfit_mobile/providers/photo_provider.dart';
 import 'package:gymfit_mobile/providers/user_provider.dart';
+import 'package:gymfit_mobile/routes/app_routes.dart';
 import 'package:gymfit_mobile/utils/authorization.dart';
 import 'package:gymfit_mobile/utils/error_dialog.dart';
 import 'package:image_picker/image_picker.dart';
@@ -98,7 +99,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         'ProfessionalTitle': '',
         'Gender': selectedGender.toString(),
         'DateOfBirth':
-            DateTime.parse(_birthDateController.text).toUtc().toIso8601String(),
+            DateTime.parse(_birthDateController.text).add(const Duration(days: 1)).toUtc().toIso8601String(),
         'Role': '1',
         'LastSignInAt': DateTime.now().toUtc().toIso8601String(),
         'IsVerified': _isVerified.toString(),
@@ -111,17 +112,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           filename: 'profile_photo.jpg',
         );
       }
-      // Send the request
       var response = await _userProvider.updateUser(userData);
 
       if (response == "OK") {
-        Navigator.of(context).pop();
       } else {
-        // Handle error
         showErrorDialog(context, 'Greška prilikom uređivanja');
       }
     } catch (e) {
-      // Handle exceptions
       showErrorDialog(context, e.toString());
     }
   }
@@ -141,9 +138,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    mediaQueryData = MediaQuery.of(context);
+     var mediaQueryData = MediaQuery.of(context);
     if (user == null) {
-      return CircularProgressIndicator();
+      return _buildLoadingIndicator();
     }
 
     return SafeArea(
@@ -158,10 +155,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 Container(
                   alignment: Alignment.center,
                   width: double.maxFinite,
-                  // padding: EdgeInsets.symmetric(
-                  //   horizontal: 10,
-                  //   vertical: 1,
-                  // ),
                   decoration: AppDecoration.fillBlack,
                   child: Text(
                     "Korisnički profil",
@@ -169,11 +162,41 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ),
                 ),
                 _buildUserProfile(),
+                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: teal
+                  ),
+                  onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.changePassword);
+              }, child: Text("Change password", style: TextStyle(color: white),)),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+Widget _buildLoadingIndicator() {
+    return Stack(
+      children: [
+        Scaffold(
+           backgroundColor: appTheme.bgSecondary,
+          body: Center(
+            child: Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: appTheme.bgSecondary,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: CircularProgressIndicator(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -185,7 +208,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         children: [
           Row(
             children: [
-             Padding(
+              Padding(
                 padding: EdgeInsets.only(right: 8.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
@@ -195,8 +218,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     color: primary,
                     child: FutureBuilder<String>(
                       future: loadPhoto(user!.photo?.guidId ?? ''),
-                      builder:
-                          (BuildContext context, AsyncSnapshot<String> snapshot) {
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
                         final imageUrl = snapshot.data;
 
                         return FadeInImage(
@@ -271,7 +294,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: teal,
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+        padding: EdgeInsets.symmetric(horizontal: 15),
       ),
       onPressed: () {
         showDialog(
@@ -282,15 +305,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               title: Text(
                 "Uredi podatke",
                 style: TextStyle(color: white, fontSize: 18),
-              ), // Adjust font size
+              ),
               content: AddUserForm(isEditing: true, userToEdit: user),
               actions: <Widget>[
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: teal,
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 10), // Adjust padding for button size
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -298,16 +319,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   child: Text(
                     "Zatvori",
                     style: TextStyle(fontSize: 12, color: white),
-                  ), // Adjust font size
+                  ),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: teal,
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 10), // Adjust padding for button size
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   ),
                   onPressed: () {
+                    Navigator.of(context).pop();
                     if (_formKey.currentState!.validate()) {
                       editUser(user!.id);
                     }
@@ -317,7 +337,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     child: Text(
                       "Spremi",
                       style: TextStyle(color: white, fontSize: 12),
-                    ), // Adjust font size
+                    ),
                   ),
                 ),
               ],
@@ -328,7 +348,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       child: Text(
         "Uredi profil",
         style: TextStyle(fontSize: 14, color: white),
-      ), // Adjust font size
+      ),
     );
   }
 
@@ -399,8 +419,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 ),
                               );
                             } else {
-                              // Ako uređujete korisnika, pokažite poruku za odabir slike
-                              // Inače, prikažite podrazumevanu sliku iz assetsa
                               return isEditing
                                   ? Container(
                                       padding:
@@ -427,15 +445,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               const SizedBox(height: 35),
               Center(
                 child: SizedBox(
-                  width: 150, // Širina dugmeta
-                  height: 35, // Visina dugmeta
+                  width: 150,
+                  height: 35,
                   child: ElevatedButton(
                     onPressed: () => _pickImage(),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: primary,
+                      backgroundColor: teal,
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(20.0), // Zaobljenost rubova
+                        borderRadius: BorderRadius.circular(20.0),
                       ),
                     ),
                     child: Text('Select An Image',
@@ -444,24 +461,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
               )
             ]),
-            const SizedBox(height: 35),
-            Center(
-              child: SizedBox(
-                width: 150,
-                height: 35,
-                child: ElevatedButton(
-                  onPressed: () => _pickImage(),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: teal,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                  ),
-                  child: Text('Select An Image',
-                      style: TextStyle(fontSize: 12, color: Colors.white)),
-                ),
-              ),
-            ),
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.all(16.0),

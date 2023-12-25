@@ -50,6 +50,10 @@ dependencies:
   search_choices: ^2.2.7
   fl_chart: ^0.64.0
   transparent_image: ^2.0.1
+  pdf: ^3.10.7
+  path_provider: ^2.1.1
+  google_fonts: ^6.1.0
+  printing: ^5.11.1
   
 dev_dependencies:
   flutter_test:
@@ -71,6 +75,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/logo.png
+    - assets/images/printLogo.png
     - assets/images/logo1.png
     - assets/images/user1.jpg
     - assets/icons/dash.svg

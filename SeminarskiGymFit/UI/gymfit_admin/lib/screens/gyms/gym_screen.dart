@@ -32,6 +32,7 @@ class _GymScreenState extends State<GymScreen> {
   late PostProvider _postProvider;
   bool isAllSelected = false;
   List<Gym?> gyms = <Gym>[];
+  Gym? gym; 
   int currentPage = 1;
   int pageSize = 20;
   int hasNextPage = 0;
@@ -47,10 +48,12 @@ class _GymScreenState extends State<GymScreen> {
 
   void loadGyms() async {
     try {
-      var gymResponse = await _gymProvider.getPaged();
+      var gymResponse = await _gymProvider.getById(2);
       if (mounted) {
         setState(() {
-          gyms = gymResponse;
+          gym = gymResponse;
+          print(gym!.description!);
+          gyms[0]=gym;
         });
       }
     } on Exception catch (e) {
@@ -141,6 +144,10 @@ class _GymScreenState extends State<GymScreen> {
 
   @override
   Widget build(BuildContext context) {
+if (gym == null) {
+      return _buildLoadingIndicator();
+    }
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -164,7 +171,7 @@ class _GymScreenState extends State<GymScreen> {
           SizedBox(
             height: 16,
           ),
-          buildGymInfo(context),
+          buildGymInfo(context, gym!),
           PrimaryText(
             text: "Objave",
             fontWeight: FontWeight.w600,
@@ -181,7 +188,28 @@ class _GymScreenState extends State<GymScreen> {
       ),
     );
   }
-
+Widget _buildLoadingIndicator() {
+    return Stack(
+      children: [
+        Scaffold(
+           backgroundColor: bgColor,
+          body: Center(
+            child: Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: bgColor,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: CircularProgressIndicator(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
   Row buildButtons(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -671,70 +699,70 @@ class _GymScreenState extends State<GymScreen> {
     );
   }
 
-  Widget buildGymInfo(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: ConstrainedBox(
-        constraints:
-            BoxConstraints(minWidth: MediaQuery.of(context).size.width),
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.white, style: BorderStyle.solid),
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          child: DataTable(
-            dataRowColor: MaterialStateProperty.all(
-                const Color.fromARGB(42, 241, 241, 241)),
-            columns: const [
-              DataColumn(
-                label: Expanded(
-                  child: Text(
-                    "Naziv",
-                    style: TextStyle(fontStyle: FontStyle.normal),
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Text(
-                  "Opis",
+ Widget buildGymInfo(BuildContext context, Gym gym) {
+  return SingleChildScrollView(
+    scrollDirection: Axis.vertical,
+    child: ConstrainedBox(
+      constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.white, style: BorderStyle.solid),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: DataTable(
+          dataRowColor: MaterialStateProperty.all(
+              const Color.fromARGB(42, 241, 241, 241)),
+          columns: const [
+            DataColumn(
+              label: Expanded(
+                child: Text(
+                  "Naziv",
                   style: TextStyle(fontStyle: FontStyle.normal),
                 ),
               ),
-              DataColumn(
-                label: Text(
-                  "Adresa",
-                  style: TextStyle(fontStyle: FontStyle.normal),
-                ),
+            ),
+            DataColumn(
+              label: Text(
+                "Opis",
+                style: TextStyle(fontStyle: FontStyle.normal),
               ),
-              DataColumn(
-                label: Text(
-                  "Broj telefona",
-                  style: TextStyle(fontStyle: FontStyle.normal),
-                ),
+            ),
+            DataColumn(
+              label: Text(
+                "Adresa",
+                style: TextStyle(fontStyle: FontStyle.normal),
               ),
-              DataColumn(
-                label: Text(
-                  "Website",
-                  style: TextStyle(fontStyle: FontStyle.normal),
-                ),
+            ),
+            DataColumn(
+              label: Text(
+                "Broj telefona",
+                style: TextStyle(fontStyle: FontStyle.normal),
               ),
-            ],
-            rows: gyms.map((gymItem) {
-              return DataRow(
-                cells: [
-                  DataCell(Text(gymItem?.name ?? '')),
-                  DataCell(Text(gymItem?.description ?? '')),
-                  DataCell(Text(gymItem?.address ?? '')),
-                  DataCell(Text(gymItem?.phoneNumber ?? '')),
-                  DataCell(Text(gymItem?.website ?? '')),
-                ],
-              );
-            }).toList(),
-          ),
+            ),
+            DataColumn(
+              label: Text(
+                "Website",
+                style: TextStyle(fontStyle: FontStyle.normal),
+              ),
+            ),
+          ],
+          rows: [
+            DataRow(
+              cells: [
+                DataCell(Text(gym.name ?? '')),
+                DataCell(Text(gym.description ?? '')),
+                DataCell(Text(gym.address ?? '')),
+                DataCell(Text(gym.phoneNumber ?? '')),
+                DataCell(Text(gym.website ?? '')),
+              ],
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget EditGymForm({
     bool isEditing = false,

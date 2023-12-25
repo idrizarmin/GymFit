@@ -1,14 +1,14 @@
 class Photo {
-  late String data;
-  late String contentType;
+  late String? data;
+  late String? contentType;
+  late String? guidId;
 
-  Photo({
-    required this.data,
-    required this.contentType});
+  Photo({this.data, this.contentType, this.guidId});
 
   Photo.fromJson(Map<String, dynamic> json) {
     data = json['data'];
     contentType = json['contentType'];
+    guidId = json['guidId'];
   }
 
   Map<String, dynamic> toJson() {

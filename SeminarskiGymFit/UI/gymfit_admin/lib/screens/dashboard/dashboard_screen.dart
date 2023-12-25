@@ -13,6 +13,7 @@ import 'package:gymfit_admin/widgets/legend_widget.dart';
 List<double> data = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 List<double> packagesData = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 int currentYear = DateTime.now().year;
+int currentYear1 = DateTime.now().year;
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -53,7 +54,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (mounted) {
         setState(() {
           data = response.map((value) => (value as num).toDouble()).toList();
-        
         });
       }
     } on Exception catch (e) {
@@ -64,12 +64,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void loadUserPackages() async {
     try {
       BarChartSearchObject searchObject =
-          BarChartSearchObject(year: currentYear);
+          BarChartSearchObject(year: currentYear1);
       var response = await _userPackageProvider.getByMonth(searchObject);
       if (mounted) {
         setState(() {
-          packagesData = response.map((value) => (value as num).toDouble()).toList();
-        
+          packagesData =
+              response.map((value) => (value as num).toDouble()).toList();
         });
       }
     } on Exception catch (e) {
@@ -89,7 +89,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       showErrorDialog(context, e.toString().substring(11));
     }
   }
- void loadReservationsOfMonth() async {
+
+  void loadReservationsOfMonth() async {
     try {
       var response = await _reservationProvider.getCountOfReservations();
       if (mounted) {
@@ -101,6 +102,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       showErrorDialog(context, e.toString().substring(11));
     }
   }
+
   void loadActiveUsers() async {
     try {
       var response = await _userProvider.getCountOfUsersActive();
@@ -157,126 +159,44 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   constraints: BoxConstraints(
                     minWidth: MediaQuery.of(context).size.width,
                   ),
-                  child: Container(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            StatsBuilder(
-                              "assets/icons/users1.svg",
-                              "Ukupan broj clanova",
-                              countOfUsers,
-                            ),
-                            SizedBox(width: 14),
-                            StatsBuilder(
-                              "assets/icons/activeUser.svg",
-                              "Aktivni clanovi",
-                              countOfUsersActive,
-                            ),
-                            SizedBox(width: 14),
-                            StatsBuilder(
-                              "assets/icons/unactiveUser.svg",
-                              "Neaktivni clanovi",
-                              countOfUsersINactive,
-                            ),
-                            SizedBox(width: 14),
-                            StatsBuilder(
-                              "assets/icons/calendar.svg",
-                              "Rezervacije ovaj mjesec",
-                              reservationsThisMOnth,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Container(height: 550,
-                            padding: EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: Colors.white, width: 2.0),
-                                borderRadius: BorderRadius.circular(20.0)),
-                            child: Column(
-                              children: [
-                                BarChartMonths(),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          currentYear--;
-                                        });
-                                        loadReservations();
-                                      },
-                                      icon: Icon(Icons.arrow_left),
-                                      color: myWhite,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text(
-                                      currentYear.toString(),
-                                      style: TextStyle(fontSize: 18),
-                                    ),
-                                    SizedBox(width: 8),
-                                    IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          currentYear++;
-                                        });
-                                        loadReservations();
-                                      },
-                                      icon: Icon(Icons.arrow_right),
-                                      color: myWhite,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )),
-                            SizedBox(height: 40,),
-                            Container(height: 550,
-                            padding: EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: Colors.white, width: 2.0),
-                                borderRadius: BorderRadius.circular(20.0)),
-                            child: Column(
-                              children: [
-                                BarChartPackages(),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          currentYear--;
-                                        });
-                                        loadReservations();
-                                      },
-                                      icon: Icon(Icons.arrow_left),
-                                      color: myWhite,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text(
-                                      currentYear.toString(),
-                                      style: TextStyle(fontSize: 18),
-                                    ),
-                                    SizedBox(width: 8),
-                                    IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          currentYear++;
-                                        });
-                                        loadReservations();
-                                      },
-                                      icon: Icon(Icons.arrow_right),
-                                      color: myWhite,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )),
-                      ],
-                    ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          StatsBuilder(
+                            "assets/icons/users1.svg",
+                            "Ukupan broj clanova",
+                            countOfUsers,
+                          ),
+                          SizedBox(width: 14),
+                          StatsBuilder(
+                            "assets/icons/activeUser.svg",
+                            "Aktivni clanovi",
+                            countOfUsersActive,
+                          ),
+                          SizedBox(width: 14),
+                          StatsBuilder(
+                            "assets/icons/unactiveUser.svg",
+                            "Neaktivni clanovi",
+                            countOfUsersINactive,
+                          ),
+                          SizedBox(width: 14),
+                          StatsBuilder(
+                            "assets/icons/calendar.svg",
+                            "Rezervacije ovaj mjesec",
+                            reservationsThisMOnth,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      buildReservationsBarChart(),
+                      SizedBox(
+                        height: 40,
+                      ),
+                      buildUserPackagesBarChart(),
+                    ],
                   ),
                 ),
               ),
@@ -286,10 +206,100 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+
+  Container buildUserPackagesBarChart() {
+    return Container(
+        height: 550,
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.white, width: 2.0),
+            borderRadius: BorderRadius.circular(20.0)),
+        child: Column(
+          children: [
+            BarChartPackages(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      currentYear1--;
+                    });
+                    loadUserPackages();
+                  },
+                  icon: Icon(Icons.arrow_left),
+                  color: myWhite,
+                ),
+                SizedBox(width: 8),
+                Text(
+                  currentYear1.toString(),
+                  style: TextStyle(fontSize: 18),
+                ),
+                SizedBox(width: 8),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      currentYear1++;
+                    });
+                    loadUserPackages();
+                  },
+                  icon: Icon(Icons.arrow_right),
+                  color: myWhite,
+                ),
+              ],
+            ),
+          ],
+        ));
+  }
+
+  Container buildReservationsBarChart() {
+    return Container(
+        height: 550,
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.white, width: 2.0),
+            borderRadius: BorderRadius.circular(20.0)),
+        child: Column(
+          children: [
+            BarChartReservations(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      currentYear--;
+                    });
+                    loadReservations();
+                  },
+                  icon: Icon(Icons.arrow_left),
+                  color: myWhite,
+                ),
+                SizedBox(width: 8),
+                Text(
+                  currentYear.toString(),
+                  style: TextStyle(fontSize: 18),
+                ),
+                SizedBox(width: 8),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      currentYear++;
+                    });
+                    loadReservations();
+                  },
+                  icon: Icon(Icons.arrow_right),
+                  color: myWhite,
+                ),
+              ],
+            ),
+          ],
+        ));
+  }
 }
 
-class BarChartMonths extends StatelessWidget {
-  BarChartMonths({Key? key}) : super(key: key);
+class BarChartReservations extends StatelessWidget {
+  BarChartReservations({Key? key}) : super(key: key);
 
   final color = Colors.cyan;
   final betweenSpace = 0.2;
@@ -381,7 +391,8 @@ class BarChartMonths extends StatelessWidget {
             Legend('Broj rezervacija', color),
           ],
         ),
-        Container(height: 400,
+        Container(
+          height: 400,
           child: BarChart(
             BarChartData(
               alignment: BarChartAlignment.spaceBetween,
@@ -482,7 +493,8 @@ class BarChartPackages extends StatelessWidget {
   final color = Colors.red;
   final betweenSpace = 0.2;
   final maxData = packagesData.isNotEmpty
-      ? packagesData.reduce((value, element) => value > element ? value : element)
+      ? packagesData
+          .reduce((value, element) => value > element ? value : element)
       : 0.0;
 
   BarChartRodData generateRodData(
@@ -569,7 +581,8 @@ class BarChartPackages extends StatelessWidget {
             Legend('Broj članarina', color),
           ],
         ),
-        Container(height: 400,
+        Container(
+          height: 400,
           child: BarChart(
             BarChartData(
               alignment: BarChartAlignment.spaceBetween,

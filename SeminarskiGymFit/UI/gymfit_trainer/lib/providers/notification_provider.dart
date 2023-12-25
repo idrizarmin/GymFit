@@ -86,6 +86,20 @@ class NotificationProvider extends BaseProvider<Notifications> {
       throw Exception('Greška prilikom unosa');
     }
   }
+
+  @override
+  Future<dynamic> insert(dynamic resource) async {
+    var uri = Uri.parse('$apiUrl/Notifications');
+    Map<String, String> headers = Authorization.createHeaders();
+    var jsonRequest = jsonEncode(resource);
+    var response = await http.post(uri, headers: headers, body: jsonRequest);
+    if (response.statusCode == 200) {
+      return "OK";
+    } else {
+      throw Exception('Greška prilikom unosa');
+    }
+  }
+
   Future<dynamic> edit(dynamic resource) async {
     var uri = Uri.parse('$apiUrl/Notifications');
     Map<String, String> headers = Authorization.createHeaders();

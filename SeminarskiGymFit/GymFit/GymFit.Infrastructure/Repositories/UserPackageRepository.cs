@@ -12,17 +12,21 @@ namespace GymFit.Infrastructure
         }
         public override async Task<PagedList<UserPackage>> GetPagedAsync(UserPackageSearchObject searchObject, CancellationToken cancellationToken = default)
         {
-            return await DbSet.Include(s => s.package)
-                .Where(u => (u.Expired== searchObject.expired))
+            var packages= await DbSet.Include(s => s.package)
+                .Where(u => (searchObject.expired== null || u.Expired== searchObject.expired)
+                && (searchObject.packageId== 0 ||u.packageId == searchObject.packageId)
+                && (searchObject.userId== 0 ||u.UserId == searchObject.userId))
                 .ToPagedListAsync(searchObject, cancellationToken);
 
-
+            return packages;
         }
 
         public Task<List<UserPackage>> GetAllUserPackages(CancellationToken cancellationToken = default)
         {
             return DbSet.ToListAsync(cancellationToken);
         }
+
+        
       
         public async Task<UserPackage?> GetUserPackage(int id, CancellationToken cancellationToken = default)
         {

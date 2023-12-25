@@ -28,33 +28,32 @@ class _LoginScreenState extends State<LoginScreen> {
     userProvider = context.read<LoginProvider>();
   }
 
- void login() async {
-  try {
-    await userProvider.loginAsync(_emailController.text, _passwordController.text);
-    if (context.mounted) {
-      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
-      print("$context");
+  void login() async {
+    try {
+      await userProvider.loginAsync(
+          _emailController.text, _passwordController.text);
+      if (context.mounted) {
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        print("$context");
+      }
+    } catch (e) {
+      print(e);
+      showErrorDialog(context, getErrorMessage(e));
     }
-  } catch (e) {
-    print(e);
-    showErrorDialog(context, getErrorMessage(e));
   }
-}
 
-String getErrorMessage(dynamic exception) {
-  // Check the type or content of the exception and return an appropriate message
-  if (exception.toString().contains('GymFit.Core.UserNotFoundException') ||exception.toString().contains('UserWrongCredentialsException')) {
-    // Example: If the error message contains 'invalid_credentials'
-    return 'Neispravni korisnički podaci. Pokušajte ponovo.';
-  } else if (exception.toString().contains('The remote computer refused the network connection')) {
-    // Example: If it's a custom exception from the server
-    return 'Došlo je do greške na serveru. Pokušajte kasnije.';
-  } else {
-    // Fallback for other exceptions
-    return 'Došlo je do nepoznate greške. Pokušajte ponovo.';
+  String getErrorMessage(dynamic exception) {
+    if (exception.toString().contains('GymFit.Core.UserNotFoundException') ||
+        exception.toString().contains('UserWrongCredentialsException')) {
+      return 'Neispravni korisnički podaci. Pokušajte ponovo.';
+    } else if (exception
+        .toString()
+        .contains('The remote computer refused the network connection')) {
+      return 'Došlo je do greške na serveru. Pokušajte kasnije.';
+    } else {
+      return 'Došlo je do nepoznate greške. Pokušajte ponovo.';
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -104,13 +103,13 @@ String getErrorMessage(dynamic exception) {
                           color: Color.fromRGBO(41, 209, 32, 1)),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide:
-                            const BorderSide(color: Color.fromRGBO(41, 209, 32, 1)),
+                        borderSide: const BorderSide(
+                            color: Color.fromRGBO(41, 209, 32, 1)),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide:
-                            const BorderSide(color: Color.fromRGBO(41, 209, 32, 1)),
+                        borderSide: const BorderSide(
+                            color: Color.fromRGBO(41, 209, 32, 1)),
                       ),
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -150,25 +149,24 @@ String getErrorMessage(dynamic exception) {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide:
-                            const BorderSide(color: Color.fromRGBO(41, 209, 32, 1)),
+                        borderSide: const BorderSide(
+                            color: Color.fromRGBO(41, 209, 32, 1)),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide:
-                            const BorderSide(color: Color.fromRGBO(41, 209, 32, 1)),
+                        borderSide: const BorderSide(
+                            color: Color.fromRGBO(41, 209, 32, 1)),
                       ),
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: const BorderSide(color: Colors.red),
                       ),
                       labelStyle: const TextStyle(
-                        color:  Color.fromRGBO(41, 209, 32, 1),
+                        color: Color.fromRGBO(41, 209, 32, 1),
                       ),
                     ),
                   ),
                   const SizedBox(height: 100),
-                
                   Column(
                     children: [
                       ElevatedButton(
@@ -186,9 +184,7 @@ String getErrorMessage(dynamic exception) {
                         },
                         child: const Text(
                           "Prijava",
-                          style: TextStyle(
-                            fontSize: 20,color: white
-                          ),
+                          style: TextStyle(fontSize: 20, color: white),
                         ),
                       ),
                     ],

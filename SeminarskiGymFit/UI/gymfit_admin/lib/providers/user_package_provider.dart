@@ -25,6 +25,12 @@ class UserPackageProvider extends BaseProvider<UserPackage> {
       if (searchObject.PageSize != null) {
         queryParameters['PageSize'] = searchObject.PageSize.toString();
       }
+      if (searchObject.userId != null) {
+        queryParameters['userId'] = searchObject.userId.toString();
+      }
+      if (searchObject.packageId != null) {
+        queryParameters['packageId'] = searchObject.packageId.toString();
+      }
     }
     uri = uri.replace(queryParameters: queryParameters);
     final response = await http.get(uri, headers: headers);

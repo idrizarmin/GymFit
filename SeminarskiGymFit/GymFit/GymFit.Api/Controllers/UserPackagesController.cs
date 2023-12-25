@@ -13,7 +13,7 @@ namespace GymFit.Api.Controllers
         }
 
         [HttpGet("GetByMonth")]
-        public async Task<IActionResult> GetReservationsByMonth([FromQuery] BarChartSearchObject searchObject, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetUserPckagesByMonth([FromQuery] BarChartSearchObject searchObject, CancellationToken cancellationToken)
         {
             try
             {

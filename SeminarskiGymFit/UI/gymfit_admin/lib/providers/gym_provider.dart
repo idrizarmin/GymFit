@@ -36,6 +36,22 @@ class GymProvider extends BaseProvider<Gym> {
       throw Exception('Failed to load data');
     }
   }
+    @override
+  Future<Gym> getById(int id) async {
+    var uri = Uri.parse('$apiUrl/Gyms/$id');
+
+    var headers = Authorization.createHeaders();
+
+    final response = await http.get(uri, headers: headers);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      
+
+      return fromJson(data);
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
 
   Future<dynamic> edit(dynamic resource) async {
     var uri = Uri.parse('$apiUrl/Gyms');

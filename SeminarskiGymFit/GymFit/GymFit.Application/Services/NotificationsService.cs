@@ -64,7 +64,7 @@ namespace GymFit.Application
             {
                 //Seen se koristi kako datum brisanja
                 if (notification != null) { 
-                    notification.Deleted = true;
+                    notification.IsDeleted = true;
                     notification.Seen = DateTime.Now;
 
                     CurrentRepository.Update(notification);

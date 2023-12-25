@@ -7,6 +7,7 @@ import 'package:gymfit_mobile/screens/reservations/myReservations_screen.dart';
 import 'package:gymfit_mobile/screens/reservations/reservations_screen.dart';
 
 import 'package:gymfit_mobile/screens/start_screenn.dart';
+import 'package:gymfit_mobile/screens/user/change_password_screen.dart';
 import 'package:gymfit_mobile/screens/user/trainers_screen.dart';
 import 'package:gymfit_mobile/screens/user/user_profile.dart';
 
@@ -31,6 +32,8 @@ class AppRoutes {
 
   static const String membershipScreen = '/membership_screen';
 
+  static const String changePassword = '/changePassword';
+
 
   static Map<String, WidgetBuilder> routes = {
     startScreen: (context) => StartScreen(),
@@ -42,5 +45,6 @@ class AppRoutes {
     userProfileScreen: (context) => UserProfileScreen(),
     myReservationsScreen: (context) => MyReservationsScreen(),
     membershipScreen: (context) => MembershipScreen(),
+    changePassword: (context) => ChangePasswordScreen(),
   };
 }

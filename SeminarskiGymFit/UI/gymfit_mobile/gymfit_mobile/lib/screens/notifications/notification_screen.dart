@@ -44,7 +44,7 @@ class _NotificationFormState extends State<NotificationForm> {
           NotificationsSearchObject(userId: _userId);
 
       var notificationsResponse =
-          await _notificationProvider.getPaged(searchObject: searchObject);
+          await _notificationProvider.getAll(searchObject: searchObject);
       setState(() {
         notifications = notificationsResponse;
       });
@@ -61,6 +61,7 @@ class _NotificationFormState extends State<NotificationForm> {
 
   @override
   Widget build(BuildContext context) {
+     var mediaQueryData = MediaQuery.of(context);
     return Container(
       margin: const EdgeInsets.only(top: 30.0, left: 10, right: 10, bottom: 10),
       decoration: BoxDecoration(

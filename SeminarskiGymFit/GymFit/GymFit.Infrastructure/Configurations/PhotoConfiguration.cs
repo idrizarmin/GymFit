@@ -29,7 +29,7 @@ namespace GymFit.Infrastructure
             builder.HasMany(c => c.Users)
               .WithOne(c => c.Photo)
               .HasForeignKey(c => c.PhotoId)
-              .IsRequired();
+              .IsRequired(false);
 
            
         }

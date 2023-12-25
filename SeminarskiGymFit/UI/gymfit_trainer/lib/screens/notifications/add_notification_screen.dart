@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:gymfit_trainer/helpers/app_decoration.dart';
 import 'package:gymfit_trainer/helpers/constants.dart';
 import 'package:gymfit_trainer/helpers/theme_helper.dart';
@@ -9,7 +8,6 @@ import 'package:gymfit_trainer/models/user_for_selection.dart';
 import 'package:gymfit_trainer/providers/notification_provider.dart';
 import 'package:gymfit_trainer/providers/user_provider.dart';
 import 'package:gymfit_trainer/utils/error_dialog.dart';
-import 'package:intl/intl.dart';
 import 'package:multiple_search_selection/multiple_search_selection.dart';
 
 class AddNotificationScreen extends StatefulWidget {

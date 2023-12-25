@@ -99,7 +99,7 @@ class UserLoginProvider extends BaseProvider  {
     }
   }
 
-  Future chanagePassword(user) async {
+   Future chanagePassword(user) async {
     var uri = Uri.parse('$apiUrl/User/ChangePassword');
     Map<String, String> headers = Authorization.createHeaders();
 

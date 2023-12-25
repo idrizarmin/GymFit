@@ -122,7 +122,7 @@ namespace GymFit.Infrastructure
                     LastName = "Admin",
                     Email = "admin@gmail.com",
                     Role = Role.Administrator,
-                    PasswordHash = "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", //Plain text: test
+                    PasswordHash = "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", 
                     PasswordSalt = "1wQEjdSFeZttx6dlvEDjOg==",
                     PhoneNumber = "38763321321",
                     IsVerified = true,
