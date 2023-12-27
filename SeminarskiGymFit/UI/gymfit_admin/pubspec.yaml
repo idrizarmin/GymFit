@@ -78,6 +78,7 @@ flutter:
     - assets/images/printLogo.png
     - assets/images/logo1.png
     - assets/images/user1.jpg
+    - assets/images/notFound.png
     - assets/icons/dash.svg
     - assets/icons/gym.svg
     - assets/icons/notification.svg

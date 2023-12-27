@@ -49,6 +49,45 @@ class UserPackageProvider extends BaseProvider<UserPackage> {
     }
   }
 
+Future<List<UserPackage>> getAllPaged(
+      {UserPackageSearchObject? searchObject}) async {
+    var uri = Uri.parse('$apiUrl/UserPackages/GetAllPaged');
+    var headers = Authorization.createHeaders();
+    final Map<String, String> queryParameters = {};
+    if (searchObject != null) {
+      if (searchObject.expired != null) {
+        queryParameters['expired'] = searchObject.expired!.toString();
+      }
+      if (searchObject.PageNumber != null) {
+        queryParameters['PageNumber'] = searchObject.PageNumber.toString();
+      }
+      if (searchObject.PageSize != null) {
+        queryParameters['PageSize'] = searchObject.PageSize.toString();
+      }
+      if (searchObject.userId != null) {
+        queryParameters['userId'] = searchObject.userId.toString();
+      }
+      if (searchObject.packageId != null) {
+        queryParameters['packageId'] = searchObject.packageId.toString();
+      }
+        if (searchObject.fromDate != null) {
+        queryParameters['fromDate'] = searchObject.fromDate.toString();
+      }
+        if (searchObject.toDate != null) {
+        queryParameters['toDate'] = searchObject.toDate.toString();
+      }
+    }
+    uri = uri.replace(queryParameters: queryParameters);
+    final response = await http.get(uri, headers: headers);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      var items = data['items'];
+      return items.map((d) => fromJson(d)).cast<UserPackage>().toList();
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
   @override
   Future<dynamic> insert(dynamic resource) async {
     var uri = Uri.parse('$apiUrl/UserPackages');

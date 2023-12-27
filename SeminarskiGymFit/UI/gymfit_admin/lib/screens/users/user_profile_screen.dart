@@ -180,7 +180,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   ConnectionState.waiting) {
                                 return CircularProgressIndicator();
                               } else if (snapshot.hasError) {
-                                return Text('Greška prilikom učitavanja slike');
+                                return Container(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 8.0),
+                                    child: ClipOval(
+                                      child: Image.asset(
+                                        'assets/images/notFound.png',
+                                        width:
+                                            120, // Adjust the width as needed
+                                        height:
+                                            120, // Adjust the height as needed
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  );
                               } else {
                                 final imageUrl = snapshot.data;
 

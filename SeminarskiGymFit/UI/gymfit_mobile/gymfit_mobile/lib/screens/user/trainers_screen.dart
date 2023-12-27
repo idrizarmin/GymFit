@@ -29,6 +29,8 @@ class _TrainersScreenState extends State<TrainersScreen> {
   int currentPage = 1;
   int pageSize = 10;
   int hasNextPage = 0;
+
+  
   @override
   void initState() {
     super.initState();

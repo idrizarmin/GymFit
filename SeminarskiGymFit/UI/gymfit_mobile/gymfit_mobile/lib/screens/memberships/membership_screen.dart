@@ -22,9 +22,9 @@ class _MembershipScreenState extends State<MembershipScreen> {
   late UserPackageProvider _userPackageProvider;
   late UserLoginProvider _loginProvider;
   int currentPage = 1;
-  int pageSize = 10;
+  int pageSize = 1000000;
   int? _userId;
-  bool? _expired= true;
+  bool? _expired = false;
   int _status = 1;
   List<UserPackage> _userPackages = <UserPackage>[];
 
@@ -46,7 +46,9 @@ class _MembershipScreenState extends State<MembershipScreen> {
     try {
       loadUser();
       UserPackageSearchObject searchObject = UserPackageSearchObject(
-          expired: _expired, PageNumber: currentPage, PageSize: pageSize,
+          expired: _expired,
+          PageNumber: currentPage,
+          PageSize: pageSize,
           userId: _userId);
       var Response =
           await _userPackageProvider.getPaged(searchObject: searchObject);
@@ -60,17 +62,13 @@ class _MembershipScreenState extends State<MembershipScreen> {
     }
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     mediaQueryData = MediaQuery.of(context);
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor:
-            appTheme.bgSecondary, 
+        backgroundColor: appTheme.bgSecondary,
         body: Column(
           children: [
             Container(
@@ -80,37 +78,34 @@ class _MembershipScreenState extends State<MembershipScreen> {
                 horizontal: 10,
                 vertical: 1,
               ),
-              color: Colors.black, 
+              color: Colors.black,
               child: Text(
                 "Članarine",
                 style: TextStyle(fontSize: 14, color: Colors.white),
               ),
             ),
-             Container(
-              height: 1.0, 
-              color: const Color.fromARGB(255, 214, 214, 214), 
+            Container(
+              height: 1.0,
+              color: const Color.fromARGB(255, 214, 214, 214),
             ),
-              Row(
-                children: [
-                  _buildStatusButton(1, "Aktivna"),
-                  _buildStatusButton(2, "Istekle"),
-                 
-                ],
-              ),
-        Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      left: 5,
-                      right: 5,
-                    ),
-                    child: Column(
-                      children: [_buildUserPackageInfo(context)],
-                    ),
-                  ),
+            Row(
+              children: [
+                _buildStatusButton(1, "Aktivna"),
+                _buildStatusButton(2, "Istekle"),
+              ],
+            ),
+            SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: 5,
+                  right: 5,
+                ),
+                child: Column(
+                  children: [_buildUserPackageInfo(context)],
                 ),
               ),
-              Spacer(),
+            ),
+            Spacer(),
             Container(
               width: double.maxFinite,
               padding: EdgeInsets.all(16),
@@ -135,51 +130,54 @@ class _MembershipScreenState extends State<MembershipScreen> {
       ),
     );
   }
- Widget _buildUserPackageInfo(BuildContext context) {
-     return Container(
-    margin: EdgeInsets.all(10),
-    padding: EdgeInsets.all(10),
-    decoration: AppDecoration.fillBlack.copyWith(
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: ListView.builder(
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: _userPackages.length,
-      itemBuilder: (context, index) {
-        return Container(
-          padding: EdgeInsets.all(5),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (_userPackages[index].package != null) ...[
-                      Text(
-                        'Trener: ${_userPackages[index].package!.name} ',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white, // White text color
-                        ),
-                      ),
-                    ],
-                    _buildUserPaackageData('Datum aktivacije:', '${_formatDate(_userPackages[index].activationDate)}'),
-                    _buildUserPaackageData('Datum isteka:', '${_formatDate(_userPackages[index].expirationDate)}'),
-                    Divider()
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    ),
-  );
-}
 
-Widget _buildUserPaackageData(String label, String value) {
+  Widget _buildUserPackageInfo(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(10),
+      padding: EdgeInsets.all(10),
+      decoration: AppDecoration.fillBlack.copyWith(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: _userPackages.length,
+        itemBuilder: (context, index) {
+          return Container(
+            padding: EdgeInsets.all(5),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (_userPackages[index].package != null) ...[
+                        Text(
+                          'Trener: ${_userPackages[index].package!.name} ',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white, // White text color
+                          ),
+                        ),
+                      ],
+                      _buildUserPaackageData('Datum aktivacije:',
+                          '${_formatDate(_userPackages[index].activationDate)}'),
+                      _buildUserPaackageData('Datum isteka:',
+                          '${_formatDate(_userPackages[index].expirationDate)}'),
+                      Divider()
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildUserPaackageData(String label, String value) {
     return Column(
       children: [
         Row(
@@ -209,34 +207,32 @@ Widget _buildUserPaackageData(String label, String value) {
     }
     return DateFormat('dd.MM.yyyy').format(date);
   }
-  
- Expanded _buildStatusButton(int status, String label) {
-  return Expanded(
-    child: ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: _status == status ? Colors.teal : Colors.black,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.zero,
+
+  Expanded _buildStatusButton(int status, String label) {
+    return Expanded(
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: _status == status ? Colors.teal : Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.zero,
+          ),
+          padding: EdgeInsets.all(2),
+          minimumSize: Size(2, 40),
+          elevation: 0,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
-        padding: EdgeInsets.all(2), 
-        minimumSize: Size(2, 40),
-        elevation: 0,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap, 
+        onPressed: () {
+          setState(() {
+            _status = status;
+            _expired = status == 2;
+            loadUserPackages();
+          });
+        },
+        child: Text(
+          label,
+          style: TextStyle(color: white, fontSize: 12),
+        ),
       ),
-      onPressed: () {
-        setState(() {
-          _status = status;
-          _expired = status == 2; 
-          loadUserPackages();
-        });
-      },
-      child: Text(
-        label,
-        style: TextStyle(color: white, fontSize: 12),
-      ),
-    ),
-  );
-}
-
-
+    );
+  }
 }

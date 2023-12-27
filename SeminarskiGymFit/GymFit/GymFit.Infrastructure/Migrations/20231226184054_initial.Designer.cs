@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymFit.Infrastructure.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20231202192424_postsEdited")]
-    partial class postsEdited
+    [Migration("20231226184054_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -402,7 +402,7 @@ namespace GymFit.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CityId")
+                    b.Property<int?>("CityId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -428,7 +428,7 @@ namespace GymFit.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PhotoId")
+                    b.Property<int?>("PhotoId")
                         .HasColumnType("int");
 
                     b.Property<string>("Website")
@@ -441,6 +441,30 @@ namespace GymFit.Infrastructure.Migrations
                     b.HasIndex("PhotoId");
 
                     b.ToTable("Gyms");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "88000 Mostar",
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Description = "Najbolja ponuda sportskig aktivnosti u GymFit",
+                            IsDeleted = false,
+                            Name = "GymFit1",
+                            PhoneNumber = "38762211211",
+                            Website = "www.gymfit.com"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Address = "88000 Mostar",
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Description = "Najbolja ponuda sportskig aktivnosti u GymFit",
+                            IsDeleted = false,
+                            Name = "GymFit2",
+                            PhoneNumber = "38762211212",
+                            Website = "www.gymfit.com"
+                        });
                 });
 
             modelBuilder.Entity("GymFit.Core.Notification", b =>
@@ -495,6 +519,106 @@ namespace GymFit.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Notifications");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Content = "Sretnu novu godinu želi vam GymFit",
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Deleted = false,
+                            IsDeleted = false,
+                            Read = false,
+                            SendOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(907),
+                            UserId = 4
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Content = "Imamo novog trenera za yogu, pogledajte naše trenere",
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Deleted = false,
+                            IsDeleted = false,
+                            Read = false,
+                            SendOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(909),
+                            UserId = 4
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Content = "Sretnu novu godinu želi vam GymFit",
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Deleted = false,
+                            IsDeleted = false,
+                            Read = false,
+                            SendOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(912),
+                            UserId = 5
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Content = "Imamo novog trenera za yogu, pogledajte naše trenere",
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Deleted = false,
+                            IsDeleted = false,
+                            Read = false,
+                            SendOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(914),
+                            UserId = 5
+                        });
+                });
+
+            modelBuilder.Entity("GymFit.Core.Package", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Package");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            IsDeleted = false,
+                            description = "Standardna clanarina",
+                            name = "Standard",
+                            price = 50m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            IsDeleted = false,
+                            description = "Premium članarina, neogranicen broj posjeta",
+                            name = "Premium",
+                            price = 70m
+                        });
                 });
 
             modelBuilder.Entity("GymFit.Core.Photo", b =>
@@ -516,6 +640,9 @@ namespace GymFit.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
+                    b.Property<Guid>("GuidId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -523,6 +650,10 @@ namespace GymFit.Infrastructure.Migrations
 
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("ThumbnailContent")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
                     b.HasKey("Id");
 
@@ -565,6 +696,48 @@ namespace GymFit.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Post");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            IsDeleted = false,
+                            PublishDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(926),
+                            Status = 0,
+                            content = "Sretnu novu godinu želi vam GymFit",
+                            title = "Sretna nova godina"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            IsDeleted = false,
+                            PublishDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(928),
+                            Status = 0,
+                            content = "Imamo novog trenera za yogu, pogledajte naše trenere",
+                            title = "Novi trener"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            IsDeleted = false,
+                            PublishDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(929),
+                            Status = 0,
+                            content = "Imamo novog trenera - Armin Idriz",
+                            title = "Novi trener"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            IsDeleted = false,
+                            PublishDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(931),
+                            Status = 0,
+                            content = "TEretana GymFit neće raditi 2 dana nakon nove godine",
+                            title = "Neradni dani"
+                        });
                 });
 
             modelBuilder.Entity("GymFit.Core.Reservation", b =>
@@ -636,6 +809,248 @@ namespace GymFit.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Reservations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Description = "Snaga",
+                            EndDate = new DateTime(2023, 12, 24, 16, 0, 0, 0, DateTimeKind.Unspecified),
+                            GymId = 2,
+                            IsDeleted = false,
+                            ReservationDate = new DateTime(2023, 12, 24, 15, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2023, 12, 24, 15, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 4,
+                            TrainerId = 3,
+                            UserId = 4,
+                            isUsed = true
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Description = "HIT",
+                            EndDate = new DateTime(2023, 12, 24, 16, 0, 0, 0, DateTimeKind.Unspecified),
+                            GymId = 2,
+                            IsDeleted = false,
+                            ReservationDate = new DateTime(2023, 12, 25, 15, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2023, 12, 25, 15, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 4,
+                            TrainerId = 3,
+                            UserId = 4,
+                            isUsed = true
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Description = "CrossFit",
+                            EndDate = new DateTime(2023, 12, 28, 19, 0, 0, 0, DateTimeKind.Unspecified),
+                            GymId = 2,
+                            IsDeleted = false,
+                            ReservationDate = new DateTime(2023, 12, 24, 15, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2023, 12, 28, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 3,
+                            TrainerId = 3,
+                            UserId = 4,
+                            isUsed = false
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Description = "Individualni",
+                            EndDate = new DateTime(2023, 12, 24, 16, 0, 0, 0, DateTimeKind.Unspecified),
+                            GymId = 2,
+                            IsDeleted = false,
+                            ReservationDate = new DateTime(2023, 12, 24, 15, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2023, 12, 24, 15, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 4,
+                            TrainerId = 2,
+                            UserId = 4,
+                            isUsed = true
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Description = "Snaga",
+                            EndDate = new DateTime(2024, 1, 30, 11, 0, 0, 0, DateTimeKind.Unspecified),
+                            GymId = 2,
+                            IsDeleted = false,
+                            ReservationDate = new DateTime(2024, 1, 30, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2024, 1, 30, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2,
+                            TrainerId = 2,
+                            UserId = 4,
+                            isUsed = false
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Description = "Kardio",
+                            EndDate = new DateTime(2024, 1, 29, 19, 0, 0, 0, DateTimeKind.Unspecified),
+                            GymId = 2,
+                            IsDeleted = false,
+                            ReservationDate = new DateTime(2024, 1, 29, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2024, 1, 29, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2,
+                            TrainerId = 2,
+                            UserId = 4,
+                            isUsed = false
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Description = "Kombinovani",
+                            EndDate = new DateTime(2024, 2, 3, 19, 0, 0, 0, DateTimeKind.Unspecified),
+                            GymId = 2,
+                            IsDeleted = false,
+                            ReservationDate = new DateTime(2024, 2, 3, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2024, 2, 3, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 1,
+                            TrainerId = 2,
+                            UserId = 4,
+                            isUsed = false
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Description = "CrossFit",
+                            EndDate = new DateTime(2024, 2, 4, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            GymId = 2,
+                            IsDeleted = false,
+                            ReservationDate = new DateTime(2024, 2, 4, 9, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2024, 2, 4, 9, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 1,
+                            TrainerId = 2,
+                            UserId = 4,
+                            isUsed = false
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Description = "Yoga",
+                            EndDate = new DateTime(2023, 12, 23, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            GymId = 2,
+                            IsDeleted = false,
+                            ReservationDate = new DateTime(2023, 12, 23, 11, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2023, 12, 23, 11, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 4,
+                            TrainerId = 2,
+                            UserId = 5,
+                            isUsed = true
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Description = "Pilates",
+                            EndDate = new DateTime(2023, 12, 27, 16, 0, 0, 0, DateTimeKind.Unspecified),
+                            GymId = 2,
+                            IsDeleted = false,
+                            ReservationDate = new DateTime(2023, 12, 27, 15, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2023, 12, 27, 15, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 4,
+                            TrainerId = 2,
+                            UserId = 5,
+                            isUsed = true
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Description = "Pilates",
+                            EndDate = new DateTime(2023, 12, 29, 21, 0, 0, 0, DateTimeKind.Unspecified),
+                            GymId = 2,
+                            IsDeleted = false,
+                            ReservationDate = new DateTime(2023, 12, 29, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2023, 12, 29, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 3,
+                            TrainerId = 2,
+                            UserId = 5,
+                            isUsed = false
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Description = "Pilates",
+                            EndDate = new DateTime(2023, 12, 26, 16, 0, 0, 0, DateTimeKind.Unspecified),
+                            GymId = 2,
+                            IsDeleted = false,
+                            ReservationDate = new DateTime(2023, 12, 26, 15, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2023, 12, 26, 15, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 4,
+                            TrainerId = 3,
+                            UserId = 5,
+                            isUsed = true
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Description = "Kombinovani",
+                            EndDate = new DateTime(2024, 1, 28, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            GymId = 2,
+                            IsDeleted = false,
+                            ReservationDate = new DateTime(2024, 1, 28, 17, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2024, 1, 28, 17, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2,
+                            TrainerId = 3,
+                            UserId = 5,
+                            isUsed = false
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Description = "Kardio",
+                            EndDate = new DateTime(2024, 1, 25, 19, 0, 0, 0, DateTimeKind.Unspecified),
+                            GymId = 2,
+                            IsDeleted = false,
+                            ReservationDate = new DateTime(2024, 1, 25, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2024, 1, 25, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2,
+                            TrainerId = 2,
+                            UserId = 5,
+                            isUsed = false
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Description = "Yoga",
+                            EndDate = new DateTime(2024, 2, 5, 9, 0, 0, 0, DateTimeKind.Unspecified),
+                            GymId = 2,
+                            IsDeleted = false,
+                            ReservationDate = new DateTime(2024, 2, 5, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2024, 2, 5, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 1,
+                            TrainerId = 2,
+                            UserId = 5,
+                            isUsed = false
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Description = "Pilates",
+                            EndDate = new DateTime(2024, 2, 6, 22, 0, 0, 0, DateTimeKind.Unspecified),
+                            GymId = 2,
+                            IsDeleted = false,
+                            ReservationDate = new DateTime(2024, 2, 6, 21, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2024, 2, 6, 21, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 1,
+                            TrainerId = 3,
+                            UserId = 5,
+                            isUsed = false
+                        });
                 });
 
             modelBuilder.Entity("GymFit.Core.TrainerCertificate", b =>
@@ -681,6 +1096,48 @@ namespace GymFit.Infrastructure.Migrations
                     b.HasIndex("TrainerId");
 
                     b.ToTable("TrainerCertificates");
+                });
+
+            modelBuilder.Entity("GymFit.Core.Transactions", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PayPalTransactionId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("userPackageId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("userPackageId");
+
+                    b.ToTable("Traansactions");
                 });
 
             modelBuilder.Entity("GymFit.Core.User", b =>
@@ -764,13 +1221,13 @@ namespace GymFit.Infrastructure.Migrations
                             Id = 1,
                             CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
                             DateOfBirth = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Email = "gymFit_admin@gmail.com",
+                            Email = "admin@gmail.com",
                             FirstName = "GymFIT",
                             Gender = 0,
                             IsActive = true,
                             IsDeleted = false,
                             IsVerified = true,
-                            LastName = "Armin",
+                            LastName = "Admin",
                             PasswordHash = "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=",
                             PasswordSalt = "1wQEjdSFeZttx6dlvEDjOg==",
                             PhoneNumber = "38763321321",
@@ -782,18 +1239,90 @@ namespace GymFit.Infrastructure.Migrations
                             Id = 2,
                             CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
                             DateOfBirth = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            Email = "gymFit_trener@gmail.com",
-                            FirstName = "GymFIT_Trener",
+                            Email = "trener@gmail.com",
+                            FirstName = "Trener1",
                             Gender = 0,
                             IsActive = true,
                             IsDeleted = false,
                             IsVerified = true,
-                            LastName = "Idriz",
+                            LastName = "Trener1",
                             PasswordHash = "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=",
                             PasswordSalt = "1wQEjdSFeZttx6dlvEDjOg==",
                             PhoneNumber = "38763321321",
                             ProfessionalTitle = "Trener",
                             Role = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            DateOfBirth = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Email = "trener@gmail.com",
+                            FirstName = "Trener2",
+                            Gender = 0,
+                            IsActive = true,
+                            IsDeleted = false,
+                            IsVerified = true,
+                            LastName = "Trener2",
+                            PasswordHash = "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=",
+                            PasswordSalt = "1wQEjdSFeZttx6dlvEDjOg==",
+                            PhoneNumber = "38763321321",
+                            ProfessionalTitle = "Trener",
+                            Role = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            DateOfBirth = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Email = "user@gmail.com",
+                            FirstName = "User",
+                            Gender = 1,
+                            IsActive = true,
+                            IsDeleted = false,
+                            IsVerified = true,
+                            LastName = "User",
+                            PasswordHash = "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=",
+                            PasswordSalt = "1wQEjdSFeZttx6dlvEDjOg==",
+                            PhoneNumber = "38763321321",
+                            ProfessionalTitle = "User",
+                            Role = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            DateOfBirth = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Email = "user2@gmail.com",
+                            FirstName = "User2",
+                            Gender = 0,
+                            IsActive = true,
+                            IsDeleted = false,
+                            IsVerified = true,
+                            LastName = "User2",
+                            PasswordHash = "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=",
+                            PasswordSalt = "1wQEjdSFeZttx6dlvEDjOg==",
+                            PhoneNumber = "38763321321",
+                            ProfessionalTitle = "User",
+                            Role = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            DateOfBirth = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            Email = "admin2@gmail.com",
+                            FirstName = "Admin2",
+                            Gender = 1,
+                            IsActive = true,
+                            IsDeleted = false,
+                            IsVerified = true,
+                            LastName = "Admin2",
+                            PasswordHash = "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=",
+                            PasswordSalt = "1wQEjdSFeZttx6dlvEDjOg==",
+                            PhoneNumber = "38763321321",
+                            ProfessionalTitle = "Admin",
+                            Role = 0
                         });
                 });
 
@@ -840,11 +1369,78 @@ namespace GymFit.Infrastructure.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
+                    b.Property<int>("packageId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
+                    b.HasIndex("packageId");
+
                     b.ToTable("UserPackages");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ActivateOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(872),
+                            ActivationDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(839),
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            ExpirationDate = new DateTime(2024, 2, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(869),
+                            Expired = false,
+                            IsDeleted = false,
+                            IsPaused = false,
+                            PauseDuration = 0,
+                            PausedOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(874),
+                            UserId = 4,
+                            packageId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ActivateOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(879),
+                            ActivationDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(876),
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            ExpirationDate = new DateTime(2024, 1, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(877),
+                            Expired = false,
+                            IsDeleted = false,
+                            IsPaused = false,
+                            PauseDuration = 0,
+                            PausedOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(880),
+                            UserId = 5,
+                            packageId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ActivateOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(885),
+                            ActivationDate = new DateTime(2023, 10, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(882),
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            ExpirationDate = new DateTime(2023, 11, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(883),
+                            Expired = false,
+                            IsDeleted = false,
+                            IsPaused = false,
+                            PauseDuration = 0,
+                            PausedOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(886),
+                            UserId = 4,
+                            packageId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ActivateOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(890),
+                            ActivationDate = new DateTime(2023, 10, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(888),
+                            CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            ExpirationDate = new DateTime(2023, 11, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(889),
+                            Expired = false,
+                            IsDeleted = false,
+                            IsPaused = false,
+                            PauseDuration = 0,
+                            PausedOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(892),
+                            UserId = 5,
+                            packageId = 1
+                        });
                 });
 
             modelBuilder.Entity("GymFit.Core.Arrivals", b =>
@@ -925,21 +1521,13 @@ namespace GymFit.Infrastructure.Migrations
 
             modelBuilder.Entity("GymFit.Core.Gym", b =>
                 {
-                    b.HasOne("GymFit.Core.City", "City")
+                    b.HasOne("GymFit.Core.City", null)
                         .WithMany("Gyms")
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CityId");
 
-                    b.HasOne("GymFit.Core.Photo", "Photo")
+                    b.HasOne("GymFit.Core.Photo", null)
                         .WithMany("Gyms")
-                        .HasForeignKey("PhotoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("City");
-
-                    b.Navigation("Photo");
+                        .HasForeignKey("PhotoId");
                 });
 
             modelBuilder.Entity("GymFit.Core.Notification", b =>
@@ -999,6 +1587,17 @@ namespace GymFit.Infrastructure.Migrations
                     b.Navigation("Trainer");
                 });
 
+            modelBuilder.Entity("GymFit.Core.Transactions", b =>
+                {
+                    b.HasOne("GymFit.Core.UserPackage", "UserPackage")
+                        .WithMany("Transactions")
+                        .HasForeignKey("userPackageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("UserPackage");
+                });
+
             modelBuilder.Entity("GymFit.Core.User", b =>
                 {
                     b.HasOne("GymFit.Core.City", null)
@@ -1020,7 +1619,15 @@ namespace GymFit.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GymFit.Core.Package", "package")
+                        .WithMany()
+                        .HasForeignKey("packageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("User");
+
+                    b.Navigation("package");
                 });
 
             modelBuilder.Entity("GymFit.Core.Certificates", b =>
@@ -1083,6 +1690,8 @@ namespace GymFit.Infrastructure.Migrations
             modelBuilder.Entity("GymFit.Core.UserPackage", b =>
                 {
                     b.Navigation("Arrivals");
+
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

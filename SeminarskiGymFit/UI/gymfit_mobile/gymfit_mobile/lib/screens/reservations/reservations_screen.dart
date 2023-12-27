@@ -262,6 +262,14 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
 
         if (notification == "OK") {
           loadReservations();
+          ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              backgroundColor: Color(0XFF12B422),
+              content: Text('Uspješno ste kreirali rezervciju.',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ))),
+        );
           Navigator.of(context).popAndPushNamed(AppRoutes.myReservationsScreen);
         }
       }
@@ -377,6 +385,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                         ),
                         onTap: () async {
                           DateTime? pickedDate = await showDatePicker(
+                            
                             context: context,
                             initialDate: selectedDate,
                             firstDate: DateTime(1950),

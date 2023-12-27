@@ -84,6 +84,7 @@ class _ReportScreenState extends State<ReportScreen> {
     loadUserPackages();
     loadUsers1();
     loadUserPackages1();
+    loadUserPackagesFromTo();
   }
 
   void loadUsers1() async {
@@ -214,7 +215,7 @@ class _ReportScreenState extends State<ReportScreen> {
         packageId: (_selectedPackage1 != null) ? _selectedPackage1!.id : null,
       );
       var Response =
-          await _userPackageProvider.getPaged(searchObject: searchObject);
+          await _userPackageProvider.getAllPaged(searchObject: searchObject);
       if (mounted) {
         setState(() {
           _userPackagesFromTo = Response;

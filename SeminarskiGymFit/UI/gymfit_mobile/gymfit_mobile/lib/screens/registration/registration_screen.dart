@@ -52,13 +52,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              backgroundColor: Colors.lightBlueAccent,
+              backgroundColor: Color(0XFF12B422),
               content: Text('Registracija uspješna.',
                   style: TextStyle(
                     color: Colors.white,
                   ))),
         );
-        Navigator.pushNamed(context, AppRoutes.homeContainerScreen);
+        Navigator.pushNamed(context, AppRoutes.loginScreen);
         
       }
     } on Exception catch (e) {

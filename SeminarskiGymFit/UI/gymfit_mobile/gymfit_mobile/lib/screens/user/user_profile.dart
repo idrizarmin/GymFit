@@ -51,6 +51,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   File? selectedImage;
   late PhotoProvider _photoProvider;
 
+ @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    mediaQueryData = MediaQuery.of(context);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -60,7 +66,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     _photoProvider = context.read<PhotoProvider>();
     _pickedFileNotifier = ValueNotifier<File?>(_pickedFile);
-
     loadUser();
   }
 
@@ -115,6 +120,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       var response = await _userProvider.updateUser(userData);
 
       if (response == "OK") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              backgroundColor: Color(0XFF12B422),
+              content: Text('Uspješno uređen profil.',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ))),
+        );
+
       } else {
         showErrorDialog(context, 'Greška prilikom uređivanja');
       }

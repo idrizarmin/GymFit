@@ -18,7 +18,7 @@ namespace GymFit.Infrastructure
                 .Where(n => (searchObject.spol == null || n.User.Gender == searchObject.spol)
                 && (searchObject.userId == null || n.UserId == searchObject.userId)
                 && (searchObject.trainerId == null || n.TrainerId == searchObject.trainerId)
-                && searchObject.status == null || n.Status == searchObject.status)
+                && (searchObject.status == null || n.Status == searchObject.status))
 
                 .ToListAsync(cancellationToken);
         }

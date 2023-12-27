@@ -843,7 +843,7 @@ class _UsersScreenState extends State<UsersScreen> {
                                             return CircularProgressIndicator(); 
                                           } else if (snapshot.hasError) {
                                             return Text(
-                                                'Greška prilikom učitavanja slike'); 
+                                                '--'); 
                                           } else {
                                             final imageUrl = snapshot.data;
 

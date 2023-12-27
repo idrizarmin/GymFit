@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:gymfit_mobile/helpers/constants.dart';
+import 'package:gymfit_mobile/helpers/theme_helper.dart';
 import 'package:gymfit_mobile/models/package.dart';
 import 'package:gymfit_mobile/models/searchObjects/package_search_ocbject.dart';
 import 'package:gymfit_mobile/providers/login_provider.dart';
@@ -186,6 +187,14 @@ class _MembershipPaymentFormState extends State<MembershipPaymentForm> {
 
       if (userPackage == "OK") {
         currentPage == 1;
+         ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              backgroundColor: Color(0XFF12B422),
+              content: Text('Uspjesn uplataa paketa.',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ))),
+        );
       }
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
@@ -199,7 +208,7 @@ class _MembershipPaymentFormState extends State<MembershipPaymentForm> {
     return Container(
       margin: const EdgeInsets.only(top: 30.0, left: 10, right: 10, bottom: 10),
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 44, 44, 44).withOpacity(0.95),
+        color: appTheme.bgSecondary.withOpacity(0.97),
         borderRadius: BorderRadius.circular(20.0),
       ),
       child: Scaffold(
@@ -217,6 +226,7 @@ class _MembershipPaymentFormState extends State<MembershipPaymentForm> {
                   Expanded(
                     child: Container(
                       child: DropdownButton<Package>(
+                        dropdownColor: teal,
                         value: _selectedPackage,
                         items: packages.map((Package package) {
                           return DropdownMenuItem<Package>(
@@ -229,7 +239,7 @@ class _MembershipPaymentFormState extends State<MembershipPaymentForm> {
                             _selectedPackage = selectedPackage;
                           });
                         },
-                        hint: Text('Izaberite paket'),
+                        hint: Text('Izaberite paket', style: TextStyle(color: white),),
                       ),
                     ),
                   ),
@@ -243,6 +253,7 @@ class _MembershipPaymentFormState extends State<MembershipPaymentForm> {
                   Expanded(
                     child: Container(
                       child: DropdownButton<int>(
+                        dropdownColor: teal,
                         value: _selectedMonths,
                         items: List.generate(12, (index) {
                           return DropdownMenuItem<int>(
@@ -255,7 +266,7 @@ class _MembershipPaymentFormState extends State<MembershipPaymentForm> {
                             _selectedMonths = selectedMonths;
                           });
                         },
-                        hint: Text('Izaberite broj mjeseci'),
+                        hint: Text('Izaberite broj mjeseci',style: TextStyle(color: white)),
                       ),
                     ),
                   ),

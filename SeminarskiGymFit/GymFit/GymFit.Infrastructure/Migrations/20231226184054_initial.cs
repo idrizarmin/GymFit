@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GymFit.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class intital : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -49,13 +49,33 @@ namespace GymFit.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Package",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Package", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Photos",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    GuidId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Data = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     ContentType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ThumbnailContent = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -63,6 +83,25 @@ namespace GymFit.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Photos", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Post",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PublishDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Post", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -101,8 +140,8 @@ namespace GymFit.Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Website = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CityId = table.Column<int>(type: "int", nullable: false),
-                    PhotoId = table.Column<int>(type: "int", nullable: false),
+                    CityId = table.Column<int>(type: "int", nullable: true),
+                    PhotoId = table.Column<int>(type: "int", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -114,14 +153,12 @@ namespace GymFit.Infrastructure.Migrations
                         name: "FK_Gyms_Citys_CityId",
                         column: x => x.CityId,
                         principalTable: "Citys",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Gyms_Photos_PhotoId",
                         column: x => x.PhotoId,
                         principalTable: "Photos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -135,8 +172,8 @@ namespace GymFit.Infrastructure.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfessionalTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsVerified = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    IsVerified = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
                     Gender = table.Column<int>(type: "int", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false),
@@ -234,11 +271,12 @@ namespace GymFit.Infrastructure.Migrations
                     ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Duration = table.Column<int>(type: "int", nullable: false),
-                    PauseDuration = table.Column<int>(type: "int", nullable: false),
-                    MaxCapacity = table.Column<int>(type: "int", nullable: false),
-                    DaysOfWeek = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    isUsed = table.Column<bool>(type: "bit", nullable: false),
+                    Duration = table.Column<int>(type: "int", nullable: true),
+                    PauseDuration = table.Column<int>(type: "int", nullable: true),
+                    MaxCapacity = table.Column<int>(type: "int", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    DaysOfWeek = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isUsed = table.Column<bool>(type: "bit", nullable: true),
                     GymId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     TrainerId = table.Column<int>(type: "int", nullable: false),
@@ -313,6 +351,7 @@ namespace GymFit.Infrastructure.Migrations
                     PausedOnDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ActivateOnDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false),
+                    packageId = table.Column<int>(type: "int", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -320,6 +359,12 @@ namespace GymFit.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserPackages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserPackages_Package_packageId",
+                        column: x => x.packageId,
+                        principalTable: "Package",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserPackages_Users_UserId",
                         column: x => x.UserId,
@@ -400,6 +445,32 @@ namespace GymFit.Infrastructure.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Traansactions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PayPalTransactionId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    userPackageId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Traansactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Traansactions_UserPackages_userPackageId",
+                        column: x => x.userPackageId,
+                        principalTable: "UserPackages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.InsertData(
                 table: "Certificates",
                 columns: new[] { "Id", "CreatedAt", "Issuer", "ModifiedAt", "Title" },
@@ -423,12 +494,45 @@ namespace GymFit.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Gyms",
+                columns: new[] { "Id", "Address", "CityId", "CreatedAt", "Description", "ModifiedAt", "Name", "PhoneNumber", "PhotoId", "Website" },
+                values: new object[,]
+                {
+                    { 1, "88000 Mostar", null, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "Najbolja ponuda sportskig aktivnosti u GymFit", null, "GymFit1", "38762211211", null, "www.gymfit.com" },
+                    { 2, "88000 Mostar", null, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "Najbolja ponuda sportskig aktivnosti u GymFit", null, "GymFit2", "38762211212", null, "www.gymfit.com" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Package",
+                columns: new[] { "Id", "CreatedAt", "ModifiedAt", "description", "name", "price" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Standardna clanarina", "Standard", 50m },
+                    { 2, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Premium članarina, neogranicen broj posjeta", "Premium", 70m }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Post",
+                columns: new[] { "Id", "CreatedAt", "ModifiedAt", "PublishDate", "Status", "content", "title" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(926), 0, "Sretnu novu godinu želi vam GymFit", "Sretna nova godina" },
+                    { 2, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(928), 0, "Imamo novog trenera za yogu, pogledajte naše trenere", "Novi trener" },
+                    { 3, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(929), 0, "Imamo novog trenera - Armin Idriz", "Novi trener" },
+                    { 4, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(931), 0, "TEretana GymFit neće raditi 2 dana nakon nove godine", "Neradni dani" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "CityId", "CreatedAt", "DateOfBirth", "Email", "FirstName", "Gender", "IsActive", "IsVerified", "LastName", "ModifiedAt", "PasswordHash", "PasswordSalt", "PhoneNumber", "PhotoId", "ProfessionalTitle", "Role" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "gymFit_admin@gmail.com", "GymFIT", 0, true, true, "Armin", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "Admin", 0 },
-                    { 2, null, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "gymFit_trener@gmail.com", "GymFIT_Trener", 0, true, true, "Idriz", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "Trener", 2 }
+                    { 1, null, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "admin@gmail.com", "GymFIT", 0, true, true, "Admin", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "Admin", 0 },
+                    { 2, null, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "trener@gmail.com", "Trener1", 0, true, true, "Trener1", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "Trener", 2 },
+                    { 3, null, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "trener@gmail.com", "Trener2", 0, true, true, "Trener2", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "Trener", 2 },
+                    { 4, null, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "user@gmail.com", "User", 1, true, true, "User", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "User", 1 },
+                    { 5, null, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "user2@gmail.com", "User2", 0, true, true, "User2", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "User", 1 },
+                    { 6, null, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "admin2@gmail.com", "Admin2", 1, true, true, "Admin2", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "Admin", 0 }
                 });
 
             migrationBuilder.InsertData(
@@ -439,6 +543,51 @@ namespace GymFit.Infrastructure.Migrations
                     { 1, 1, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Mostar", "88000" },
                     { 2, 1, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Sarajevo", "77000" },
                     { 3, 1, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Zenica", "72000" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Notifications",
+                columns: new[] { "Id", "Content", "CreatedAt", "DateRead", "Deleted", "ModifiedAt", "Read", "Seen", "SendOnDate", "UserId" },
+                values: new object[,]
+                {
+                    { 1, "Sretnu novu godinu želi vam GymFit", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(907), 4 },
+                    { 2, "Imamo novog trenera za yogu, pogledajte naše trenere", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(909), 4 },
+                    { 3, "Sretnu novu godinu želi vam GymFit", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(912), 5 },
+                    { 4, "Imamo novog trenera za yogu, pogledajte naše trenere", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(914), 5 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Reservations",
+                columns: new[] { "Id", "CreatedAt", "DaysOfWeek", "Description", "Duration", "EndDate", "GymId", "MaxCapacity", "ModifiedAt", "PauseDuration", "ReservationDate", "StartDate", "Status", "TrainerId", "UserId", "isUsed" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Snaga", null, new DateTime(2023, 12, 24, 16, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2023, 12, 24, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 24, 15, 0, 0, 0, DateTimeKind.Unspecified), 4, 3, 4, true },
+                    { 2, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "HIT", null, new DateTime(2023, 12, 24, 16, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2023, 12, 25, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 25, 15, 0, 0, 0, DateTimeKind.Unspecified), 4, 3, 4, true },
+                    { 3, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "CrossFit", null, new DateTime(2023, 12, 28, 19, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2023, 12, 24, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 28, 18, 0, 0, 0, DateTimeKind.Unspecified), 3, 3, 4, false },
+                    { 4, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Individualni", null, new DateTime(2023, 12, 24, 16, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2023, 12, 24, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 24, 15, 0, 0, 0, DateTimeKind.Unspecified), 4, 2, 4, true },
+                    { 5, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Snaga", null, new DateTime(2024, 1, 30, 11, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 1, 30, 10, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 30, 10, 0, 0, 0, DateTimeKind.Unspecified), 2, 2, 4, false },
+                    { 6, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Kardio", null, new DateTime(2024, 1, 29, 19, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 1, 29, 18, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 29, 18, 0, 0, 0, DateTimeKind.Unspecified), 2, 2, 4, false },
+                    { 7, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Kombinovani", null, new DateTime(2024, 2, 3, 19, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 2, 3, 18, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 2, 3, 18, 0, 0, 0, DateTimeKind.Unspecified), 1, 2, 4, false },
+                    { 8, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "CrossFit", null, new DateTime(2024, 2, 4, 10, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 2, 4, 9, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 2, 4, 9, 0, 0, 0, DateTimeKind.Unspecified), 1, 2, 4, false },
+                    { 9, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Yoga", null, new DateTime(2023, 12, 23, 12, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2023, 12, 23, 11, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 23, 11, 0, 0, 0, DateTimeKind.Unspecified), 4, 2, 5, true },
+                    { 10, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Pilates", null, new DateTime(2023, 12, 27, 16, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2023, 12, 27, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 27, 15, 0, 0, 0, DateTimeKind.Unspecified), 4, 2, 5, true },
+                    { 11, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Pilates", null, new DateTime(2023, 12, 29, 21, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2023, 12, 29, 20, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 29, 20, 0, 0, 0, DateTimeKind.Unspecified), 3, 2, 5, false },
+                    { 12, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Pilates", null, new DateTime(2023, 12, 26, 16, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2023, 12, 26, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 26, 15, 0, 0, 0, DateTimeKind.Unspecified), 4, 3, 5, true },
+                    { 13, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Kombinovani", null, new DateTime(2024, 1, 28, 18, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 1, 28, 17, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 28, 17, 0, 0, 0, DateTimeKind.Unspecified), 2, 3, 5, false },
+                    { 14, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Kardio", null, new DateTime(2024, 1, 25, 19, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 1, 25, 18, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 25, 18, 0, 0, 0, DateTimeKind.Unspecified), 2, 2, 5, false },
+                    { 15, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Yoga", null, new DateTime(2024, 2, 5, 9, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 2, 5, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 2, 5, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 2, 5, false },
+                    { 16, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Pilates", null, new DateTime(2024, 2, 6, 22, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 2, 6, 21, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 2, 6, 21, 0, 0, 0, DateTimeKind.Unspecified), 1, 3, 5, false }
+                });
+
+            migrationBuilder.InsertData(
+                table: "UserPackages",
+                columns: new[] { "Id", "ActivateOnDate", "ActivationDate", "CreatedAt", "ExpirationDate", "Expired", "IsPaused", "ModifiedAt", "PauseDuration", "PausedOnDate", "UserId", "packageId" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(872), new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(839), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2024, 2, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(869), false, false, null, 0, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(874), 4, 1 },
+                    { 2, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(879), new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(876), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2024, 1, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(877), false, false, null, 0, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(880), 5, 1 },
+                    { 3, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(885), new DateTime(2023, 10, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(882), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 11, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(883), false, false, null, 0, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(886), 4, 1 },
+                    { 4, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(890), new DateTime(2023, 10, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(888), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 11, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(889), false, false, null, 0, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(892), 5, 1 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -512,6 +661,11 @@ namespace GymFit.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Traansactions_userPackageId",
+                table: "Traansactions",
+                column: "userPackageId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TrainerCertificates_CertificateId",
                 table: "TrainerCertificates",
                 column: "CertificateId");
@@ -520,6 +674,11 @@ namespace GymFit.Infrastructure.Migrations
                 name: "IX_TrainerCertificates_TrainerId",
                 table: "TrainerCertificates",
                 column: "TrainerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserPackages_packageId",
+                table: "UserPackages",
+                column: "packageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserPackages_UserId",
@@ -553,19 +712,28 @@ namespace GymFit.Infrastructure.Migrations
                 name: "Notifications");
 
             migrationBuilder.DropTable(
+                name: "Post");
+
+            migrationBuilder.DropTable(
+                name: "Traansactions");
+
+            migrationBuilder.DropTable(
                 name: "TrainerCertificates");
 
             migrationBuilder.DropTable(
-                name: "UserPackages");
+                name: "Reservations");
 
             migrationBuilder.DropTable(
-                name: "Reservations");
+                name: "UserPackages");
 
             migrationBuilder.DropTable(
                 name: "Certificates");
 
             migrationBuilder.DropTable(
                 name: "Gyms");
+
+            migrationBuilder.DropTable(
+                name: "Package");
 
             migrationBuilder.DropTable(
                 name: "Users");

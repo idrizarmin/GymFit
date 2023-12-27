@@ -22,6 +22,18 @@ namespace GymFit.Infrastructure
 
             return packages;
         }
+        public async Task<PagedList<UserPackage>> GetPagedAll(UserPackageSearchObject searchObject, CancellationToken cancellationToken = default)
+        {
+            var packages = await DbSet.Include(s => s.package)
+                .Where(u => (searchObject.expired == null || u.Expired == searchObject.expired)
+                && (searchObject.packageId == 0 || u.packageId == searchObject.packageId)
+                && (searchObject.userId == 0 || u.UserId == searchObject.userId)
+                && (searchObject.fromDate == null || u.CreatedAt >= searchObject.fromDate)
+                && (searchObject.toDate == null || u.CreatedAt <= searchObject.toDate))
+                .ToPagedListAsync(searchObject, cancellationToken);
+
+            return packages;
+        }
 
         public Task<List<UserPackage>> GetAllUserPackages(CancellationToken cancellationToken = default)
         {

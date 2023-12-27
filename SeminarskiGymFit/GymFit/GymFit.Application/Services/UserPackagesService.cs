@@ -5,6 +5,7 @@ using GymFit.Core;
 using GymFit.Core.Enums;
 using GymFit.Infrastructure;
 using GymFit.Infrastructure.Interfaces;
+using GymFit.Infrastructure.Interfaces.SearchObjects;
 
 namespace GymFit.Application
 {
@@ -12,6 +13,13 @@ namespace GymFit.Application
     {
         public UserPackagesService(IMapper mapper, IUnitOfWork unitOfWork, IValidator<UserPackageUpsertDto> validator) : base(mapper, unitOfWork, validator)
         {
+        }
+       
+        public async Task<PagedList<UserPackageDto>> GetPagedAllAsync(UserPackageSearchObject searchObject, CancellationToken cancellationToken = default)
+        {
+            var packages = await CurrentRepository.GetPagedAll(searchObject, cancellationToken);
+
+            return Mapper.Map<PagedList<UserPackageDto>>(packages);
         }
 
         public async Task AutoSetUserPackeExpired()
@@ -48,5 +56,7 @@ namespace GymFit.Application
         {
             return await CurrentRepository.GetCountByMonth(searchObject, cancellationToken);
         }
+
+      
     }
 }
