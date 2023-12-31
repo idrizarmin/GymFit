@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gymfit_trainer/helpers/app_decoration.dart';
@@ -8,9 +7,9 @@ import 'package:gymfit_trainer/models/user.dart';
 import 'package:gymfit_trainer/providers/login_provider.dart';
 import 'package:gymfit_trainer/providers/photo_provider.dart';
 import 'package:gymfit_trainer/providers/user_provider.dart';
+import 'package:gymfit_trainer/routes/app_routes.dart';
 import 'package:gymfit_trainer/utils/authorization.dart';
 import 'package:gymfit_trainer/utils/error_dialog.dart';
-import 'package:gymfit_trainer/widgets/custom_image_view.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -49,10 +48,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   int? selectedRole;
   bool _isActive = false;
   bool _isVerified = false;
-  File? _image;
   File? _pickedFile;
 
-  final _picker = ImagePicker();
   File? selectedImage;
 
   @override
@@ -120,6 +117,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       var response = await _userProvider.updateUser(userData);
 
       if (response == "OK") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              backgroundColor: Color(0XFF12B422),
+              content: Text('Uspjesno uređen profil.',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ))),
+        );
       } else {
         showErrorDialog(context, 'Greška prilikom uređivanja');
       }
@@ -170,6 +175,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ),
                 ),
                 _buildUserProfile(),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: teal
+                  ),
+                  onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.changePassword);
+              }, child: Text("Change password", style: TextStyle(color: white),)),
               ],
             ),
           ),
@@ -178,11 +190,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-Widget _buildLoadingIndicator() {
+  Widget _buildLoadingIndicator() {
     return Stack(
       children: [
         Scaffold(
-           backgroundColor: appTheme.bgSecondary,
+          backgroundColor: appTheme.bgSecondary,
           body: Center(
             child: Container(
               width: 50,
@@ -201,7 +213,7 @@ Widget _buildLoadingIndicator() {
     );
   }
 
- Widget _buildUserProfile() {
+  Widget _buildUserProfile() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(

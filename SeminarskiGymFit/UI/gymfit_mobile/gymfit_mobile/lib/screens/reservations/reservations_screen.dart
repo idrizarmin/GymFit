@@ -121,8 +121,8 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
   void InsertReservation() async {
     try {
       DateTime today = DateTime.now();
-      if ((selectedDate.day < today.day ||
-          selectedDate.month < today.month ||
+      if ((selectedDate.day < today.day &&
+          selectedDate.month < today.month &&
           selectedDate.year < today.year)) {
         showDialog(
           context: context,

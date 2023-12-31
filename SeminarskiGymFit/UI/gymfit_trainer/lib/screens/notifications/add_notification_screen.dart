@@ -34,7 +34,7 @@ class _AddNotificationsScreenState extends State<AddNotificationScreen> {
   bool isEditing = false;
   bool isAllSelected = false;
   int currentPage = 1;
-  int pageSize = 20;
+  int pageSize = 1000000;
   int hasNextPage = 0;
   late MediaQueryData mediaQueryData;
 
@@ -137,6 +137,14 @@ class _AddNotificationsScreenState extends State<AddNotificationScreen> {
         currentPage == 1;
         loadNotifications(NotificationsSearchObject(
             PageNumber: currentPage, PageSize: pageSize));
+         ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              backgroundColor: Color(0XFF12B422),
+              content: Text('Uspjesno poslana obavijest.',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ))),
+        );
       }
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
@@ -344,7 +352,11 @@ class _AddNotificationsScreenState extends State<AddNotificationScreen> {
                                 if (_formKey.currentState!.validate()){
                                 for (var user in selectedUsers) {
                                   InsertNotification(user.id);
-                                }}
+                                }
+                                  setState(() {
+                                    _contentController.text ="";
+                                  });
+                                }
                               },
                               child: Text('Pošalji',style: TextStyle(color: white),),
                             ),

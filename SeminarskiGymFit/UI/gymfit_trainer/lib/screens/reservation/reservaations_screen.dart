@@ -23,7 +23,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
   late ReservationProvider _reservationProvider;
   late UserLoginProvider _loginProvider;
   int _status = 1;
-  int? _userId;
+  int? _trainerId;
 
   @override
   void initState() {
@@ -37,7 +37,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
   void loadUser() async {
     var id = _loginProvider.getUserId();
     print(id);
-    _userId = id;
+    _trainerId = id;
   }
 
   void loadReservations() async {
@@ -45,7 +45,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
       loadUser();
 
       ReservationSearchObject searchObject =
-          ReservationSearchObject(userId: _userId, status: _status);
+          ReservationSearchObject(trainerId: _trainerId, status: _status);
       var notificationsResponse =
           await _reservationProvider.getAll(searchObject: searchObject);
       if (mounted) {

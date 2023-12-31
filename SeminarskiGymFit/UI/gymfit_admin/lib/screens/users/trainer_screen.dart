@@ -37,7 +37,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
   ValueNotifier<File?> _pickedFileNotifier = ValueNotifier(null);
- late ValueNotifier<bool> _isActiveNotifier;
+  late ValueNotifier<bool> _isActiveNotifier;
   late ValueNotifier<bool> _isVerifiedNotifier;
   DateTime selectedDate = DateTime.now();
   String _selectedIsActive = 'Svi';
@@ -57,10 +57,9 @@ class _TrainerScreenState extends State<TrainerScreen> {
     super.initState();
     _userProvider = context.read<UserProvider>();
     _photoProvider = context.read<PhotoProvider>();
-        _isActiveNotifier = ValueNotifier<bool>(_isActive);
+    _isActiveNotifier = ValueNotifier<bool>(_isActive);
     _isVerifiedNotifier = ValueNotifier<bool>(_isVerified);
     _pickedFileNotifier = ValueNotifier<File?>(_pickedFile);
-
 
     loadUsers(
         UserSearchObject(name: _searchController.text, PageSize: pageSize),
@@ -83,7 +82,6 @@ class _TrainerScreenState extends State<TrainerScreen> {
       _pickedFile = File(pickedFile.path);
     }
   }
-
 
   void loadUsers(UserSearchObject searchObject, String selectedIsActive,
       String selectedIsVerified) async {
@@ -110,88 +108,87 @@ class _TrainerScreenState extends State<TrainerScreen> {
     }
   }
 
- Future<String> loadPhoto(String guidId) async {
+  Future<String> loadPhoto(String guidId) async {
     return await _photoProvider.getPhoto(guidId);
   }
 
- void insertUser() async {
-  try {
-    if (_pickedFile == null) {
-      // Show an alert dialog when no image is selected.
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Alert'),
-            content: Text('Please select an image.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close the dialog
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
+  void insertUser() async {
+    try {
+      if (_pickedFile == null) {
+        // Show an alert dialog when no image is selected.
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Alert'),
+              content: Text('Please select an image.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close the dialog
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+        return;
+      }
+
+      Map<String, dynamic> userData = {
+        'FirstName': _firstNameController.text,
+        'LastName': _lastNameController.text,
+        'Email': _emailController.text,
+        'Password': _passwordController.text,
+        'PhoneNumber': _phoneNumberController.text,
+        'Address': '',
+        'ProfessionalTitle': '',
+        'Gender': selectedGender.toString(),
+        'DateOfBirth':
+            DateTime.parse(_birthDateController.text).toUtc().toIso8601String(),
+        'Role': '2',
+        'LastSignInAt': DateTime.now().toUtc().toIso8601String(),
+        'IsVerified': _isVerified.toString(),
+        'IsActive': _isActive.toString(),
+      };
+
+      // Add the photo to the user data
+      userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+        'ProfilePhoto',
+        _pickedFile!.readAsBytesSync(),
+        filename: 'profile_photo.jpg',
       );
-      return;
+
+      // Send the request
+      var response = await _userProvider.insertUser(userData);
+
+      if (response == "OK") {
+        // Successful response
+        Navigator.of(context).pop();
+        loadUsers(
+          UserSearchObject(
+            name: _searchController.text,
+            spol: null,
+            isActive: null,
+            isVerified: null,
+            PageNumber: currentPage,
+            PageSize: pageSize,
+          ),
+          _selectedIsActive,
+          _selectedIsVerified,
+        );
+      } else {
+        // Handle error
+        showErrorDialog(context, 'Error inserting user');
+      }
+    } catch (e) {
+      // Handle exceptions
+      showErrorDialog(context, e.toString());
     }
-
-    Map<String, dynamic> userData = {
-      'FirstName': _firstNameController.text,
-      'LastName': _lastNameController.text,
-      'Email': _emailController.text,
-      'Password': _passwordController.text,
-      'PhoneNumber': _phoneNumberController.text,
-      'Address': '',
-      'ProfessionalTitle': '',
-      'Gender': selectedGender.toString(),
-      'DateOfBirth': DateTime.parse(_birthDateController.text)
-          .toUtc()
-          .toIso8601String(),
-      'Role': '2',
-      'LastSignInAt': DateTime.now().toUtc().toIso8601String(),
-      'IsVerified': _isVerified.toString(),
-      'IsActive': _isActive.toString(),
-      
-    };
-
-  // Add the photo to the user data
-    userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
-  'ProfilePhoto',
-  _pickedFile!.readAsBytesSync(),
-  filename: 'profile_photo.jpg',
-);
-
-    // Send the request
-    var response = await _userProvider.insertUser(userData);
-
-    if (response == "OK") {
-      // Successful response
-      Navigator.of(context).pop();
-      loadUsers(
-        UserSearchObject(
-          name: _searchController.text,
-          spol: null,
-          isActive: null,
-          isVerified: null,
-          PageNumber: currentPage,
-          PageSize: pageSize,
-        ),
-        _selectedIsActive,
-        _selectedIsVerified,
-      );
-    } else {
-      // Handle error
-      showErrorDialog(context, 'Error inserting user');
-    }
-  } catch (e) {
-    // Handle exceptions
-    showErrorDialog(context, e.toString());
   }
-}
- void editUser(int id) async {
+
+  void editUser(int id) async {
     try {
       Map<String, dynamic> userData = {
         "Id": id.toString(),
@@ -221,7 +218,6 @@ class _TrainerScreenState extends State<TrainerScreen> {
       var response = await _userProvider.updateUser(userData);
 
       if (response == "OK") {
-        Navigator.of(context).pop();
         loadUsers(
           UserSearchObject(
             name: _searchController.text,
@@ -294,7 +290,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-         Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -337,18 +333,15 @@ class _TrainerScreenState extends State<TrainerScreen> {
                   underline: Container(), // Ukloniti donji border
                 ),
               ),
-              
             ],
           ),
         ),
         SizedBox(width: 10),
         Expanded(
           child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-        
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-                Text('  Ime prezime:'),
-        
+              Text('  Ime prezime:'),
               Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.white),
@@ -387,7 +380,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
           width: 20,
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(0, 30,0, 0),
+          padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
           child: buildButtons(context),
         ),
       ],
@@ -420,7 +413,8 @@ class _TrainerScreenState extends State<TrainerScreen> {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text("Zatvori", style: TextStyle(color: white))),
+                          child:
+                              Text("Zatvori", style: TextStyle(color: white))),
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: primaryColor,
@@ -472,6 +466,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
                           style: ElevatedButton.styleFrom(
                               backgroundColor: primaryColor),
                           onPressed: () {
+                            Navigator.of(context).pop();
                           },
                           child: Text("OK", style: TextStyle(color: white)),
                         ),
@@ -513,16 +508,18 @@ class _TrainerScreenState extends State<TrainerScreen> {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Zatvori", style: TextStyle(color: white))),
+                            child: Text("Zatvori",
+                                style: TextStyle(color: white))),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor),
                             onPressed: () {
                               editUser(selectedUsers[0].id);
-                              selectedUsers=[];
+                              selectedUsers = [];
                               Navigator.of(context).pop();
                             },
-                            child: Text("Spremi", style: TextStyle(color: white))),
+                            child:
+                                Text("Spremi", style: TextStyle(color: white))),
                       ],
                     );
                   });
@@ -568,7 +565,8 @@ class _TrainerScreenState extends State<TrainerScreen> {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Text("OK" , style: TextStyle(color: white)),
+                                child:
+                                    Text("OK", style: TextStyle(color: white)),
                               ),
                             ]);
                       });
@@ -591,7 +589,8 @@ class _TrainerScreenState extends State<TrainerScreen> {
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Odustani", style: TextStyle(color: white)),
+                              child: Text("Odustani",
+                                  style: TextStyle(color: white)),
                             ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -603,7 +602,8 @@ class _TrainerScreenState extends State<TrainerScreen> {
                                 }
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Obriši", style: TextStyle(color: white)),
+                              child: Text("Obriši",
+                                  style: TextStyle(color: white)),
                             ),
                           ],
                         );
@@ -707,11 +707,12 @@ class _TrainerScreenState extends State<TrainerScreen> {
                               ),
                               DataCell(Text(
                                   ("${userItem.firstName.toString() ?? ""} ${userItem.lastName.toString() ?? ""}"))),
-                             DataCell(
+                              DataCell(
                                 Row(
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.only(right: 8.0),
+                                      padding:
+                                          const EdgeInsets.only(right: 8.0),
                                       child: FutureBuilder<String>(
                                         future: loadPhoto(
                                             userItem.photo?.guidId ?? ''),
@@ -721,17 +722,16 @@ class _TrainerScreenState extends State<TrainerScreen> {
                                               ConnectionState.waiting) {
                                             return const CircularProgressIndicator(); // ili neki drugi indikator učitavanja
                                           } else if (snapshot.hasError) {
-                                            return const Text(
-                                                '--'); 
+                                            return const Text('--');
                                           } else {
                                             final imageUrl = snapshot.data;
 
                                             if (imageUrl != null &&
                                                 imageUrl.isNotEmpty) {
                                               return Container(
-                                                padding: const EdgeInsets.symmetric(
-                                                    vertical:
-                                                        8.0), 
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8.0),
                                                 child: FadeInImage(
                                                   image: NetworkImage(
                                                     imageUrl,
@@ -812,7 +812,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
   Widget AddUserForm({bool isEditing = false, User? userToEdit}) {
     if (userToEdit != null) {
       _firstNameController.text = userToEdit.firstName;
-      _lastNameController.text = userToEdit.lastName ;
+      _lastNameController.text = userToEdit.lastName;
       _emailController.text = userToEdit.email;
       _phoneNumberController.text = userToEdit.phoneNumber ?? '';
       _birthDateController.text = userToEdit.dateOfBirth ?? '';
@@ -1066,7 +1066,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
                   SizedBox(
                     height: 20,
                   ),
-                    ValueListenableBuilder<bool>(
+                  ValueListenableBuilder<bool>(
                     valueListenable: _isActiveNotifier,
                     builder: (context, isActive, child) {
                       return Row(
@@ -1077,7 +1077,6 @@ class _TrainerScreenState extends State<TrainerScreen> {
                               _isActiveNotifier.value =
                                   !_isActiveNotifier.value;
                               _isActive = _isActiveNotifier.value;
-
                             },
                           ),
                           Text('Aktivan'),
@@ -1144,11 +1143,9 @@ class _TrainerScreenState extends State<TrainerScreen> {
         ElevatedButton(
           style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
           onPressed: () {
-
             setState(() {
               if (hasNextPage == pageSize) {
                 currentPage++;
-              
               }
             });
             if (hasNextPage == pageSize) {
@@ -1169,5 +1166,4 @@ class _TrainerScreenState extends State<TrainerScreen> {
       ],
     );
   }
-
 }

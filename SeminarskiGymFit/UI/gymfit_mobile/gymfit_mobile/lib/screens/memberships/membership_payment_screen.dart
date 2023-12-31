@@ -190,7 +190,7 @@ class _MembershipPaymentFormState extends State<MembershipPaymentForm> {
          ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
               backgroundColor: Color(0XFF12B422),
-              content: Text('Uspjesn uplataa paketa.',
+              content: Text('Uspjesna uplata paketa.',
                   style: TextStyle(
                     color: Colors.white,
                   ))),

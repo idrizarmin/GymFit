@@ -11,6 +11,7 @@ import 'package:gymfit_trainer/screens/login/login_screen.dart';
 import 'package:gymfit_trainer/screens/notifications/add_notification_screen.dart';
 import 'package:gymfit_trainer/screens/notifications/notification_screen.dart';
 import 'package:gymfit_trainer/screens/reservation/reservaations_screen.dart';
+import 'package:gymfit_trainer/screens/user/change_password_screen.dart';
 import 'package:gymfit_trainer/screens/user/user_profile.dart';
 import 'package:gymfit_trainer/utils/error_dialog.dart';
 
@@ -237,6 +238,8 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
          return AddNotificationScreen();
       case AppRoutes.userProfileScreen:
          return UserProfileScreen();
+         case AppRoutes.changePassword:
+         return ChangePasswordScreen();
       default:
         return DefaultWidget();
     }
