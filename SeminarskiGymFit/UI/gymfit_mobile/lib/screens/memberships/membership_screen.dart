@@ -154,7 +154,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                     children: [
                       if (_userPackages[index].package != null) ...[
                         Text(
-                          'Trener: ${_userPackages[index].package!.name} ',
+                          'Paket: ${_userPackages[index].package!.name} ',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.white, // White text color

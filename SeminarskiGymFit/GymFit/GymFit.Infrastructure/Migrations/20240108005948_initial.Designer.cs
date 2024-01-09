@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymFit.Infrastructure.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20231226184054_initial")]
+    [Migration("20240108005948_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -529,7 +529,7 @@ namespace GymFit.Infrastructure.Migrations
                             Deleted = false,
                             IsDeleted = false,
                             Read = false,
-                            SendOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(907),
+                            SendOnDate = new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3052),
                             UserId = 4
                         },
                         new
@@ -540,7 +540,7 @@ namespace GymFit.Infrastructure.Migrations
                             Deleted = false,
                             IsDeleted = false,
                             Read = false,
-                            SendOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(909),
+                            SendOnDate = new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3055),
                             UserId = 4
                         },
                         new
@@ -551,7 +551,7 @@ namespace GymFit.Infrastructure.Migrations
                             Deleted = false,
                             IsDeleted = false,
                             Read = false,
-                            SendOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(912),
+                            SendOnDate = new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3057),
                             UserId = 5
                         },
                         new
@@ -562,7 +562,7 @@ namespace GymFit.Infrastructure.Migrations
                             Deleted = false,
                             IsDeleted = false,
                             Read = false,
-                            SendOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(914),
+                            SendOnDate = new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3059),
                             UserId = 5
                         });
                 });
@@ -703,7 +703,7 @@ namespace GymFit.Infrastructure.Migrations
                             Id = 1,
                             CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
                             IsDeleted = false,
-                            PublishDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(926),
+                            PublishDate = new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3072),
                             Status = 0,
                             content = "Sretnu novu godinu želi vam GymFit",
                             title = "Sretna nova godina"
@@ -713,7 +713,7 @@ namespace GymFit.Infrastructure.Migrations
                             Id = 2,
                             CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
                             IsDeleted = false,
-                            PublishDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(928),
+                            PublishDate = new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3074),
                             Status = 0,
                             content = "Imamo novog trenera za yogu, pogledajte naše trenere",
                             title = "Novi trener"
@@ -723,7 +723,7 @@ namespace GymFit.Infrastructure.Migrations
                             Id = 3,
                             CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
                             IsDeleted = false,
-                            PublishDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(929),
+                            PublishDate = new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3075),
                             Status = 0,
                             content = "Imamo novog trenera - Armin Idriz",
                             title = "Novi trener"
@@ -733,7 +733,7 @@ namespace GymFit.Infrastructure.Migrations
                             Id = 4,
                             CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
                             IsDeleted = false,
-                            PublishDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(931),
+                            PublishDate = new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3077),
                             Status = 0,
                             content = "TEretana GymFit neće raditi 2 dana nakon nove godine",
                             title = "Neradni dani"
@@ -1384,60 +1384,60 @@ namespace GymFit.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            ActivateOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(872),
-                            ActivationDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(839),
+                            ActivateOnDate = new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3014),
+                            ActivationDate = new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(2980),
                             CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            ExpirationDate = new DateTime(2024, 2, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(869),
+                            ExpirationDate = new DateTime(2024, 3, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3010),
                             Expired = false,
                             IsDeleted = false,
                             IsPaused = false,
                             PauseDuration = 0,
-                            PausedOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(874),
+                            PausedOnDate = new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3016),
                             UserId = 4,
                             packageId = 1
                         },
                         new
                         {
                             Id = 2,
-                            ActivateOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(879),
-                            ActivationDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(876),
+                            ActivateOnDate = new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3020),
+                            ActivationDate = new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3017),
                             CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            ExpirationDate = new DateTime(2024, 1, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(877),
+                            ExpirationDate = new DateTime(2024, 2, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3018),
                             Expired = false,
                             IsDeleted = false,
                             IsPaused = false,
                             PauseDuration = 0,
-                            PausedOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(880),
+                            PausedOnDate = new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3022),
                             UserId = 5,
                             packageId = 1
                         },
                         new
                         {
                             Id = 3,
-                            ActivateOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(885),
-                            ActivationDate = new DateTime(2023, 10, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(882),
+                            ActivateOnDate = new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3027),
+                            ActivationDate = new DateTime(2023, 11, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3023),
                             CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            ExpirationDate = new DateTime(2023, 11, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(883),
-                            Expired = false,
+                            ExpirationDate = new DateTime(2023, 12, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3025),
+                            Expired = true,
                             IsDeleted = false,
                             IsPaused = false,
                             PauseDuration = 0,
-                            PausedOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(886),
+                            PausedOnDate = new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3028),
                             UserId = 4,
                             packageId = 1
                         },
                         new
                         {
                             Id = 4,
-                            ActivateOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(890),
-                            ActivationDate = new DateTime(2023, 10, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(888),
+                            ActivateOnDate = new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3033),
+                            ActivationDate = new DateTime(2023, 11, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3030),
                             CreatedAt = new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local),
-                            ExpirationDate = new DateTime(2023, 11, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(889),
-                            Expired = false,
+                            ExpirationDate = new DateTime(2023, 12, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3031),
+                            Expired = true,
                             IsDeleted = false,
                             IsPaused = false,
                             PauseDuration = 0,
-                            PausedOnDate = new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(892),
+                            PausedOnDate = new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3034),
                             UserId = 5,
                             packageId = 1
                         });

@@ -266,7 +266,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
                           '${reservations[index].StartDate?.hour.toString()}:00'),
                       _buildReservaationData('Kraj: ',
                           '${reservations[index].EndDate?.hour.toString()}:00'),
-                      if (_status == 2)
+                      if (_status == 2 || _status == 1)
                         ElevatedButton(
                           onPressed: () {
                             setReservationAsCanceled(

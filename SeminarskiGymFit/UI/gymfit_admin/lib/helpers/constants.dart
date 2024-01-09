@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const apiUrl = String.fromEnvironment('baseUrl',
 
-defaultValue: 'https://localhost:7260/api');
+defaultValue: 'http://localhost:8080/api');
 
 
 const primaryColor = Colors.teal;

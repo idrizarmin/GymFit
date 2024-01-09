@@ -516,10 +516,10 @@ namespace GymFit.Infrastructure.Migrations
                 columns: new[] { "Id", "CreatedAt", "ModifiedAt", "PublishDate", "Status", "content", "title" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(926), 0, "Sretnu novu godinu želi vam GymFit", "Sretna nova godina" },
-                    { 2, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(928), 0, "Imamo novog trenera za yogu, pogledajte naše trenere", "Novi trener" },
-                    { 3, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(929), 0, "Imamo novog trenera - Armin Idriz", "Novi trener" },
-                    { 4, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(931), 0, "TEretana GymFit neće raditi 2 dana nakon nove godine", "Neradni dani" }
+                    { 1, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3072), 0, "Sretnu novu godinu želi vam GymFit", "Sretna nova godina" },
+                    { 2, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3074), 0, "Imamo novog trenera za yogu, pogledajte naše trenere", "Novi trener" },
+                    { 3, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3075), 0, "Imamo novog trenera - Armin Idriz", "Novi trener" },
+                    { 4, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3077), 0, "TEretana GymFit neće raditi 2 dana nakon nove godine", "Neradni dani" }
                 });
 
             migrationBuilder.InsertData(
@@ -550,10 +550,10 @@ namespace GymFit.Infrastructure.Migrations
                 columns: new[] { "Id", "Content", "CreatedAt", "DateRead", "Deleted", "ModifiedAt", "Read", "Seen", "SendOnDate", "UserId" },
                 values: new object[,]
                 {
-                    { 1, "Sretnu novu godinu želi vam GymFit", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(907), 4 },
-                    { 2, "Imamo novog trenera za yogu, pogledajte naše trenere", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(909), 4 },
-                    { 3, "Sretnu novu godinu želi vam GymFit", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(912), 5 },
-                    { 4, "Imamo novog trenera za yogu, pogledajte naše trenere", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(914), 5 }
+                    { 1, "Sretnu novu godinu želi vam GymFit", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3052), 4 },
+                    { 2, "Imamo novog trenera za yogu, pogledajte naše trenere", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3055), 4 },
+                    { 3, "Sretnu novu godinu želi vam GymFit", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3057), 5 },
+                    { 4, "Imamo novog trenera za yogu, pogledajte naše trenere", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3059), 5 }
                 });
 
             migrationBuilder.InsertData(
@@ -584,10 +584,10 @@ namespace GymFit.Infrastructure.Migrations
                 columns: new[] { "Id", "ActivateOnDate", "ActivationDate", "CreatedAt", "ExpirationDate", "Expired", "IsPaused", "ModifiedAt", "PauseDuration", "PausedOnDate", "UserId", "packageId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(872), new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(839), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2024, 2, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(869), false, false, null, 0, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(874), 4, 1 },
-                    { 2, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(879), new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(876), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2024, 1, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(877), false, false, null, 0, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(880), 5, 1 },
-                    { 3, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(885), new DateTime(2023, 10, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(882), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 11, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(883), false, false, null, 0, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(886), 4, 1 },
-                    { 4, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(890), new DateTime(2023, 10, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(888), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 11, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(889), false, false, null, 0, new DateTime(2023, 12, 26, 19, 40, 52, 967, DateTimeKind.Local).AddTicks(892), 5, 1 }
+                    { 1, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3014), new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(2980), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2024, 3, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3010), false, false, null, 0, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3016), 4, 1 },
+                    { 2, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3020), new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3017), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2024, 2, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3018), false, false, null, 0, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3022), 5, 1 },
+                    { 3, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3027), new DateTime(2023, 11, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3023), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 12, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3025), true, false, null, 0, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3028), 4, 1 },
+                    { 4, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3033), new DateTime(2023, 11, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3030), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 12, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3031), true, false, null, 0, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3034), 5, 1 }
                 });
 
             migrationBuilder.CreateIndex(
