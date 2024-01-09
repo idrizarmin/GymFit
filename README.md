@@ -1,6 +1,6 @@
 # GymFit
 
-GymFIT is a fitness management application that includes both an admin app and a user mobile app, both built using the Flutter framework. The goal of GymFIT is to streamline the management of gym activities and enhance the user experience for fitness enthusiasts.
+GymFit is a fitness management application that includes both an admin app and a user mobile app, both built using the Flutter framework. The goal of GymFit is to streamline the management of gym activities and enhance the user experience for fitness enthusiasts.
 
 ## Features
 
@@ -23,7 +23,7 @@ GymFIT is a fitness management application that includes both an admin app and a
 
 ## Backend (.NET 6)
 
-The backend of GymFIT is implemented using .NET 6. Follow the steps below to set up and run the backend:
+The backend of GymFit is implemented using .NET 6. Follow the steps below to set up and run the backend:
 
    1. Clone the repository
    2. Open command prompt (CMD) and navigate to ...\SeminarskiGymFit\GymFit
