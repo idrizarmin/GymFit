@@ -36,28 +36,28 @@ The backend of GymFIT is implemented using .NET 6. Follow the steps below to set
 
 The frontend of GymFit is implemented using Flutter. Follow the steps below to set up and run the backend:
 
-   1. Navigate to ...\SeminarskiGymFit\UI with File Explorer
-   2.  For Admin app open gymfit_admin in Visual Studio Code:
-        - open new terminal and run command "flutter run -d windows"
-            - Login Credentials: 
-                - email: admin@gmail.com
-                - password: test
+1. Navigate to ...\SeminarskiGymFit\UI with File Explorer
+2.  For Admin app open gymfit_admin in Visual Studio Code:
+    - open new terminal and run command "flutter run -d windows"
+        - Login Credentials: 
+            - email: admin@gmail.com
+            - password: test
 
-    3.  For Mobile app open gymfit_mobile in Visual Studio Code:
-        - Start the emulator and run the project
-            - Login Credentials: 
-                - email: user@gmail.com
-                - password: test
+3.  For Mobile app open gymfit_mobile in Visual Studio Code:
+    - Start the emulator and run the project
+        - Login Credentials: 
+            - email: user@gmail.com
+            - password: test
     
-    4. For trainers mobile app open gymfit_trainer in Visual Studio Code:
-         - Start the emulator and run the project
-            - Login Credentials: 
-                - email: trener@gmail.com
-                - password: test
+4. For trainers mobile app open gymfit_trainer in Visual Studio Code:
+    - Start the emulator and run the project
+        - Login Credentials: 
+            - email: trener@gmail.com
+            - password: test
 
-    - **Note:** If running the mobile application is not possible, please create a new emulator with API Level 34 and proceed to run the application on it.
+- **Note:** If running the mobile application is not possible, please create a new emulator with API Level 34 and proceed to run the application on it.
 
-    - **Online Payment:** For successful payment of the membership fee, please use the card number 4242 4242 4242 4242 during the testing process.
+- **Online Payment:** For successful payment of the membership fee, please use the card number 4242 4242 4242 4242 during the testing process.
 
 
 
