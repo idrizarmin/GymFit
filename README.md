@@ -1,7 +1,5 @@
 # GymFit
 
-See on https://idrizarmin.github.io/
-
 GymFIT is a fitness management application that includes both an admin app and a user mobile app, both built using the Flutter framework. The goal of GymFIT is to streamline the management of gym activities and enhance the user experience for fitness enthusiasts.
 
 ## Features
@@ -34,7 +32,7 @@ The backend of GymFIT is implemented using .NET 6. Follow the steps below to set
 
 ## Frontend (Flutter)
 
-The frontend of GymFit is implemented using Flutter. Follow the steps below to set up and run the backend:
+The frontend of GymFit is implemented using Flutter. Follow the steps below to set up and run the frontend:
 
 1. Navigate to ...\SeminarskiGymFit\UI with File Explorer
 2.  For Admin app open gymfit_admin in Visual Studio Code:
@@ -63,6 +61,7 @@ The frontend of GymFit is implemented using Flutter. Follow the steps below to s
 
 **Have a great time using GymFIT!**
 
+**See on** https://idrizarmin.github.io/
 
 
 
