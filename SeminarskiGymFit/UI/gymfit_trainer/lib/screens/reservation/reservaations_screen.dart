@@ -58,24 +58,26 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
     }
   }
 
-  // na backendu se pozivom ove funkcije rezervacija postavlja sa statusa created na status confirmed 
+  // na backendu se pozivom ove funkcije rezervacija postavlja sa statusa created na status confirmed
   //ili sa confirmed na canceled u zavisnosti na prijašnje stanje statusa u bazi
-  void SetReservationToConfirmedOrCancelled(int id) {
+  Future<void> SetReservationToConfirmedOrCancelled(int id) async {
     try {
-      _reservationProvider.setReservationAsCanceled(id);
+      await _reservationProvider.setReservationAsCanceled(id);
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
     }
   }
-  void SetReservationToCanceled(int id) {
+
+  Future<void> setCanceled(int id) async {
     try {
-      _reservationProvider.setToCanceledFromCreated(id);
+      await _reservationProvider.setToCanceledFromCreated(id);
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
     }
   }
-  
-  void setReservationAsCanceledFromcreated(DateTime reservationStartDate, int id) async {
+
+  void setReservationAsCanceledFromcreated(
+      DateTime reservationStartDate, int id) async {
     var today = DateTime.now();
 
     int hoursDifference = reservationStartDate.difference(today).inHours;
@@ -137,9 +139,23 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
                 child: Text('Zatvori'),
               ),
               TextButton(
-                onPressed: () {
-                  SetReservationToCanceled(id);
+                onPressed: () async {
+                  await setCanceled(id);
+                  setState(() {
+                    _status = 2;
+                  });
                   loadReservations();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      backgroundColor: Color(0XFF12B422),
+                      content: Text(
+                        'Rezervacija uspješno otkazana.',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  );
                   Navigator.pop(context);
                 },
                 child: Text('Otkaži'),
@@ -150,7 +166,6 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
       );
     }
   }
-
 
   void setReservationAsCanceled(DateTime reservationStartDate, int id) async {
     var today = DateTime.now();
@@ -216,7 +231,18 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
               TextButton(
                 onPressed: () {
                   SetReservationToConfirmedOrCancelled(id);
-                  loadReservations();
+                 loadReservations();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      backgroundColor: Color(0XFF12B422),
+                      content: Text(
+                        'Rezervacija uspješno otkazana.',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  );
                   Navigator.pop(context);
                 },
                 child: Text('Otkaži'),
@@ -227,6 +253,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
       );
     }
   }
+
   void setReservationAsConfirmed(DateTime reservationStartDate, int id) async {
     var today = DateTime.now();
 
@@ -280,8 +307,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Potvrda rezervacije'),
-            content:
-                const Text('Kliknite na Potvrdi za potvrdu rezervacije!'),
+            content: const Text('Kliknite na Potvrdi za potvrdu rezervacije!'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -293,6 +319,17 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
                 onPressed: () {
                   SetReservationToConfirmedOrCancelled(id);
                   loadReservations();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      backgroundColor: Color(0XFF12B422),
+                      content: Text(
+                        'Rezervacija uspješno potvrđena.',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  );
                   Navigator.pop(context);
                 },
                 child: Text('Potvrdi'),
@@ -440,7 +477,8 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                setReservationAsCanceledFromcreated( reservations[index].StartDate!,
+                                setReservationAsCanceledFromcreated(
+                                    reservations[index].StartDate!,
                                     reservations[index].id);
                               },
                               child: Text('Otkazi'),

@@ -36,35 +36,31 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
 
   void loadUser() async {
     var id = _loginProvider.getUserId();
-    print(id);
     _userId = id;
   }
 
   void loadReservations() async {
     try {
-      loadUser();
-
       ReservationSearchObject searchObject =
           ReservationSearchObject(userId: _userId, status: _status);
       var notificationsResponse =
           await _reservationProvider.getAll(searchObject: searchObject);
-      if (mounted) {
-        setState(() {
-          reservations = notificationsResponse;
-        });
-      }
+
+      setState(() {
+        reservations = notificationsResponse;
+      });
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
     }
   }
-  void setCanceled (int id){
-   try {
-     _reservationProvider.setReservationAsCanceled(id);
-   } on Exception catch (e) {
-      showErrorDialog(context, e.toString().substring(11));
-   }
 
+  Future<void> setCanceled(int id) async {
+  try {
+    await _reservationProvider.setReservationAsCanceled(id);
+  } on Exception catch (e) {
+    showErrorDialog(context, e.toString().substring(11));
   }
+}
 
   void setReservationAsCanceled(DateTime reservationStartDate, int id) async {
     var today = DateTime.now();
@@ -123,16 +119,27 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
             actions: [
               TextButton(
                 onPressed: () {
-                  
                   Navigator.pop(context);
                 },
                 child: Text('Zatvori'),
               ),
               TextButton(
-                onPressed: () {
-                  setCanceled(id);
-                  loadReservations();
+                onPressed: () async {
+                  await setCanceled(id);
+                  setState(() {
+                    _status = 2;
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        backgroundColor: Color(0XFF12B422),
+                        content: Text('Rezervcija uspjesno otkazana.',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ))),
+                  );
                   Navigator.pop(context);
+                  loadReservations();
+
                 },
                 child: Text('Otkaži'),
               ),
@@ -153,7 +160,6 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
           width: double.maxFinite,
           child: Column(
             children: [
-              
               Container(
                 alignment: Alignment.center,
                 width: double.maxFinite,
@@ -167,10 +173,10 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
                   style: TextStyle(fontSize: 14, color: white),
                 ),
               ),
-             Container(
-              height: 1.0, 
-              color: const Color.fromARGB(255, 214, 214, 214), 
-            ),
+              Container(
+                height: 1.0,
+                color: const Color.fromARGB(255, 214, 214, 214),
+              ),
               Row(
                 children: [
                   _buildStatusButton(1, "Kreirane"),
@@ -200,33 +206,31 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
   }
 
   Expanded _buildStatusButton(int status, String label) {
-  return Expanded(
-    child: ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: _status == status ? Colors.teal : Colors.black,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.zero,
+    return Expanded(
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: _status == status ? Colors.teal : Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.zero,
+          ),
+          padding: EdgeInsets.all(2),
+          minimumSize: Size(2, 40),
+          elevation: 0,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
-        padding: EdgeInsets.all(2), 
-        minimumSize: Size(2, 40),
-        elevation: 0,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap, 
+        onPressed: () {
+          setState(() {
+            _status = status;
+            loadReservations();
+          });
+        },
+        child: Text(
+          label,
+          style: TextStyle(color: white, fontSize: 12),
+        ),
       ),
-      onPressed: () {
-        setState(() {
-          _status = status;
-          loadReservations();
-        });
-      },
-      child: Text(
-        label,
-        style: TextStyle(color: white, fontSize: 12),
-      ),
-    ),
-  );
-}
-
-  
+    );
+  }
 
   Widget _buildReservationInfo(BuildContext context) {
     return Container(
@@ -266,11 +270,14 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
                           '${reservations[index].StartDate?.hour.toString()}:00'),
                       _buildReservaationData('Kraj: ',
                           '${reservations[index].EndDate?.hour.toString()}:00'),
-                      if (_status == 2 || _status == 1)
+                      if (_status == 2)
                         ElevatedButton(
                           onPressed: () {
                             setReservationAsCanceled(
-                                reservations[index].StartDate!, reservations[index].id);
+                                reservations[index].StartDate!,
+                                reservations[index].id);
+                            setState(() {});
+                            loadReservations();
                           },
                           child: Text('Otkaži'),
                         ),

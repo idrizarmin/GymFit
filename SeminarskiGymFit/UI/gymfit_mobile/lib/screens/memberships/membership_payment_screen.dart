@@ -62,7 +62,7 @@ class _MembershipPaymentFormState extends State<MembershipPaymentForm> {
     if (_selectedPackage != null && _selectedMonths != null) {
       double basePrice = _selectedPackage!.price! * _selectedMonths!;
 
-      // Dodajte popuste na osnovu broja mjeseci
+      // Popustna osnovu broja mjeseci
       if (_selectedMonths! >= 6 && _selectedMonths! < 12) {
         // Popust od 5% za više od 6 i manje od 12 mjeseci
         return basePrice * 0.95;
