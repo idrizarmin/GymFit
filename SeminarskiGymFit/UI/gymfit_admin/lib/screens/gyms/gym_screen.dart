@@ -230,7 +230,7 @@ class _GymScreenState extends State<GymScreen> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        backgroundColor: secondaryColor,
+                        backgroundColor: dialogColor,
                         title: Text("Izmjeni podatke teretane"),
                         content: SingleChildScrollView(
                           child: EditGymForm(gymToEdit: gyms[0]),
@@ -262,7 +262,7 @@ class _GymScreenState extends State<GymScreen> {
                       );
                     });
               },
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
@@ -288,7 +288,7 @@ class _GymScreenState extends State<GymScreen> {
               onPressed: () {
                 loadGyms();
               },
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
@@ -325,7 +325,7 @@ class _GymScreenState extends State<GymScreen> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  backgroundColor: secondaryColor,
+                  backgroundColor: dialogColor,
                   title: Text("Kreiraj objavu"),
                   content: SingleChildScrollView(child: AddPostForm()),
                   actions: <Widget>[
@@ -353,7 +353,7 @@ class _GymScreenState extends State<GymScreen> {
               },
             );
           },
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
@@ -382,6 +382,7 @@ class _GymScreenState extends State<GymScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
+                      backgroundColor: dialogColor,
                       title: Text("Upozorenje"),
                       content:
                           Text("Morate odabrati jednu objavu za  uređivanje"),
@@ -402,6 +403,7 @@ class _GymScreenState extends State<GymScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
+                      backgroundColor: dialogColor,
                       title: Text("Upozorenje"),
                       content: Text(
                           "Odaberite samo jednu objavu koju želite urediti"),
@@ -421,7 +423,7 @@ class _GymScreenState extends State<GymScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      backgroundColor: secondaryColor,
+                      backgroundColor: dialogColor,
                       title: Text("Uredi objavu"),
                       content: AddPostForm(
                           isEditing: true, postToEdit: selectedPosts[0]),
@@ -451,7 +453,7 @@ class _GymScreenState extends State<GymScreen> {
                   });
             }
           },
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
@@ -480,6 +482,7 @@ class _GymScreenState extends State<GymScreen> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
+                            backgroundColor: dialogColor,
                             title: Text("Upozorenje"),
                             content: Text(
                                 "Morate odabrati objavu koju želite obrisati."),
@@ -502,6 +505,7 @@ class _GymScreenState extends State<GymScreen> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
+                        backgroundColor: dialogColor,
                         title: Text("Izbriši objavu!"),
                         content: SingleChildScrollView(
                           child: Text(
@@ -536,7 +540,7 @@ class _GymScreenState extends State<GymScreen> {
                     },
                   );
                 },
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
@@ -689,10 +693,8 @@ class _GymScreenState extends State<GymScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _contentController,
-                      maxLines:
-                          null, // Postavljanje na null omogućuje unos većeg teksta
-                      keyboardType: TextInputType
-                          .multiline, // Omogućuje više redova teksta
+                      maxLines: null,
+                      keyboardType: TextInputType.multiline,
                       decoration: InputDecoration(labelText: 'Sadržaj'),
                       validator: (value) {
                         if (value!.isEmpty) {

@@ -122,17 +122,18 @@ class _UsersScreenState extends State<UsersScreen> {
   void insertUser() async {
     try {
       if (_pickedFile == null) {
-        // Show an alert dialog when no image is selected.
+       
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Alert'),
-              content: Text('Please select an image.'),
+              backgroundColor: dialogColor,
+              title: Text('Upozorenje'),
+              content: Text('Molimo odaberite fotografiju.'),
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context); // Close the dialog
+                    Navigator.pop(context); 
                   },
                   child: Text('OK'),
                 ),
@@ -161,18 +162,18 @@ class _UsersScreenState extends State<UsersScreen> {
         'IsActive': _isActive.toString(),
       };
 
-      // Add the photo to the user data
+    
       userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
         'ProfilePhoto',
         _pickedFile!.readAsBytesSync(),
         filename: 'profile_photo.jpg',
       );
 
-      // Send the request
+    
       var response = await _userProvider.insertUser(userData);
 
       if (response == "OK") {
-        // Successful response
+        
         Navigator.of(context).pop();
         loadUsers(
           UserSearchObject(
@@ -190,11 +191,11 @@ class _UsersScreenState extends State<UsersScreen> {
           selectedGender = null;
         });
       } else {
-        // Handle error
+       
         showErrorDialog(context, 'Greška prilikom dodavanja');
       }
     } catch (e) {
-      // Handle exceptions
+     
       showErrorDialog(context, e.toString());
     }
   }
@@ -225,7 +226,7 @@ class _UsersScreenState extends State<UsersScreen> {
           filename: 'profile_photo.jpg',
         );
       }
-      // Send the request
+     
       var response = await _userProvider.updateUser(userData);
 
       if (response == "OK") {
@@ -246,11 +247,11 @@ class _UsersScreenState extends State<UsersScreen> {
           selectedGender = null;
         });
       } else {
-        // Handle error
+        
         showErrorDialog(context, 'Greška prilikom uređivanja');
       }
     } catch (e) {
-      // Handle exceptions
+      
       showErrorDialog(context, e.toString());
     }
   }
@@ -506,7 +507,7 @@ class _UsersScreenState extends State<UsersScreen> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    backgroundColor: secondaryColor,
+                    backgroundColor: dialogColor,
                     title: Text("Dodaj korisnika"),
                     content: SingleChildScrollView(
                       child: AddUserForm(),
@@ -543,7 +544,7 @@ class _UsersScreenState extends State<UsersScreen> {
                   );
                 });
           },
-          child: const Row(
+          child:  Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
@@ -572,6 +573,7 @@ class _UsersScreenState extends State<UsersScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
+                       backgroundColor: dialogColor,
                       title: Text("Upozorenje"),
                       content: Text(
                           "Morate odabrati barem jednog klijenta za uređivanje"),
@@ -592,6 +594,7 @@ class _UsersScreenState extends State<UsersScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
+                       backgroundColor: dialogColor,
                       title: Text("Upozorenje"),
                       content: Text(
                           "Odaberite samo jednog klijenta kojeg želite urediti"),
@@ -611,7 +614,7 @@ class _UsersScreenState extends State<UsersScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      backgroundColor: secondaryColor,
+                       backgroundColor: dialogColor,
                       title: Text("Uredi klijenta"),
                       content: AddUserForm(
                           isEditing: true, userToEdit: selectedUsers[0]),
@@ -646,7 +649,7 @@ class _UsersScreenState extends State<UsersScreen> {
                   });
             }
           },
-          child: const Row(
+          child:  Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
@@ -675,6 +678,7 @@ class _UsersScreenState extends State<UsersScreen> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
+                           backgroundColor: dialogColor,
                             title: Text("Upozorenje"),
                             content: Text(
                                 "Morate odabrati klijenta kojeg želite obrisati."),
@@ -697,6 +701,7 @@ class _UsersScreenState extends State<UsersScreen> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
+                           backgroundColor: dialogColor,
                           title: Text("Izbriši klijenta!"),
                           content: SingleChildScrollView(
                             child: Text(
@@ -730,7 +735,7 @@ class _UsersScreenState extends State<UsersScreen> {
                         );
                       });
                 },
-          child: const Row(
+          child:  Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(

@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         theme: ThemeData.dark(),
-        themeMode: ThemeMode.dark,
+        themeMode: ThemeMode.light,
         darkTheme: ThemeData.dark(),
         title: 'gymfit',
         debugShowCheckedModeBanner: false,

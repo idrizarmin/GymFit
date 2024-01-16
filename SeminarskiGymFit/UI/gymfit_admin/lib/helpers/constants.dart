@@ -8,6 +8,7 @@ defaultValue: 'http://localhost:8080/api');
 const primaryColor = Colors.teal;
 const secondaryColor = Color.fromARGB(255, 17, 18, 28);
 const bgColor = Color.fromARGB(186, 37, 46, 83);
+const dialogColor = Color.fromARGB(255, 37, 46, 83);
 const myWhite = Color.fromARGB(185, 255, 255, 255);
 const white = Colors.white;
 const green = Color.fromRGBO(36, 228, 19, 1);

@@ -65,11 +65,11 @@ class _ReportScreenState extends State<ReportScreen> {
 
   Gym? gym;
 
-  final List<String> reportData = ['Item 1', 'Item 2', 'Item 3'];
-
   @override
   void initState() {
     super.initState();
+    fromDate = DateTime.now();
+    toDate = DateTime.now();
     _packageProvider = context.read<PackageProvider>();
     _gymProvider = GymProvider();
     _reservationProvider = ReservationProvider();
@@ -337,7 +337,6 @@ class _ReportScreenState extends State<ReportScreen> {
                     isExpanded: true,
                     value: _selectedPackage1,
                     items: [
-                      // Dodajte "Sve" kao prvi element u listu
                       const DropdownMenuItem<Package>(
                         value: null,
                         child: Text('  Svi'),
@@ -362,7 +361,6 @@ class _ReportScreenState extends State<ReportScreen> {
                 SizedBox(
                   height: 20,
                 ),
-                // dodati filtere za datum
                 Row(
                   children: [
                     Expanded(
@@ -391,7 +389,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           onTap: () async {
                             DateTime? pickedDate = await showDatePicker(
                               context: context,
-                              initialDate: fromDate,
+                              initialDate: fromDate ?? DateTime.now(),
                               firstDate: DateTime(1950),
                               lastDate: DateTime(2101),
                             );
@@ -444,7 +442,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           onTap: () async {
                             DateTime? pickedDate = await showDatePicker(
                               context: context,
-                              initialDate: toDate,
+                               initialDate: toDate ?? DateTime.now(),
                               firstDate: DateTime(1950),
                               lastDate: DateTime(2101),
                             );

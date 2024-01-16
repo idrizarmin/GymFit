@@ -151,7 +151,9 @@ Widget _buildTrainersWithInfo(BuildContext context) {
                     height: 120,
                     color: primary,
                     child: FutureBuilder<String>(
-                      future: loadPhoto(trainer.photo?.guidId ?? ''),
+                      future: trainer.photo != null
+                          ? loadPhoto(trainer.photo!.guidId!)
+                          : null,
                       builder:
                           (BuildContext context, AsyncSnapshot<String> snapshot) {
                         final imageUrl = snapshot.data;

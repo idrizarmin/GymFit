@@ -9,7 +9,10 @@ import 'package:gymfit_admin/providers/notification_provider.dart';
 import 'package:gymfit_admin/providers/user_provider.dart';
 import 'package:gymfit_admin/screens/components/header.dart';
 import 'package:intl/intl.dart';
-import 'package:multiple_search_selection/multiple_search_selection.dart';
+import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({Key? key}) : super(key: key);
@@ -275,7 +278,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  // backgroundColor: secondaryColor,
+                  backgroundColor: dialogColor,
                   title: Text("Kreiraj obavijest"),
                   content: SingleChildScrollView(child: AddNotificationForm()),
                   actions: <Widget>[
@@ -298,7 +301,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  backgroundColor: secondaryColor,
+                                  backgroundColor: dialogColor,
                                   title: Text("Greška"),
                                   content: Text(
                                       "Obavezno odabrati barem jednog korisnika."),
@@ -333,7 +336,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               },
             );
           },
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
@@ -362,6 +365,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
+                      backgroundColor: dialogColor,
                       title: Text("Upozorenje"),
                       content: Text(
                           "Morate odabrati jednu obavijest za  uređivanje"),
@@ -382,6 +386,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
+                      backgroundColor: dialogColor,
                       title: Text("Upozorenje"),
                       content: Text(
                           "Odaberite samo jednu obavjest koju želite urediti"),
@@ -401,7 +406,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      backgroundColor: secondaryColor,
+                      backgroundColor: dialogColor,
                       title: Text("Uredi obavijest"),
                       content: AddNotificationForm(
                           isEditing: true,
@@ -432,7 +437,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   });
             }
           },
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
@@ -461,6 +466,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
+                            backgroundColor: dialogColor,
                             title: Text("Upozorenje"),
                             content: Text(
                                 "Morate odabrati obavijest koju želite obrisati."),
@@ -483,6 +489,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
+                        backgroundColor: dialogColor,
                         title: Text("Izbriši obavijest!"),
                         content: SingleChildScrollView(
                           child: Text(
@@ -517,7 +524,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     },
                   );
                 },
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
@@ -607,8 +614,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     );
   }
 
-  Widget AddNotificationForm(
-      {bool isEditing = false, Notifications? notificationToEdit}) {
+  Widget AddNotificationForm({
+    bool isEditing = false,
+    Notifications? notificationToEdit,
+  }) {
     if (notificationToEdit != null) {
       _contentController.text = notificationToEdit.content;
 
@@ -617,17 +626,16 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         orElse: () => UserForSelection(id: 0, firstName: '', lastName: ''),
       );
 
-      // Postavite odabrane korisnike na korisnika iz obavijesti koju uređujete
       selectedUsers = [selectedUser];
     } else {
       selectedUsers = [];
       _contentController.text = '';
       loadUsers();
     }
+
     return Container(
       height: 450,
       width: 950,
-      // color: secondaryColor,
       child: Form(
         key: _formKey,
         child: Row(
@@ -653,72 +661,94 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  SingleChildScrollView(
-                    child: MultipleSearchSelection<UserForSelection>(
-                      searchFieldBoxDecoration: BoxDecoration(
-                          color: secondaryColor,
-                          border: Border.all(color: Colors.white)),
-                      searchFieldInputDecoration:
-                          const InputDecoration(hintText: ' Odaberi klijente'),
-
-                      items: isEditing ? selectedUsers : users,
-                      onTapSelectAll: () {
-                        selectedUsers = users;
-                      },
-                      onTapClearAll: () {
+                  MultiSelectDialogField<UserForSelection>(
+                    items: users
+                        .map((user) => MultiSelectItem<UserForSelection>(
+                              user,
+                              '${user.firstName} ${user.lastName}',
+                            ))
+                        .toList(),
+                    initialValue: selectedUsers,
+                    searchable: true,
+                    listType: MultiSelectListType.CHIP,
+                    onConfirm: (values) {
+                      setState(() {
+                        selectedUsers = values;
+                      });
+                    },
+                    buttonText: Text('Odaberi klijente'),
+                    chipDisplay: MultiSelectChipDisplay<UserForSelection>(
+                      onTap: (value) {
                         setState(() {
-                          selectedUsers = [];
+                          selectedUsers.remove(value);
                         });
                       },
-                      onPickedChange: (List<UserForSelection> items) {
-                        setState(() {
-                          selectedUsers = items;
-                        });
-                      },
-                      pickedItemBuilder: (UserForSelection user) {
-                        return Container(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Text('${user.firstName} ${user.lastName}'),
-                          ),
-                        );
-                      },
-                      onTapShowedItem: () {},
-                      //onPickedChange: (List<Country> items) {},
-                      onItemAdded: (UserForSelection item) {},
-                      onItemRemoved: (UserForSelection item) {},
-                      sortShowedItems: true,
-                      sortPickedItems: true,
-                      fuzzySearch: FuzzySearch.jaro,
-                      itemsVisibility: ShowedItemsVisibility.alwaysOn,
-
-                      title: Text(
-                        'Odaberite klijente',
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
-                      ),
-                      showSelectAllButton: true,
-                      maximumShowItemsHeight: 200,
-                      fieldToCheck: (UserForSelection u) {
-                        return u.firstName;
-                      },
-                      itemBuilder: (UserForSelection user, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(),
-                              child: Text('${user.firstName} ${user.lastName}'),
-                            ),
-                          ),
-                        );
-                      },
+                      chipColor: Colors.teal,
+                      textStyle: TextStyle(color: Colors.white),
                     ),
-                  )
+                    title: Text('Odaberi klijente'),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            selectedUsers = List.from(users);
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                backgroundColor: Color(0XFF12B422),
+                                content: Text('Odabrani svi klijenti!',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ))),
+                          );
+                        },
+                        child: Text('Označi sve'),
+                      ),
+                      SizedBox(width: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            selectedUsers = [];
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                backgroundColor:
+                                    Color.fromARGB(255, 231, 11, 11),
+                                content:
+                                    Text('Nije odabran niti jedan klijent!',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ))),
+                          );
+                        },
+                        child: Text('Odznači sve'),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Wrap(
+                    children: selectedUsers
+                        .map((user) => Container(
+                              margin: EdgeInsets.all(4),
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.teal,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                '${user.firstName} ${user.lastName}',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ))
+                        .toList(),
+                  ),
                 ],
               ),
             ),

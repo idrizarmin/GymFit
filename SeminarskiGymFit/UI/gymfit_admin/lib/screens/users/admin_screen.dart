@@ -99,17 +99,17 @@ class _AdminScreenState extends State<AdminScreen> {
   void insertUser() async {
     try {
       if (_pickedFile == null) {
-        // Show an alert dialog when no image is selected.
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
+              backgroundColor: dialogColor,
               title: Text('Alert'),
               content: Text('Please select an image.'),
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context); // Close the dialog
+                    Navigator.pop(context);
                   },
                   child: Text('OK'),
                 ),
@@ -143,11 +143,9 @@ class _AdminScreenState extends State<AdminScreen> {
         filename: 'profile_photo.jpg',
       );
 
-      // Send the request
       var response = await _userProvider.insertUser(userData);
 
       if (response == "OK") {
-        // Successful response
         Navigator.of(context).pop();
         loadUsers(
           UserSearchObject(
@@ -160,11 +158,9 @@ class _AdminScreenState extends State<AdminScreen> {
           ),
         );
       } else {
-        // Handle error
         showErrorDialog(context, 'Error inserting user');
       }
     } catch (e) {
-      // Handle exceptions
       showErrorDialog(context, e.toString());
     }
   }
@@ -195,7 +191,7 @@ class _AdminScreenState extends State<AdminScreen> {
           filename: 'profile_photo.jpg',
         );
       }
-      // Send the request
+
       var response = await _userProvider.updateUser(userData);
 
       if (response == "OK") {
@@ -214,11 +210,9 @@ class _AdminScreenState extends State<AdminScreen> {
           selectedGender = null;
         });
       } else {
-        // Handle error
         showErrorDialog(context, 'Greška prilikom uređivanja');
       }
     } catch (e) {
-      // Handle exceptions
       showErrorDialog(context, e.toString());
     }
   }
@@ -291,7 +285,7 @@ class _AdminScreenState extends State<AdminScreen> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    backgroundColor: secondaryColor,
+                    backgroundColor: dialogColor,
                     title: Text("Dodaj korisnika"),
                     content: SingleChildScrollView(
                       child: AddUserForm(),
@@ -320,7 +314,7 @@ class _AdminScreenState extends State<AdminScreen> {
                   );
                 });
           },
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
@@ -349,6 +343,7 @@ class _AdminScreenState extends State<AdminScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
+                      backgroundColor: dialogColor,
                       title: Text("Upozorenje"),
                       content: Text(
                           "Morate odabrati barem jednog klijenta za uređivanje"),
@@ -369,6 +364,7 @@ class _AdminScreenState extends State<AdminScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
+                      backgroundColor: dialogColor,
                       title: Text("Upozorenje"),
                       content: Text(
                           "Odaberite samo jednog klijenta kojeg želite urediti"),
@@ -388,7 +384,7 @@ class _AdminScreenState extends State<AdminScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      backgroundColor: secondaryColor,
+                      backgroundColor: dialogColor,
                       title: Text("Uredi klijenta"),
                       content: AddUserForm(
                           isEditing: true, userToEdit: selectedUsers[0]),
@@ -415,7 +411,7 @@ class _AdminScreenState extends State<AdminScreen> {
                   });
             }
           },
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
@@ -444,6 +440,7 @@ class _AdminScreenState extends State<AdminScreen> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
+                            backgroundColor: dialogColor,
                             title: Text("Upozorenje"),
                             content: Text(
                                 "Morate odabrati klijenta kojeg želite obrisati."),
@@ -466,6 +463,7 @@ class _AdminScreenState extends State<AdminScreen> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
+                          backgroundColor: dialogColor,
                           title: Text("Izbriši klijenta!"),
                           content: SingleChildScrollView(
                             child: Text(
@@ -499,7 +497,7 @@ class _AdminScreenState extends State<AdminScreen> {
                         );
                       });
                 },
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
@@ -611,8 +609,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                               ConnectionState.waiting) {
                                             return CircularProgressIndicator();
                                           } else if (snapshot.hasError) {
-                                            return Text(
-                                                '--');
+                                            return Text('--');
                                           } else {
                                             final imageUrl = snapshot.data;
 
@@ -778,8 +775,6 @@ class _AdminScreenState extends State<AdminScreen> {
                                     ),
                                   );
                                 } else {
-                                  // Ako uređujete korisnika, pokažite poruku za odabir slike
-                                  // Inače, prikažite podrazumevanu sliku iz assetsa
                                   return isEditing
                                       ? Container(
                                           padding: EdgeInsets.symmetric(
@@ -806,15 +801,14 @@ class _AdminScreenState extends State<AdminScreen> {
                   const SizedBox(height: 35),
                   Center(
                     child: SizedBox(
-                      width: 150, // Širina dugmeta
-                      height: 35, // Visina dugmeta
+                      width: 150,
+                      height: 35,
                       child: ElevatedButton(
                         onPressed: () => _pickImage(),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: primaryColor,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                20.0), // Zaobljenost rubova
+                            borderRadius: BorderRadius.circular(20.0),
                           ),
                         ),
                         child: const Text('Select An Image',
@@ -894,7 +888,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     controller: _birthDateController,
                     decoration: InputDecoration(
                       labelText: 'Datum',
-                      hintText: 'Odaberite datum', // Dodajte hintText ovde
+                      hintText: 'Odaberite datum',
                     ),
                     onTap: () {
                       showDatePicker(

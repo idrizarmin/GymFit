@@ -8,7 +8,10 @@ import 'package:gymfit_trainer/models/user_for_selection.dart';
 import 'package:gymfit_trainer/providers/notification_provider.dart';
 import 'package:gymfit_trainer/providers/user_provider.dart';
 import 'package:gymfit_trainer/utils/error_dialog.dart';
-import 'package:multiple_search_selection/multiple_search_selection.dart';
+import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 
 class AddNotificationScreen extends StatefulWidget {
   const AddNotificationScreen({Key? key}) : super(key: key);
@@ -266,80 +269,33 @@ class _AddNotificationsScreenState extends State<AddNotificationScreen> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 16.0),
                                   child:
-                                      MultipleSearchSelection<UserForSelection>(
-                                    items: isEditing ? selectedUsers : users,
-                                    onTapSelectAll: () {
-                                      selectedUsers = users;
-                                    },
-                                    onTapClearAll: () {
-                                      setState(() {
-                                        selectedUsers = [];
-                                      });
-                                    },
-                                    onPickedChange:
-                                        (List<UserForSelection> items) {
-                                      setState(() {
-                                        selectedUsers = items;
-                                      });
-                                    },
-                                    pickedItemBuilder: (UserForSelection user) {
-                                      return Container(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8),
-                                          child: Text(
-                                              '${user.firstName} ${user.lastName}'),
-                                        ),
-                                      );
-                                    },
-                                    onTapShowedItem: () {},
-                                    onItemAdded: (UserForSelection item) {},
-                                    onItemRemoved: (UserForSelection item) {},
-                                    sortShowedItems: true,
-                                    sortPickedItems: true,
-                                    fuzzySearch: FuzzySearch.jaro,
-                                    itemsVisibility:
-                                        ShowedItemsVisibility.alwaysOn,
-                                    title: const Text(
-                                      'Odaberite klijente',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                    showSelectAllButton: true,
-                                    maximumShowItemsHeight: 200,
-                                    fieldToCheck: (UserForSelection u) {
-                                      return u.firstName;
-                                    },
-                                    itemBuilder:
-                                        (UserForSelection user, int index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.all(6.0),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(6),
-                                          ),
-                                          child: Padding(
-                                            padding:
-                                                const EdgeInsets.symmetric(),
-                                            child: Text(
-                                                '${user.firstName} ${user.lastName}'),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    searchField: TextField(
-                                      decoration: InputDecoration(
-                                        hintText: 'Pretraži klijente',
-                                        hintStyle:
-                                            TextStyle(color: Colors.grey),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.grey),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                     MultiSelectDialogField<UserForSelection>(
+                    items: users
+                        .map((user) => MultiSelectItem<UserForSelection>(
+                              user,
+                              '${user.firstName} ${user.lastName}',
+                            ))
+                        .toList(),
+                    initialValue: selectedUsers,
+                    searchable: true,
+                    listType: MultiSelectListType.CHIP,
+                    onConfirm: (values) {
+                      setState(() {
+                        selectedUsers = values;
+                      });
+                    },
+                    buttonText: Text('Odaberi klijente'),
+                    chipDisplay: MultiSelectChipDisplay<UserForSelection>(
+                      onTap: (value) {
+                        setState(() {
+                          selectedUsers.remove(value);
+                        });
+                      },
+                      chipColor: Colors.teal,
+                      textStyle: TextStyle(color: Colors.white),
+                    ),
+                    title: Text('Odaberi klijente'),
+                  ),
                                 ),
                               ],
                             ),

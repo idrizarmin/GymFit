@@ -111,17 +111,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           filename: 'profile_photo.jpg',
         );
       }
-      // Send the request
+
       var response = await _userProvider.updateUser(userData);
 
       if (response == "OK") {
         Navigator.of(context).pop();
       } else {
-        // Handle error
         showErrorDialog(context, 'Greška prilikom uređivanja');
       }
     } catch (e) {
-      // Handle exceptions
       showErrorDialog(context, e.toString());
     }
   }
@@ -181,19 +179,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 return CircularProgressIndicator();
                               } else if (snapshot.hasError) {
                                 return Container(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 8.0),
-                                    child: ClipOval(
-                                      child: Image.asset(
-                                        'assets/images/notFound.png',
-                                        width:
-                                            120, // Adjust the width as needed
-                                        height:
-                                            120, // Adjust the height as needed
-                                        fit: BoxFit.cover,
-                                      ),
+                                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                                  child: ClipOval(
+                                    child: Image.asset(
+                                      'assets/images/notFound.png',
+                                      width: 120,
+                                      height: 120,
+                                      fit: BoxFit.cover,
                                     ),
-                                  );
+                                  ),
+                                );
                               } else {
                                 final imageUrl = snapshot.data;
 
@@ -213,10 +208,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         fadeInDuration:
                                             const Duration(milliseconds: 300),
                                         fit: BoxFit.cover,
-                                        width:
-                                            200, // Adjust the width as needed
-                                        height:
-                                            200, // Adjust the height as needed
+                                        width: 200,
+                                        height: 200,
                                       ),
                                     ),
                                   );
@@ -227,10 +220,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                     child: ClipOval(
                                       child: Image.asset(
                                         'assets/images/user1.jpg',
-                                        width:
-                                            120, // Adjust the width as needed
-                                        height:
-                                            120, // Adjust the height as needed
+                                        width: 120,
+                                        height: 120,
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -285,56 +276,56 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   ElevatedButton _buildEditProfileButton(BuildContext context) {
-  return ElevatedButton(
-    style: ElevatedButton.styleFrom(
-      backgroundColor: primaryColor,
-    ),
-    onPressed: () {
-      if (admin != null) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              backgroundColor: secondaryColor,
-              title: Text("Uredi podatke"),
-              content: AddUserForm(isEditing: true, userToEdit: admin),
-              actions: <Widget>[
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: primaryColor,
+      ),
+      onPressed: () {
+        if (admin != null) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                backgroundColor: dialogColor,
+                title: Text("Uredi podatke"),
+                content: AddUserForm(isEditing: true, userToEdit: admin),
+                actions: <Widget>[
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("Zatvori", style: TextStyle(color: white)),
                   ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("Zatvori", style: TextStyle(color: white)),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                    ),
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        editUser(admin!.id);
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => UserProfileScreen(),
+                          ),
+                        );
+                      }
+                    },
+                    child: Text("Spremi", style: TextStyle(color: white)),
                   ),
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      editUser(admin!.id);
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => UserProfileScreen(),
-                        ),
-                      );
-                    }
-                  },
-                  child: Text("Spremi", style: TextStyle(color: white)),
-                ),
-              ],
-            );
-          },
-        );
-      } else {
-       showErrorDialog(context, "POkušajte se ponovno prijaviti");
-      }
-    },
-    child: Text("Uredi profil", style: TextStyle(color: white)),
-  );
-}
+                ],
+              );
+            },
+          );
+        } else {
+          showErrorDialog(context, "POkušajte se ponovno prijaviti");
+        }
+      },
+      child: Text("Uredi profil", style: TextStyle(color: white)),
+    );
+  }
 
   Widget _buildUserData(String label, String value) {
     return Column(
@@ -438,8 +429,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                     ),
                                   );
                                 } else {
-                                  // Ako uređujete korisnika, pokažite poruku za odabir slike
-                                  // Inače, prikažite podrazumevanu sliku iz assetsa
                                   return isEditing
                                       ? Container(
                                           padding: EdgeInsets.symmetric(
@@ -466,15 +455,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   const SizedBox(height: 35),
                   Center(
                     child: SizedBox(
-                      width: 150, // Širina dugmeta
-                      height: 35, // Visina dugmeta
+                      width: 150,
+                      height: 35,
                       child: ElevatedButton(
                         onPressed: () => _pickImage(),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: primaryColor,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                20.0), // Zaobljenost rubova
+                            borderRadius: BorderRadius.circular(20.0),
                           ),
                         ),
                         child: Text('Select An Image',
@@ -554,7 +542,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     controller: _birthDateController,
                     decoration: InputDecoration(
                       labelText: 'Datum',
-                      hintText: 'Odaberite datum', // Dodajte hintText ovde
+                      hintText: 'Odaberite datum',
                     ),
                     onTap: () {
                       showDatePicker(

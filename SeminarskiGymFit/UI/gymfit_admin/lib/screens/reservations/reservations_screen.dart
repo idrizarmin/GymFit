@@ -102,6 +102,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
+              backgroundColor: dialogColor,
               title: Text("Greška"),
               content: Text("Odabrani datum nije validan."),
               actions: [
@@ -118,13 +119,12 @@ class _ReservationScreenState extends State<ReservationScreen> {
             );
           },
         );
-      }else if(
-        selectedUserToAdd== null
-      ){
-          showDialog(
+      } else if (selectedUserToAdd == null) {
+        showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
+              backgroundColor: dialogColor,
               title: Text("Greška"),
               content: Text("Niste odabrali klijenta."),
               actions: [
@@ -141,14 +141,12 @@ class _ReservationScreenState extends State<ReservationScreen> {
             );
           },
         );
-      } 
-      else if(
-        selectedTrainerToAdd== null
-      ){
-          showDialog(
+      } else if (selectedTrainerToAdd == null) {
+        showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
+              backgroundColor: dialogColor,
               title: Text("Greška"),
               content: Text("Niste odabrali trenera."),
               actions: [
@@ -165,13 +163,13 @@ class _ReservationScreenState extends State<ReservationScreen> {
             );
           },
         );
-      } 
-      else if (selectedStartHour > selectedEndHour ||
+      } else if (selectedStartHour > selectedEndHour ||
           selectedStartHour == selectedEndHour) {
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
+              backgroundColor: dialogColor,
               title: Text("Greška"),
               content: Text("Nepravilno odabrano vrijeme treninga."),
               actions: [
@@ -189,12 +187,16 @@ class _ReservationScreenState extends State<ReservationScreen> {
           },
         );
       } else if ((selectedStartHour < today.hour + 3 ||
-          selectedStartHour > selectedEndHour ||
-          selectedStartHour == selectedEndHour) && (selectedDate.day == today.day && selectedDate.month== today.month && selectedDate.year == today.year)) {
+              selectedStartHour > selectedEndHour ||
+              selectedStartHour == selectedEndHour) &&
+          (selectedDate.day == today.day &&
+              selectedDate.month == today.month &&
+              selectedDate.year == today.year)) {
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
+              backgroundColor: dialogColor,
               title: const Text("Greška"),
               content: const Text(
                   "Vrijeme rezervacije treba biti minimalno 3 sata od trenutnog vremena!"),
@@ -282,46 +284,45 @@ class _ReservationScreenState extends State<ReservationScreen> {
 
   Expanded _buildCalendar() {
     return Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.white), // Set border color
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: SfCalendar(
-                view: CalendarView.week,
-                monthViewSettings: MonthViewSettings(
-                    appointmentDisplayMode:
-                        MonthAppointmentDisplayMode.appointment),
-                dataSource: _events,
-                firstDayOfWeek: 1,
-                timeSlotViewSettings:
-                    const TimeSlotViewSettings(startHour: 6, endHour: 24),
-              ),
-            ),
-          );
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.white), // Set border color
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: SfCalendar(
+          view: CalendarView.week,
+          monthViewSettings: MonthViewSettings(
+              appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
+          dataSource: _events,
+          firstDayOfWeek: 1,
+          timeSlotViewSettings:
+              const TimeSlotViewSettings(startHour: 6, endHour: 24),
+        ),
+      ),
+    );
   }
 
   Row _buildLegend() {
     return Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              LegendsListWidget(
-                legends: [
-                  Legend('Kreirane', Colors.brown), 
-                  Legend(
-                    'Potvrđene',
-                    Colors.green,
-                  ), // Boja za status 2
-                  Legend(
-                    'Otkazane',
-                    Colors.orange,
-                  ), // Boja za status 3
-                  Legend('Zavrsene', Colors.red), 
-                  Legend('U tijeku  ', Colors.lightBlue), 
-                ],
-              ),
-            ],
-          );
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        LegendsListWidget(
+          legends: [
+            Legend('Kreirane', Colors.brown),
+            Legend(
+              'Potvrđene',
+              Colors.green,
+            ), // Boja za status 2
+            Legend(
+              'Otkazane',
+              Colors.orange,
+            ), // Boja za status 3
+            Legend('Zavrsene', Colors.red),
+            Legend('U tijeku  ', Colors.lightBlue),
+          ],
+        ),
+      ],
+    );
   }
 
   Row buildButtons(BuildContext context) {
@@ -340,7 +341,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        backgroundColor: secondaryColor,
+                        backgroundColor: dialogColor,
                         title: Text("Dodaj rezervaciju"),
                         content: SingleChildScrollView(
                           child: AddReservationForm(),
@@ -353,7 +354,8 @@ class _ReservationScreenState extends State<ReservationScreen> {
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Zatvori",style: TextStyle(color: white ))),
+                              child: Text("Zatvori",
+                                  style: TextStyle(color: white))),
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor,
@@ -363,12 +365,13 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                   InsertReservation();
                                 }
                               },
-                              child: Text("Spremi",style: TextStyle(color: white )))
+                              child: Text("Spremi",
+                                  style: TextStyle(color: white)))
                         ],
                       );
                     });
               },
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
@@ -394,9 +397,9 @@ class _ReservationScreenState extends State<ReservationScreen> {
               onPressed: () {
                 loadReservations();
               },
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: const [
                   Icon(
                     Icons.refresh_outlined,
                     color: Colors.white,
@@ -720,7 +723,6 @@ class _ReservationScreenState extends State<ReservationScreen> {
                                 underline: Container(),
                                 padding: const EdgeInsets.fromLTRB(10, 6, 0, 0),
                                 displayClearIcon: true,
-                                
                               ),
                             ),
                           ],

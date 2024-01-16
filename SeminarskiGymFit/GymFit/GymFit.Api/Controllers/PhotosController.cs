@@ -37,7 +37,20 @@ namespace GymFit.Api.Controllers
         {
             try
             {
-                var imageBytes = await Service.GetImageAsync(id, original);
+                byte[] imageBytes;
+
+                if (id == Guid.Empty)
+                {
+                    // Učitaj sliku iz projekta kada je GUID ID prazan
+                    var imagePath = "Photos/images.jpg";  // Prilagodite putanju
+                    imageBytes = await System.IO.File.ReadAllBytesAsync(imagePath);
+                }
+                else
+                {
+                    // Učitaj sliku prema zadatom GUID ID-u
+                    imageBytes = await Service.GetImageAsync(id, original);
+                }
+
                 if (imageBytes == null) return BadRequest();
 
                 return File(imageBytes, "image/jpeg");

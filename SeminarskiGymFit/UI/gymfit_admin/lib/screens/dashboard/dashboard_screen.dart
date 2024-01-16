@@ -403,8 +403,8 @@ class BarChartReservations extends StatelessWidget {
                     getTitlesWidget: leftTitles,
                   ),
                 ),
-                rightTitles: const AxisTitles(),
-                topTitles: const AxisTitles(),
+                rightTitles:  AxisTitles(),
+                topTitles:  AxisTitles(),
                 bottomTitles: AxisTitles(
                   sideTitles: SideTitles(
                     showTitles: true,
@@ -415,7 +415,7 @@ class BarChartReservations extends StatelessWidget {
               ),
               barTouchData: BarTouchData(enabled: false),
               borderData: FlBorderData(show: false),
-              gridData: const FlGridData(show: false),
+              gridData:  FlGridData(show: false),
               barGroups: [
                 BarChartGroupData(
                   x: 0,
@@ -593,8 +593,8 @@ class BarChartPackages extends StatelessWidget {
                     getTitlesWidget: leftTitles,
                   ),
                 ),
-                rightTitles: const AxisTitles(),
-                topTitles: const AxisTitles(),
+                rightTitles:  AxisTitles(),
+                topTitles:  AxisTitles(),
                 bottomTitles: AxisTitles(
                   sideTitles: SideTitles(
                     showTitles: true,
@@ -605,7 +605,7 @@ class BarChartPackages extends StatelessWidget {
               ),
               barTouchData: BarTouchData(enabled: false),
               borderData: FlBorderData(show: false),
-              gridData: const FlGridData(show: false),
+              gridData:  FlGridData(show: false),
               barGroups: [
                 BarChartGroupData(
                   x: 0,

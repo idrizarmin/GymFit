@@ -51,7 +51,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   File? selectedImage;
   late PhotoProvider _photoProvider;
 
- @override
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     mediaQueryData = MediaQuery.of(context);
@@ -103,8 +103,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         'Address': '',
         'ProfessionalTitle': '',
         'Gender': selectedGender.toString(),
-        'DateOfBirth':
-            DateTime.parse(_birthDateController.text).add(const Duration(days: 1)).toUtc().toIso8601String(),
+        'DateOfBirth': DateTime.parse(_birthDateController.text)
+            .add(const Duration(days: 1))
+            .toUtc()
+            .toIso8601String(),
         'Role': '1',
         'LastSignInAt': DateTime.now().toUtc().toIso8601String(),
         'IsVerified': _isVerified.toString(),
@@ -128,7 +130,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     color: Colors.white,
                   ))),
         );
-
       } else {
         showErrorDialog(context, 'Greška prilikom uređivanja');
       }
@@ -152,7 +153,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-     var mediaQueryData = MediaQuery.of(context);
+    var mediaQueryData = MediaQuery.of(context);
     if (user == null) {
       return _buildLoadingIndicator();
     }
@@ -176,13 +177,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ),
                 ),
                 _buildUserProfile(),
-                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: teal
-                  ),
-                  onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.changePassword);
-              }, child: Text("Change password", style: TextStyle(color: white),)),
+                
               ],
             ),
           ),
@@ -191,11 +186,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-Widget _buildLoadingIndicator() {
+  Widget _buildLoadingIndicator() {
     return Stack(
       children: [
         Scaffold(
-           backgroundColor: appTheme.bgSecondary,
+          backgroundColor: appTheme.bgSecondary,
           body: Center(
             child: Container(
               width: 50,
@@ -231,7 +226,9 @@ Widget _buildLoadingIndicator() {
                     height: 120,
                     color: primary,
                     child: FutureBuilder<String>(
-                      future: loadPhoto(user!.photo?.guidId ?? ''),
+                      future: user?.photo?.guidId != null
+                          ? loadPhoto(user!.photo!.guidId!)
+                          : null, // Check if user?.photo is not null before calling loadPhoto
                       builder: (BuildContext context,
                           AsyncSnapshot<String> snapshot) {
                         final imageUrl = snapshot.data;
@@ -273,8 +270,17 @@ Widget _buildLoadingIndicator() {
                   : DateFormat('dd.MM.yyyy')
                       .format(DateTime.parse(user!.dateOfBirth!))
                       .toString()),
-          _buildUserData("Spol: ", user?.gender == 0 ? "Muski" : "Zesnki"),
+          _buildUserData("Spol: ", user?.gender == 0 ? "Muski" : "Zenski"),
           _buildEditUserButton(),
+          ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: teal),
+                    onPressed: () {
+                      Navigator.pushNamed(context, AppRoutes.changePassword);
+                    },
+                    child: Text(
+                      "Promjeni lozinku",
+                      style: TextStyle(color: white),
+                    )),
         ],
       ),
     );
@@ -390,72 +396,65 @@ Widget _buildLoadingIndicator() {
           children: [
             Column(children: [
               ValueListenableBuilder<File?>(
-                  valueListenable: _pickedFileNotifier,
-                  builder: (context, pickedFile, _) {
-                    return Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      height: 180,
-                      color: primary,
-                      child: FutureBuilder<String>(
-                        future: _pickedFile != null
-                            ? Future.value(_pickedFile!.path)
-                            : loadPhoto(isEditing
-                                ? (userToEdit?.photo?.guidId ?? '')
-                                : ''),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<String> snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text('Molimo odaberite fotografiju');
-                          } else {
-                            final imageUrl = snapshot.data;
+                valueListenable: _pickedFileNotifier,
+                builder: (context, pickedFile, _) {
+                  return Container(
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    height: 180,
+                    color: primary,
+                    child: FutureBuilder<String>(
+                      future: userToEdit?.photo?.guidId != null
+                          ? loadPhoto(userToEdit!.photo!.guidId!)
+                          : null,
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Molimo odaberite fotografiju');
+                        } else {
+                          final imageUrl = snapshot.data;
 
-                            if (imageUrl != null && imageUrl.isNotEmpty) {
-                              return Container(
-                                child: FadeInImage(
-                                  image: _pickedFile != null
-                                      ? FileImage(_pickedFile!)
-                                          as ImageProvider<Object>
-                                      : NetworkImage(
-                                          imageUrl,
-                                          headers:
-                                              Authorization.createHeaders(),
-                                        ) as ImageProvider<Object>,
-                                  placeholder: MemoryImage(kTransparentImage),
-                                  fadeInDuration:
-                                      const Duration(milliseconds: 300),
-                                  fit: BoxFit.cover,
-                                  width: 230,
-                                  height: 200,
-                                ),
-                              );
-                            } else {
-                              return isEditing
-                                  ? Container(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 8.0),
-                                      child:
-                                          const Text('Please select an image'),
-                                    )
-                                  : Container(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 8.0),
-                                      child: Image.asset(
-                                        'assets/images/default_user_image.jpg',
-                                        width: 230,
-                                        height: 200,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    );
-                            }
+                          if (imageUrl != null && imageUrl.isNotEmpty) {
+                            return Container(
+                              child: FadeInImage(
+                                image: _pickedFile != null
+                                    ? FileImage(_pickedFile!)
+                                        as ImageProvider<Object>
+                                    : NetworkImage(
+                                        imageUrl,
+                                        headers: Authorization.createHeaders(),
+                                      ) as ImageProvider<Object>,
+                                placeholder: MemoryImage(kTransparentImage),
+                                fadeInDuration:
+                                    const Duration(milliseconds: 300),
+                                fit: BoxFit.cover,
+                                width: 230,
+                                height: 200,
+                              ),
+                            );
+                          } else {
+                            return isEditing
+                                ? Container(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 8.0),
+                                    child: const Text('Please select an image'),
+                                  )
+                                : Container(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 8.0),
+                                    child: const Text(
+                                        'Molimo odaberite fotografiju'),
+                                  );
                           }
-                        },
-                      ),
-                    );
-                  }),
+                        }
+                      },
+                    ),
+                  );
+                },
+              ),
               const SizedBox(height: 35),
               Center(
                 child: SizedBox(

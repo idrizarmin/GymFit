@@ -148,7 +148,10 @@ class _PackagesScreenState extends State<PackagesScreen> {
               loadPackages();
             }
           },
-          child: const Icon(Icons.arrow_left_outlined, color: white,),
+          child: const Icon(
+            Icons.arrow_left_outlined,
+            color: white,
+          ),
         ),
         SizedBox(width: 16),
         ElevatedButton(
@@ -163,7 +166,10 @@ class _PackagesScreenState extends State<PackagesScreen> {
               loadPackages();
             }
           },
-          child: const Icon(Icons.arrow_right_outlined ,color: white,),
+          child: const Icon(
+            Icons.arrow_right_outlined,
+            color: white,
+          ),
         ),
       ],
     );
@@ -182,7 +188,7 @@ class _PackagesScreenState extends State<PackagesScreen> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  // backgroundColor: secondaryColor,
+                  backgroundColor: dialogColor,
                   title: Text("Kreiraj paket"),
                   content: SingleChildScrollView(child: AddPackageForm()),
                   actions: <Widget>[
@@ -200,8 +206,8 @@ class _PackagesScreenState extends State<PackagesScreen> {
                       ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                            InsertPackage();
-                            Navigator.of(context).pop();
+                          InsertPackage();
+                          Navigator.of(context).pop();
                         }
                       },
                       child: Text("Spremi", style: TextStyle(color: white)),
@@ -211,7 +217,7 @@ class _PackagesScreenState extends State<PackagesScreen> {
               },
             );
           },
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
@@ -240,6 +246,7 @@ class _PackagesScreenState extends State<PackagesScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
+                      backgroundColor: dialogColor,
                       title: Text("Upozorenje"),
                       content:
                           Text("Morate odabrati jedan paket za uređivanje"),
@@ -260,6 +267,7 @@ class _PackagesScreenState extends State<PackagesScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
+                      backgroundColor: dialogColor,
                       title: Text("Upozorenje"),
                       content: Text(
                           "Odaberite samo jedan paket koji želite urediti"),
@@ -279,7 +287,7 @@ class _PackagesScreenState extends State<PackagesScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      backgroundColor: secondaryColor,
+                      backgroundColor: dialogColor,
                       title: Text("Uredi paket"),
                       content: AddPackageForm(
                           isEditing: true, packageToEdit: selectedpackages[0]),
@@ -290,7 +298,8 @@ class _PackagesScreenState extends State<PackagesScreen> {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Zatvori", style: TextStyle(color: white))),
+                            child: const Text("Zatvori",
+                                style: TextStyle(color: white))),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor),
@@ -299,15 +308,16 @@ class _PackagesScreenState extends State<PackagesScreen> {
                               Navigator.of(context).pop();
                               selectedpackages = [];
                             },
-                            child: Text("Spremi", style: TextStyle(color: white))),
+                            child:
+                                Text("Spremi", style: TextStyle(color: white))),
                       ],
                     );
                   });
             }
           },
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+            children: const [
               Icon(
                 Icons.edit_outlined,
                 color: Colors.white,
@@ -334,6 +344,7 @@ class _PackagesScreenState extends State<PackagesScreen> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
+                            backgroundColor: dialogColor,
                             title: Text("Upozorenje"),
                             content: Text(
                                 "Morate odabrati paket koji želite obrisati."),
@@ -345,7 +356,8 @@ class _PackagesScreenState extends State<PackagesScreen> {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Text("OK", style: TextStyle(color: white)),
+                                child:
+                                    Text("OK", style: TextStyle(color: white)),
                               ),
                             ]);
                       });
@@ -355,6 +367,7 @@ class _PackagesScreenState extends State<PackagesScreen> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
+                        backgroundColor: dialogColor,
                         title: Text("Izbriši obavijest!"),
                         content: SingleChildScrollView(
                           child: Text(
@@ -368,7 +381,8 @@ class _PackagesScreenState extends State<PackagesScreen> {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text("Odustani", style: TextStyle(color: white)),
+                            child: Text("Odustani",
+                                style: TextStyle(color: white)),
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -376,18 +390,19 @@ class _PackagesScreenState extends State<PackagesScreen> {
                             ),
                             onPressed: () {
                               for (Package n in selectedpackages) {
-                                 DeletePackage(n.id);
+                                DeletePackage(n.id);
                               }
                               Navigator.of(context).pop();
                             },
-                            child: Text("Obriši", style: TextStyle(color: white)),
+                            child:
+                                Text("Obriši", style: TextStyle(color: white)),
                           ),
                         ],
                       );
                     },
                   );
                 },
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
@@ -409,93 +424,92 @@ class _PackagesScreenState extends State<PackagesScreen> {
     );
   }
 
- Widget AddPackageForm({bool isEditing = false, Package? packageToEdit}) {
-  if (packageToEdit != null) {
-    _nameController.text = packageToEdit.name!;
-    _descriptionController.text = packageToEdit.description ?? "";
-    _priceController.text = packageToEdit.price.toString();
-  } else {
-    _nameController.text = "";
-    _descriptionController.text = "";
-    _priceController.text = "0.0";
-  }
-  return Container(
-    height: 450,
-    width: 950,
-    child: Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          SizedBox(
-            width: 30,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: 'Naziv paketa:'),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Obavezan unos!';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(
-                height: 10,
-              ),
-            ],
-          ),
-          SizedBox(
-            width: 30,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                controller: _descriptionController,
-                decoration: InputDecoration(labelText: 'Opis paketa:'),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Obavezan unos!';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(
-                height: 10,
-              ),
-            ],
-          ),
-          SizedBox(
-            width: 30,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                controller: _priceController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(labelText: 'Cijena paketa:'),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Obavezan unos!';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(
-                height: 10,
-              ),
-            ],
-          ),
-        ],
+  Widget AddPackageForm({bool isEditing = false, Package? packageToEdit}) {
+    if (packageToEdit != null) {
+      _nameController.text = packageToEdit.name!;
+      _descriptionController.text = packageToEdit.description ?? "";
+      _priceController.text = packageToEdit.price.toString();
+    } else {
+      _nameController.text = "";
+      _descriptionController.text = "";
+      _priceController.text = "0.0";
+    }
+    return Container(
+      height: 450,
+      width: 950,
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            SizedBox(
+              width: 30,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(labelText: 'Naziv paketa:'),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Obavezan unos!';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
+            SizedBox(
+              width: 30,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  controller: _descriptionController,
+                  decoration: InputDecoration(labelText: 'Opis paketa:'),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Obavezan unos!';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
+            SizedBox(
+              width: 30,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  controller: _priceController,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  decoration: InputDecoration(labelText: 'Cijena paketa:'),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Obavezan unos!';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   Expanded buildDataView(BuildContext context) {
     return Expanded(

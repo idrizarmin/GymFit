@@ -82,6 +82,7 @@ class _MembershipPaymentFormState extends State<MembershipPaymentForm> {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
+          backgroundColor:  appTheme.bgSecondary,
           content: Text("Molimo odaberite paket i broj mjeseci."),
           actions: [
             ElevatedButton(
@@ -109,7 +110,6 @@ class _MembershipPaymentFormState extends State<MembershipPaymentForm> {
           paymentSheetParameters: SetupPaymentSheetParameters(
             paymentIntentClientSecret: paymentIntentData!['client_secret'],
             merchantDisplayName: 'GymFit',
-            style: ThemeMode.dark,
             appearance: const PaymentSheetAppearance(
               primaryButton: PaymentSheetPrimaryButtonAppearance(
                   colors: PaymentSheetPrimaryButtonTheme(
@@ -128,7 +128,7 @@ class _MembershipPaymentFormState extends State<MembershipPaymentForm> {
     });
 
     try {
-      await Stripe.instance.presentPaymentSheet();
+        await Stripe.instance.presentPaymentSheet();
 
       InsertUserPackage();
     } catch (e) {

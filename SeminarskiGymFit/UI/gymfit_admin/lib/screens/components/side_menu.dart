@@ -51,7 +51,7 @@ class _SideMenuState extends State<SideMenu> {
               children: [
                 Container(
                   margin: const EdgeInsets.only(top: 20),
-                  child: const Row(
+                  child:  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image(
@@ -216,8 +216,8 @@ class DrawerListTile extends StatelessWidget {
       horizontalTitleGap: 0.0,
       leading: SvgPicture.asset(
         svgSrc,
-        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
         height: 16,
+        color: white,
       ),
       title: Text(
         title,

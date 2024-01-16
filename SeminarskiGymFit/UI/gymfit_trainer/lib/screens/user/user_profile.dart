@@ -175,13 +175,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ),
                 ),
                 _buildUserProfile(),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: teal
-                  ),
-                  onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.changePassword);
-              }, child: Text("Change password", style: TextStyle(color: white),)),
               ],
             ),
           ),
@@ -230,7 +223,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     height: 120,
                     color: primary,
                     child: FutureBuilder<String>(
-                      future: loadPhoto(user!.photo?.guidId ?? ''),
+                      future: user?.photo?.guidId != null
+                          ? loadPhoto(user!.photo!.guidId!)
+                          : null,
                       builder: (BuildContext context,
                           AsyncSnapshot<String> snapshot) {
                         final imageUrl = snapshot.data;
@@ -272,8 +267,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   : DateFormat('dd.MM.yyyy')
                       .format(DateTime.parse(user!.dateOfBirth!))
                       .toString()),
-          _buildUserData("Spol: ", user?.gender == 0 ? "Muski" : "Zesnki"),
+          _buildUserData("Spol: ", user?.gender == 0 ? "Muski" : "Zenski"),
           _buildEditUserButton(),
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: teal),
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.changePassword);
+              },
+              child: Text(
+                "Promjeni lozinku",
+                style: TextStyle(color: white),
+              )),
         ],
       ),
     );
@@ -318,15 +322,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               title: Text(
                 "Uredi podatke",
                 style: TextStyle(color: white, fontSize: 18),
-              ), // Adjust font size
+              ),
               content: AddUserForm(isEditing: true, userToEdit: user),
               actions: <Widget>[
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: teal,
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 10), // Adjust padding for button size
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -334,14 +336,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   child: Text(
                     "Zatvori",
                     style: TextStyle(fontSize: 12, color: white),
-                  ), // Adjust font size
+                  ),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: teal,
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 10), // Adjust padding for button size
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
@@ -353,7 +353,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     child: Text(
                       "Spremi",
                       style: TextStyle(color: white, fontSize: 12),
-                    ), // Adjust font size
+                    ),
                   ),
                 ),
               ],
@@ -364,7 +364,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       child: Text(
         "Uredi profil",
         style: TextStyle(fontSize: 14, color: white),
-      ), // Adjust font size
+      ),
     );
   }
 
@@ -392,72 +392,65 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           children: [
             Column(children: [
               ValueListenableBuilder<File?>(
-                  valueListenable: _pickedFileNotifier,
-                  builder: (context, pickedFile, _) {
-                    return Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      height: 180,
-                      color: primary,
-                      child: FutureBuilder<String>(
-                        future: _pickedFile != null
-                            ? Future.value(_pickedFile!.path)
-                            : loadPhoto(isEditing
-                                ? (userToEdit?.photo?.guidId ?? '')
-                                : ''),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<String> snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text('Molimo odaberite fotografiju');
-                          } else {
-                            final imageUrl = snapshot.data;
+                valueListenable: _pickedFileNotifier,
+                builder: (context, pickedFile, _) {
+                  return Container(
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    height: 180,
+                    color: primary,
+                    child: FutureBuilder<String>(
+                      future: userToEdit?.photo?.guidId != null
+                          ? loadPhoto(userToEdit!.photo!.guidId!)
+                          : null,
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Molimo odaberite fotografiju');
+                        } else {
+                          final imageUrl = snapshot.data;
 
-                            if (imageUrl != null && imageUrl.isNotEmpty) {
-                              return Container(
-                                child: FadeInImage(
-                                  image: _pickedFile != null
-                                      ? FileImage(_pickedFile!)
-                                          as ImageProvider<Object>
-                                      : NetworkImage(
-                                          imageUrl,
-                                          headers:
-                                              Authorization.createHeaders(),
-                                        ) as ImageProvider<Object>,
-                                  placeholder: MemoryImage(kTransparentImage),
-                                  fadeInDuration:
-                                      const Duration(milliseconds: 300),
-                                  fit: BoxFit.cover,
-                                  width: 230,
-                                  height: 200,
-                                ),
-                              );
-                            } else {
-                              return isEditing
-                                  ? Container(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 8.0),
-                                      child:
-                                          const Text('Please select an image'),
-                                    )
-                                  : Container(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 8.0),
-                                      child: Image.asset(
-                                        'assets/images/default_user_image.jpg',
-                                        width: 230,
-                                        height: 200,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    );
-                            }
+                          if (imageUrl != null && imageUrl.isNotEmpty) {
+                            return Container(
+                              child: FadeInImage(
+                                image: _pickedFile != null
+                                    ? FileImage(_pickedFile!)
+                                        as ImageProvider<Object>
+                                    : NetworkImage(
+                                        imageUrl,
+                                        headers: Authorization.createHeaders(),
+                                      ) as ImageProvider<Object>,
+                                placeholder: MemoryImage(kTransparentImage),
+                                fadeInDuration:
+                                    const Duration(milliseconds: 300),
+                                fit: BoxFit.cover,
+                                width: 230,
+                                height: 200,
+                              ),
+                            );
+                          } else {
+                            return isEditing
+                                ? Container(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 8.0),
+                                    child: const Text('Please select an image'),
+                                  )
+                                : Container(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 8.0),
+                                    child: const Text(
+                                        'Molimo odaberite fotografiju'),
+                                  );
                           }
-                        },
-                      ),
-                    );
-                  }),
+                        }
+                      },
+                    ),
+                  );
+                },
+              ),
               const SizedBox(height: 35),
               Center(
                 child: SizedBox(
