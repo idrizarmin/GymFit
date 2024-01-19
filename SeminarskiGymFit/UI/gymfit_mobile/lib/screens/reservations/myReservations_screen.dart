@@ -272,6 +272,9 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
                           '${reservations[index].EndDate?.hour.toString()}:00'),
                       if (_status == 2)
                         ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: teal
+                          ),
                           onPressed: () {
                             setReservationAsCanceled(
                                 reservations[index].StartDate!,

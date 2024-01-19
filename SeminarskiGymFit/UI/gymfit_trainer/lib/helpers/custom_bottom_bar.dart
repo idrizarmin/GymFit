@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymfit_trainer/helpers/constants.dart';
 import 'package:gymfit_trainer/helpers/image_constant.dart';
 import 'package:gymfit_trainer/helpers/theme_helper.dart';
 import 'package:gymfit_trainer/widgets/custom_image_view.dart';
@@ -60,7 +61,7 @@ class CustomBottomBarState extends State<CustomBottomBar> {
               imagePath: bottomMenuList[index].icon,
               height: 22,
               width: 22,
-              color: appTheme.gray300,
+              color: kBackgroundColor,
             ),
             activeIcon: CustomImageView(
               imagePath: bottomMenuList[index].activeIcon,

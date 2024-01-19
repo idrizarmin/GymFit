@@ -741,7 +741,72 @@ namespace GymFit.Infrastructure
                      GymId = 2,
                      UserId = 5,
                      TrainerId = 3,
-                 }
+                 },
+                 new()
+                 {
+                     Id = 17,
+                     CreatedAt = _dateTime,
+                     ModifiedAt = null,
+                     IsDeleted = false,
+                     Description = "Pilates",
+                     ReservationDate = new DateTime(2024, 2, 7, 09, 00, 0),
+                     StartDate = new DateTime(2024, 2, 7, 09, 00, 0),
+                     EndDate = new DateTime(2024, 2, 7, 10, 00, 0),
+                     Status = ReservationStatus.Created,
+                     isUsed = false,
+                     GymId = 2,
+                     UserId = 5,
+                     TrainerId = 3,
+                 },
+                 new()
+                 {
+                     Id = 18,
+                     CreatedAt = _dateTime,
+                     ModifiedAt = null,
+                     IsDeleted = false,
+                     Description = "Pilates",
+                     ReservationDate = new DateTime(2024, 1, 26, 21, 00, 0),
+                     StartDate = new DateTime(2024, 1, 26, 21, 00, 0),
+                     EndDate = new DateTime(2024, 1, 26, 22, 00, 0),
+                     Status = ReservationStatus.Created,
+                     isUsed = false,
+                     GymId = 2,
+                     UserId = 5,
+                     TrainerId = 2,
+                 },
+                new()
+                {
+                    Id = 19,
+                    CreatedAt = _dateTime,
+                    ModifiedAt = null,
+                    IsDeleted = false,
+                    Description = "Pilates",
+                    ReservationDate = new DateTime(2024, 1, 15, 20, 00, 0),
+                    StartDate = new DateTime(2024, 1, 15, 20, 00, 0),
+                    EndDate = new DateTime(2024, 1, 15, 21, 00, 0),
+                    Status = ReservationStatus.Cancelled,
+                    isUsed = false,
+                    GymId = 2,
+                    UserId = 5,
+                    TrainerId = 2,
+                },
+                new()
+                {
+                    Id = 20,
+                    CreatedAt = _dateTime,
+                    ModifiedAt = null,
+                    IsDeleted = false,
+                    Description = "Pilates",
+                    ReservationDate = new DateTime(2024, 1, 14, 19, 00, 0),
+                    StartDate = new DateTime(2024, 1, 14, 19, 00, 0),
+                    EndDate = new DateTime(2024, 1, 14, 20, 00, 0),
+                    Status = ReservationStatus.Finished,
+                    isUsed = true,
+                    GymId = 2,
+                    UserId = 5,
+                    TrainerId = 2,
+                }
+
                  );
         }
     }
