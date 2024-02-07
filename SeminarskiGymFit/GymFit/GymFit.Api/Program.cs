@@ -87,13 +87,13 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseHangfireDashboard("/test/gymfit", new DashboardOptions
-{
-    DashboardTitle = "Hangfire gymFit Application",
-    DarkModeEnabled = true,
-    DisplayStorageConnectionString = false
+//app.UseHangfireDashboard("/test/gymfit", new DashboardOptions
+//{
+//    DashboardTitle = "Hangfire gymFit Application",
+//    DarkModeEnabled = true,
+//    DisplayStorageConnectionString = false
 
-});
+//});
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
