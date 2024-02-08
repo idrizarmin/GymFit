@@ -4,6 +4,7 @@ using GymFit.Application;
 using GymFit.Application.Interfaces;
 using GymFit.Infrastructure;
 using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
@@ -37,10 +38,15 @@ builder.Services.AddHangfire((sp, config) => {
     config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
     .UseSimpleAssemblyNameTypeSerializer()
     .UseRecommendedSerializerSettings()
-    .UseSqlServerStorage(conString);
+    .UseSqlServerStorage(conString, new SqlServerStorageOptions
+    {
+        PrepareSchemaIfNecessary = true
+    });
 
 });
 builder.Services.AddHangfireServer();
+
+
 
 
 
@@ -103,6 +109,9 @@ try
     var context = services.GetRequiredService<DatabaseContext>();
 
     await context.Database.MigrateAsync();
+
+    //var hangfireContext = services.GetRequiredService<HangfireDbContext>();
+    //await hangfireContext.Database.MigrateAsync();
 
 }
 catch (Exception ex)
