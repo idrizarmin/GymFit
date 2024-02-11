@@ -29,6 +29,16 @@ services:
       - sql
     depends_on:
       - sql
+   # Hangfire Docker Container
+  hangfire:
+    image: your-hangfire-image
+    restart: unless-stopped
+    environment:
+      - ConnectionStrings:Main=Server=sql,1433;Database=GymFitdocker;User=sa;Password=GymFit123!;TrustServerCertificate=True;ConnectRetryCount=0
+    networks:
+      - gymfitnetwork
+    depends_on:
+      - sql
 networks:
   gymfitnetwork:
     driver: bridge

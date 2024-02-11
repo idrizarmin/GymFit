@@ -33,17 +33,23 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-builder.Services.AddHangfire((sp, config) => {
-    var conString = sp.GetRequiredService<IConfiguration>().GetConnectionString("Main");
-    config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-    .UseSimpleAssemblyNameTypeSerializer()
+builder.Services.AddHangfire(config => 
+    config.UseSimpleAssemblyNameTypeSerializer()
     .UseRecommendedSerializerSettings()
-    .UseSqlServerStorage(conString, new SqlServerStorageOptions
-    {
-        PrepareSchemaIfNecessary = true
-    });
+    .UseSqlServerStorage(builder.Configuration.GetConnectionString("Main"))
+    );
 
-});
+//builder.Services.AddHangfire((sp, config) => {
+//    var conString = sp.GetRequiredService<IConfiguration>().GetConnectionString("Main");
+//    config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+//    .UseSimpleAssemblyNameTypeSerializer()
+//    .UseRecommendedSerializerSettings()
+//    .UseSqlServerStorage(conString, new SqlServerStorageOptions
+//    {
+//        PrepareSchemaIfNecessary = true
+//    });
+
+//});
 builder.Services.AddHangfireServer();
 
 
@@ -93,6 +99,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+
+//app.UseHangfireDashboard();
+//app.MapHangfireDashboard();
+
+
 //app.UseHangfireDashboard("/test/gymfit", new DashboardOptions
 //{
 //    DashboardTitle = "Hangfire gymFit Application",
@@ -109,9 +121,9 @@ try
     var context = services.GetRequiredService<DatabaseContext>();
 
     await context.Database.MigrateAsync();
+    await context.Database.MigrateAsync();
 
-    //var hangfireContext = services.GetRequiredService<HangfireDbContext>();
-    //await hangfireContext.Database.MigrateAsync();
+
 
 }
 catch (Exception ex)
@@ -120,5 +132,7 @@ catch (Exception ex)
     logger.LogError(ex, "An error occurred during seed");
 }
 
+app.UseHangfireDashboard();
+app.MapHangfireDashboard();
 
 app.Run();
