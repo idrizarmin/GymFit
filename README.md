@@ -53,8 +53,7 @@ The frontend of GymFit is implemented using Flutter. Follow the steps below to s
             - email: trener@gmail.com
             - password: test
 
-- **Note:** If running the mobile application is not possible, please create a new emulator with API Level 34 and proceed to run the application on it.
-
+- **Note:** 
 - **Online Payment:** For successful payment of the membership fee, please use the card number 4242 4242 4242 4242 during the testing process.
 
 
