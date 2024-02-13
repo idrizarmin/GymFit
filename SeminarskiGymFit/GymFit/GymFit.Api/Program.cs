@@ -121,9 +121,8 @@ try
     var context = services.GetRequiredService<DatabaseContext>();
 
     await context.Database.MigrateAsync();
-    await context.Database.MigrateAsync();
 
-
+    await context.Database.EnsureCreatedAsync();
 
 }
 catch (Exception ex)
@@ -131,6 +130,8 @@ catch (Exception ex)
     var logger = services.GetRequiredService<ILogger<Program>>();
     logger.LogError(ex, "An error occurred during seed");
 }
+
+services.GetRequiredService<DatabaseContext>().Database.EnsureCreated();
 
 app.UseHangfireDashboard();
 app.MapHangfireDashboard();
