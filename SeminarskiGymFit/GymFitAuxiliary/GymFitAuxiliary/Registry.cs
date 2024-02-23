@@ -1,13 +1,10 @@
-﻿using GymFit.Application;
-using GymFit.Common.Services;
-using GymFit.Infrastructure;
+﻿using GymFitAuxiliary.Config;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 
-namespace GymFit.Api
+namespace GymFitAuxiliary
 {
     public static class Registry
     {
@@ -18,19 +15,9 @@ namespace GymFit.Api
             return section.Get<T>()!;
         }
 
-        public static void AddMapper(this IServiceCollection services)
-        {
-            services.AddAutoMapper(typeof(Program), typeof(BaseProfile));
-        }
-
-        public static void AddDatabase(this IServiceCollection services, ConnectionStringConfig config)
-        {
-            services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(config.Main));
-        }
-
         public static void AddAuthenticationAndAuthorization(this IServiceCollection services, JwtTokenConfig jwtTokenConfig)
         {
-            services.AddAuthentication(options =>
+            services.AddAuthentication(options => // dodavanje authentfikacije i autorizacije u projekat
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -54,7 +41,7 @@ namespace GymFit.Api
         public static void AddSwagger(this IServiceCollection services)
         {
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen(setup =>
+            services.AddSwaggerGen(setup =>   // ovim se dodaje Authorize button u gornjem desnom uglu swaggera
             {
                 var jwtSecurityScheme = new OpenApiSecurityScheme
                 {
@@ -76,13 +63,7 @@ namespace GymFit.Api
                     { jwtSecurityScheme, Array.Empty<string>() }
                 });
             });
-        }
 
-        public static void AddOther(this IServiceCollection services)
-        {
-            services.AddScoped<IAccessManager, AccessManager>();
-            services.AddSingleton<IEnumsService, EnumsService>();
-            services.AddSingleton<ICryptoService, CryptoService>();
         }
     }
 }

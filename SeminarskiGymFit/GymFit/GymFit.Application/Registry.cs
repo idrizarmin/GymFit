@@ -25,6 +25,7 @@ namespace GymFit.Application
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IPackageService, PackageService>();
             services.AddScoped<ITransactionsService, TransactionsService>();
+            services.AddScoped<INotificationRabbitService, NotificationRabbitService>();
         }
 
         public static void AddValidators(this IServiceCollection services)
@@ -45,6 +46,7 @@ namespace GymFit.Application
             services.AddScoped<IValidator<PostUpsertDto>, PostValidator>();
             services.AddScoped<IValidator<PackageUpsertDto>, PackageValidator>();
             services.AddScoped<IValidator<TransactionUpsertDto>, TransactionValidator>();
+            services.AddScoped<IValidator<NotificationRabbitUpsertDto>, NotificationRabbitValidator>();
         }
     }
 }

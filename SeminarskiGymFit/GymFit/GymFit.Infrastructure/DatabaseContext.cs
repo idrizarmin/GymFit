@@ -11,6 +11,7 @@ namespace GymFit.Infrastructure
         public DbSet<Country> Countries { get; set; } = null!;
         public DbSet<GroupReservations> GroupReservations { get; set; } = null!;
         public DbSet<Notification> Notifications { get; set; } = null!;
+        public DbSet<NotificationRabbit> NotificationsRabbit { get; set; } = null!;
         public DbSet<Gym> Gyms { get; set; } = null!;
         public DbSet<Photo> Photos { get; set; } = null!;
         public DbSet<Reservation> Reservations { get; set; } = null!;

@@ -23,6 +23,7 @@ namespace GymFit.Infrastructure
         public readonly IPostRepository PostRepository;
         public readonly IPackageRepository PackageRepository;
         public readonly ITransactionRepository TransactionRepository;
+        public readonly INotificationRabbitRepository NotificationRabbitRepository;
 
 
         public UnitOfWork(DatabaseContext databaseContext,
@@ -41,7 +42,9 @@ namespace GymFit.Infrastructure
             IClientProgresRepository clientProgresRepository,
             IPostRepository postRepository,
             IPackageRepository packageRepository,
+            INotificationRabbitRepository notificationRabbitRepository,
             ITransactionRepository transactionRepository)
+
         {
             _databaseContext = databaseContext;
             ArrivalsRepository = arrivalsRepository;
@@ -60,6 +63,7 @@ namespace GymFit.Infrastructure
             PostRepository = postRepository;
             PackageRepository = packageRepository;
             TransactionRepository = transactionRepository;
+            NotificationRabbitRepository = notificationRabbitRepository;
         }
 
         public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)

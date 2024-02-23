@@ -1,0 +1,74 @@
+version: '3'
+services:
+  rabbitMQ:
+    image: rabbitmq:3-management
+    container_name: 'rabbitmqGymFit'
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - 8050:15672
+      - 5672:5672
+    expose:
+      - 5672
+    networks: 
+    - gymfitnetwork
+  # SQL Server Docker Container
+  sql:
+    container_name: appDb
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=GymFit123!
+      - MSSQL_PID=Developer
+    ports:
+      - 1435:1433
+    expose:
+      - 1433
+    networks:
+      - gymfitnetwork
+
+  # ASP.NET Core Application Docker Container
+  api:
+    restart: unless-stopped
+    build:
+      context: ./GymFit
+    environment:
+      - ConnectionStrings:Main=Server=sql,1433;Database=GymFitdocker;User=sa;Password=GymFit123!;TrustServerCertificate=True;ConnectRetryCount=0
+      - ASPNETCORE_ENVIRONMENT=Development
+      - RABBITMQ_HOST=rabbitMQ
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_VIRTUALHOST=/
+    ports:
+      - 7260:7260
+    networks:
+      - gymfitnetwork
+    links:
+      - sql
+    depends_on:
+      - sql
+      - rabbitMQ
+
+
+  auxiliary:
+    restart: unless-stopped
+    build:
+      context: ./GymFitAuxiliary
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - RABBITMQ_HOST=rabbitMQ
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_VIRTUALHOST=/
+    ports:
+      - 7280:7280
+    networks:
+      - gymfitnetwork
+    depends_on:
+      - rabbitMQ
+    
+networks:
+  gymfitnetwork:
+    driver: bridge
