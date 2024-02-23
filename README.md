@@ -21,13 +21,13 @@ GymFit is a fitness management application that includes both an admin app and a
 - **Online Membership Payment:** Users can securely make payments for their gym memberships directly through the mobile app.
 - **View Trainers:** Users can explore information about gym trainers, including their specialties, qualifications, and schedules.
 
-## Backend (.NET 6)
+## Backend (.NET 7)
 
-The backend of GymFit is implemented using .NET 6. Follow the steps below to set up and run the backend:
+The backend of GymFit is implemented using .NET 7. Follow the steps below to set up and run the backend:
 
    1. Clone the repository
-   2. Open command prompt (CMD) and navigate to ...\SeminarskiGymFit\GymFit
-   3. Use command "docker-compose up --build" (second run of the command makes required Hangfire tables in database)
+   2. Open command prompt (CMD) and navigate to ...\SeminarskiGymFit
+   3. Use command "docker compose up --build"
 
 
 ## Frontend (Flutter)
