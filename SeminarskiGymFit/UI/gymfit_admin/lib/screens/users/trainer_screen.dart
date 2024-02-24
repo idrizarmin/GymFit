@@ -15,6 +15,8 @@ import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:http/http.dart' as http;
 
+import '../../providers/notification_provider.dart';
+
 class TrainerScreen extends StatefulWidget {
   const TrainerScreen({Key? key}) : super(key: key);
 
@@ -36,6 +38,10 @@ class _TrainerScreenState extends State<TrainerScreen> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _contentController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  late NotificationProvider _notificationProvider;
+
   ValueNotifier<File?> _pickedFileNotifier = ValueNotifier(null);
   late ValueNotifier<bool> _isActiveNotifier;
   late ValueNotifier<bool> _isVerifiedNotifier;
@@ -57,6 +63,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
     super.initState();
     _userProvider = context.read<UserProvider>();
     _photoProvider = context.read<PhotoProvider>();
+    _notificationProvider = NotificationProvider();
     _isActiveNotifier = ValueNotifier<bool>(_isActive);
     _isVerifiedNotifier = ValueNotifier<bool>(_isVerified);
     _pickedFileNotifier = ValueNotifier<File?>(_pickedFile);
@@ -243,6 +250,23 @@ class _TrainerScreenState extends State<TrainerScreen> {
         loadUsers(UserSearchObject(name: _searchController.text),
             _selectedIsActive, _selectedIsVerified);
       }
+    } on Exception catch (e) {
+      showErrorDialog(context, e.toString().substring(11));
+    }
+  }
+
+  void sendRabbitNotificationToTrainers(int id) async {
+    try {
+      var newNotification = {
+        "id": 0,
+        "title": _titleController.text,
+        "content": _contentController.text,
+        "isRead": false,
+        "userId": id
+      };
+      var notification =
+          await _notificationProvider.sendRabbitNotification(newNotification);
+      if (notification == "OK") {}
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
     }
@@ -680,7 +704,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
                     label: Text('Aktivan'),
                   ),
                   const DataColumn(
-                    label: Text('Verifikovan'),
+                    label: Text('Obavijest'),
                   ),
                 ],
                 rows: users
@@ -783,18 +807,18 @@ class _TrainerScreenState extends State<TrainerScreen> {
                                         color: Colors.red,
                                       ),
                               )),
-                              DataCell(Container(
-                                alignment: Alignment.center,
-                                child: userItem.isVerified == true
-                                    ? Icon(
-                                        Icons.check_circle_outline,
-                                        color: green,
-                                      )
-                                    : Icon(
-                                        Icons.close_outlined,
-                                        color: Colors.red,
-                                      ),
-                              )),
+                              DataCell(
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: primaryColor,
+                                  ),
+                                  onPressed: () {
+                                    _sendNotification(userItem.id);
+                                  },
+                                  child: Text("Pošalji",
+                                      style: TextStyle(color: white)),
+                                ),
+                              ),
                             ]))
                         .toList() ??
                     []),
@@ -1105,6 +1129,59 @@ class _TrainerScreenState extends State<TrainerScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void _sendNotification(int id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: dialogColor,
+          title: Text('Slanje obavijesti'),
+          content: Column(
+            children: [
+              TextField(
+                controller: _titleController,
+                decoration: InputDecoration(labelText: 'Naslov'),
+              ),
+              TextField(
+                controller: _contentController,
+                decoration: InputDecoration(labelText: 'Sadržaj'),
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+               style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor
+              ),
+              onPressed: () {
+                setState(() {
+                  _contentController.text="";
+                  _titleController.text="";
+                });
+                Navigator.of(context).pop();
+              },
+              child: Text('Otkaži'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor
+              ),
+              onPressed: () {
+                sendRabbitNotificationToTrainers(id);
+                setState(() {
+                  _contentController.text="";
+                  _titleController.text="";
+                });
+                Navigator.of(context).pop();
+              },
+              child: Text('Spremi'),
+            ),
+          ],
+        );
+      },
     );
   }
 

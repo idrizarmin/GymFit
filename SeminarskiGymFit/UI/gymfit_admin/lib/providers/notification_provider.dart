@@ -57,6 +57,22 @@ class NotificationProvider extends BaseProvider<Notifications> {
     }
   }
 
+Future<dynamic> sendRabbitNotification(dynamic object) async {
+
+    var uri = Uri.parse('$apiUrl2/Notification/SendNotification');
+     Map<String, String> headers = Authorization.createHeaders();
+    var jsonRequest = jsonEncode(object);
+
+     var response = await http.post(uri, headers: headers, body: jsonRequest);
+
+    if (response.statusCode == 200) {
+      return "OK";
+    } else {
+      throw Exception('Greška prilikom unosa');
+    }
+   
+  }
+
   Future<dynamic> edit(dynamic resource) async {
     var uri = Uri.parse('$apiUrl/Notifications');
     Map<String, String> headers = Authorization.createHeaders();
@@ -87,4 +103,6 @@ class NotificationProvider extends BaseProvider<Notifications> {
   Notifications fromJson(data) {
     return Notifications.fromJson(data);
   }
+
+
 }

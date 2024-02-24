@@ -5,6 +5,7 @@ import 'package:gymfit_trainer/helpers/theme_helper.dart';
 import 'package:gymfit_trainer/models/seaarchObjects/notification_search_object.dart';
 import 'package:gymfit_trainer/providers/login_provider.dart';
 import 'package:gymfit_trainer/providers/notification_provider.dart';
+import 'package:gymfit_trainer/providers/notification_rabbit_provider.dart';
 import 'package:gymfit_trainer/routes/app_routes.dart';
 import 'package:gymfit_trainer/screens/home/home_screen.dart';
 import 'package:gymfit_trainer/screens/login/login_screen.dart';
@@ -27,7 +28,7 @@ class HomeContainerScreen extends StatefulWidget {
 class _HomeContainerScreenState extends State<HomeContainerScreen> {
   late GlobalKey<NavigatorState> navigatorKey;
   late MediaQueryData mediaQueryData;
-  late NotificationProvider _notificationProvider;
+  late NotificationRabbitProvider _notificationRabbitProvider;
   late UserLoginProvider _loginProvider;
   int? _userId;
   int unreadNotifications = 0;
@@ -38,7 +39,7 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
   void initState() {
     super.initState();
     navigatorKey = GlobalKey();
-    _notificationProvider = context.read<NotificationProvider>();
+    _notificationRabbitProvider = context.read<NotificationRabbitProvider>();
     _loginProvider = context.read<UserLoginProvider>();
     loadUser();
 
@@ -52,7 +53,7 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
   }
 
  void setAsSeen(int id) async {
-    await _notificationProvider.setAsSeen(id);
+    await _notificationRabbitProvider.setAsSeen(id);
   }
 
 
@@ -64,9 +65,9 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
           NotificationsSearchObject(userId: _userId, PageSize: 10000);
 
       var notificationsResponse =
-          await _notificationProvider.getPaged(searchObject: searchObject);
+          await _notificationRabbitProvider.getPaged(searchObject: searchObject);
       unreadNotifications = notificationsResponse
-          .where((notification) => notification.Read == false)
+          .where((notification) => notification.isRead == false)
           .length;
 
       // Notify the FutureBuilder that notifications are loaded

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gymfit_trainer/models/notification.dart';
+import 'package:gymfit_trainer/models/notificationRabbit.dart';
 import 'package:gymfit_trainer/models/seaarchObjects/notification_search_object.dart';
 import 'package:gymfit_trainer/providers/login_provider.dart';
-import 'package:gymfit_trainer/providers/notification_provider.dart';
+import 'package:gymfit_trainer/providers/notification_rabbit_provider.dart';
 import 'package:gymfit_trainer/utils/error_dialog.dart';
 
 import 'package:provider/provider.dart';
@@ -13,8 +13,8 @@ class NotificationForm extends StatefulWidget {
 }
 
 class _NotificationFormState extends State<NotificationForm> {
-  List<Notifications> notifications = <Notifications>[];
-  late NotificationProvider _notificationProvider;
+  List<NotificationRabbit> notifications = <NotificationRabbit>[];
+  late NotificationRabbitProvider _notificationRabbitProvider;
   late UserLoginProvider _loginProvider;
   int? _userId;
 
@@ -23,7 +23,7 @@ class _NotificationFormState extends State<NotificationForm> {
     super.initState();
 
     _loginProvider = context.read<UserLoginProvider>();
-    _notificationProvider = context.read<NotificationProvider>();
+    _notificationRabbitProvider = context.read<NotificationRabbitProvider>();
     loadUser();
 
     loadNotifications();
@@ -36,7 +36,7 @@ class _NotificationFormState extends State<NotificationForm> {
   }
 
   void setAsDeleted(int id) async {
-    _notificationProvider.setAsDeleted(id);
+    _notificationRabbitProvider.setAsDeleted(id);
   }
 
   void loadNotifications() async {
@@ -45,7 +45,7 @@ class _NotificationFormState extends State<NotificationForm> {
           NotificationsSearchObject(userId: _userId);
 
       var notificationsResponse =
-          await _notificationProvider.getPaged(searchObject: searchObject);
+          await _notificationRabbitProvider.getPaged(searchObject: searchObject);
       setState(() {
         notifications = notificationsResponse;
       });
@@ -56,7 +56,7 @@ class _NotificationFormState extends State<NotificationForm> {
 
   int countUnreadNotifications() {
     return notifications
-        .where((notification) => notification.Read == false)
+        .where((notification) => notification.isRead == false)
         .length;
   }
 

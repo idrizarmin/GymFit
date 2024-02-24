@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymfit_trainer/providers/login_provider.dart';
 import 'package:gymfit_trainer/providers/notification_provider.dart';
+import 'package:gymfit_trainer/providers/notification_rabbit_provider.dart';
 import 'package:gymfit_trainer/providers/photo_provider.dart';
 import 'package:gymfit_trainer/providers/post_provider.dart';
 import 'package:gymfit_trainer/providers/reservation_provider.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => PostProvider()),
           ChangeNotifierProvider(create: (_) => ReservationProvider()),
           ChangeNotifierProvider(create: (_) => NotificationProvider()),
+          ChangeNotifierProvider(create: (_) => NotificationRabbitProvider()),
           ChangeNotifierProvider(create: (_) => PhotoProvider()),
       ],
       child: MaterialApp(
