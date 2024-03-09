@@ -233,6 +233,7 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
+
         [HttpPut("ChangePassword")]
         public async Task<IActionResult> ChangepPassword([FromBody] UserChangePasswordDto dto, CancellationToken cancellationtoken = default)
         {
@@ -247,5 +248,12 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet("Recommended/{id}")]
+        public  List<UserDto> Recommend(int id)
+        {
+            return Service.Recommend(id);  
+        }
+
     }
 }

@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gymfit_admin/helpers/constants.dart';
 import 'package:gymfit_admin/helpers/show_error_dialog.dart';
@@ -214,6 +216,17 @@ class _TrainerScreenState extends State<TrainerScreen> {
           'ProfilePhoto',
           _pickedFile!.readAsBytesSync(),
           filename: 'profile_photo.jpg',
+        );
+      }
+      else {
+        final ByteData data =
+            await rootBundle.load('assets/images/notFound.png');
+        List<int> bytes = data.buffer.asUint8List();
+
+        userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+          'ProfilePhoto',
+          bytes,
+          filename: 'notFound.png',
         );
       }
 
@@ -1007,9 +1020,42 @@ class _TrainerScreenState extends State<TrainerScreen> {
                       return null;
                     },
                   ),
-                  TextFormField(
+                 TextFormField(
                     controller: _passwordController,
-                    decoration: InputDecoration(labelText: 'Sifra'),
+                    decoration: InputDecoration(labelText: 'Šifra'),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Unesite šifru!';
+                      }
+
+                      // Check for at least 8 characters
+                      if (value.length < 8) {
+                        return 'Šifra mora sadržavati barem 8 karaktera!';
+                      }
+
+                      // Check for at least one uppercase letter
+                      if (!value.contains(RegExp(r'[A-Z]'))) {
+                        return 'Šifra mora sadržavati barem jedno veliko slovo!';
+                      }
+
+                      // Check for at least one lowercase letter
+                      if (!value.contains(RegExp(r'[a-z]'))) {
+                        return 'Šifra mora sadržavati barem jedno malo slovo!';
+                      }
+
+                      // Check for at least one digit
+                      if (!value.contains(RegExp(r'[0-9]'))) {
+                        return 'Šifra mora sadržavati barem jedan broj!';
+                      }
+
+                      // Check for at least one special character
+                      if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                        return 'Šifra mora sadržavati barem jedan specijalni karakter!';
+                      }
+
+                      return null;
+                    },
                   ),
                 ],
               ),

@@ -7,6 +7,10 @@ using GymFit.Core.Dtos.User;
 using GymFit.Infrastructure;
 using GymFit.Infrastructure.Interfaces;
 using GymFit.Infrastructure.Interfaces.SearchObjects;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.ML;
+using Microsoft.ML.Data;
+using Microsoft.ML.Trainers;
 
 namespace GymFit.Application
 {
@@ -14,12 +18,20 @@ namespace GymFit.Application
     {
         private readonly ICryptoService _cryptoService;
         private readonly IPhotosService _photosService;
+        private readonly DatabaseContext _db;
 
-        public UsersService(IMapper mapper, IUnitOfWork unitOfWork, IValidator<UserUpsertDto> validator, ICryptoService cryptoService, IPhotosService photosService) : base(mapper, unitOfWork, validator)
+        public UsersService(IMapper mapper, IUnitOfWork unitOfWork, IValidator<UserUpsertDto> validator, ICryptoService cryptoService, IPhotosService photosService, DatabaseContext db) : base(mapper, unitOfWork, validator)
         {
             _cryptoService = cryptoService;
             _photosService = photosService;
+            _db = db;
         }
+
+        static object isLocked = new object();
+        static MLContext mlContext = null;
+        static ITransformer model = null;
+
+
         public async Task<UserSensitiveDto?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
         {
             var user = await CurrentRepository.GetByEmailAsync(email, cancellationToken);
@@ -130,6 +142,101 @@ namespace GymFit.Application
             CurrentRepository.Update(user);
             await UnitOfWork.SaveChangesAsync(cancellationToken);
         }
-    }
 
+
+        public  List<UserDto> Recommend(int userId)
+        {
+            var userReservations =  _db.Reservations
+                .Include(r => r.Trainer)
+                .Where(r => r.UserId == userId && r.Trainer != null && !string.IsNullOrEmpty(r.Description))
+                .ToList();
+
+            var data = userReservations.Select(r => new ReservationEntry
+            {
+                UserId = (uint)r.UserId,
+                TrainerId = (uint)r.TrainerId,
+                WorkoutDescription = r.Description
+            }).ToList();
+
+            if (mlContext == null)
+            {
+                mlContext = new MLContext();
+
+                var trainData = mlContext.Data.LoadFromEnumerable(data);
+
+                var options = new MatrixFactorizationTrainer.Options
+                {
+                    MatrixColumnIndexColumnName = nameof(ReservationEntry.UserId),
+                    MatrixRowIndexColumnName = nameof(ReservationEntry.TrainerId),
+                    LabelColumnName = "Label",
+                    LossFunction = MatrixFactorizationTrainer.LossFunctionType.SquareLossOneClass,
+                    Alpha = 0.01,
+                    Lambda = 0.025,
+                    NumberOfIterations = 100,
+                    C = 0.00001
+                };
+
+                var trainer = mlContext.Recommendation().Trainers.MatrixFactorization(options);
+                model = trainer.Fit(trainData);
+            }
+
+            var predictions = model.Transform(mlContext.Data.LoadFromEnumerable(data));
+
+            var userIds = data.Select(d => d.UserId).Distinct().ToArray();
+            var recommendedTrainers = new List<User>();
+
+            foreach (var userIdToRecommend in userIds)
+            {
+                var userPredictions = mlContext.Data.CreateEnumerable<UserPrediction>(predictions, reuseRowObject: false)
+                    .Where(x => x.UserId == userIdToRecommend)
+                    .OrderByDescending(x => x.Score)
+                    .FirstOrDefault();
+
+                if (userPredictions != null)
+                {
+                    var recommendedTrainer =  _db.Users.Find(userPredictions.TrainerId);
+                    if (recommendedTrainer != null)
+                        recommendedTrainers.Add(recommendedTrainer);
+                }
+            }
+
+            var mostCommonDescription = userReservations
+                .GroupBy(r => r.Description)
+                .OrderByDescending(g => g.Count())
+                .Select(g => g.Key)
+                .FirstOrDefault();
+
+            var filteredTrainers = recommendedTrainers
+                .Where(t => t.Role == Role.Trener && t.TrainerReservations.Any(r => r.Description == mostCommonDescription))
+                .ToList();
+
+            return Mapper.Map<List<UserDto>>(filteredTrainers);
+        }
+        public class ReservationEntry
+        {
+            [KeyType(count: 10)]
+            public uint UserId { get; set; }
+
+            [KeyType(count: 10)]
+            public uint TrainerId { get; set; }
+
+            public string WorkoutDescription { get; set; }
+
+            public float Label { get; set; }
+        }
+        public class UserPrediction
+        {
+            [KeyType(count: 10)]
+            public uint UserId { get; set; }
+
+            [KeyType(count: 10)]
+            public uint TrainerId { get; set; }
+
+            public float Score { get; set; }
+        }
+    }
 }
+
+
+
+

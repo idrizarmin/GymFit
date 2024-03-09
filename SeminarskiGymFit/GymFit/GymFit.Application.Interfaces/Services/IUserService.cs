@@ -18,5 +18,6 @@ namespace GymFit.Application.Interfaces
         Task<PagedList<UserDto>> GetAdminsPagedAsync(UserSearchObject searchObject, CancellationToken cancellationToken = default);
         Task<PagedList<UserDto>> GetTrainersPagedAsync(UserSearchObject searchObject, CancellationToken cancellationToken = default);
 
+        List<UserDto> Recommend(int userId);
     }
 }

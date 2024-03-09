@@ -262,6 +262,31 @@ namespace GymFit.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "NotificationsRabbit",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NotificationsRabbit", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_NotificationsRabbit_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Reservations",
                 columns: table => new
                 {
@@ -476,8 +501,8 @@ namespace GymFit.Infrastructure.Migrations
                 columns: new[] { "Id", "CreatedAt", "Issuer", "ModifiedAt", "Title" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "Arena Mostar", null, "Personalni trener" },
-                    { 2, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "DIF Mostar", null, "Sportski trener" }
+                    { 1, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), "Arena Mostar", null, "Personalni trener" },
+                    { 2, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), "DIF Mostar", null, "Sportski trener" }
                 });
 
             migrationBuilder.InsertData(
@@ -485,12 +510,12 @@ namespace GymFit.Infrastructure.Migrations
                 columns: new[] { "Id", "Abbreviation", "CreatedAt", "IsActive", "ModifiedAt", "Name" },
                 values: new object[,]
                 {
-                    { 1, "BIH", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Bosnia and Herzegovina" },
-                    { 2, "HR", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Croatia" },
-                    { 3, "SRB", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Serbia" },
-                    { 4, "CG", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Montenegro" },
-                    { 5, "SLO", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Slovenia" },
-                    { 6, "AT", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Austria" }
+                    { 1, "BIH", new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Bosnia and Herzegovina" },
+                    { 2, "HR", new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Croatia" },
+                    { 3, "SRB", new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Serbia" },
+                    { 4, "CG", new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Montenegro" },
+                    { 5, "SLO", new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Slovenia" },
+                    { 6, "AT", new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Austria" }
                 });
 
             migrationBuilder.InsertData(
@@ -498,8 +523,8 @@ namespace GymFit.Infrastructure.Migrations
                 columns: new[] { "Id", "Address", "CityId", "CreatedAt", "Description", "ModifiedAt", "Name", "PhoneNumber", "PhotoId", "Website" },
                 values: new object[,]
                 {
-                    { 1, "88000 Mostar", null, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "Najbolja ponuda sportskig aktivnosti u GymFit", null, "GymFit1", "38762211211", null, "www.gymfit.com" },
-                    { 2, "88000 Mostar", null, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "Najbolja ponuda sportskig aktivnosti u GymFit", null, "GymFit2", "38762211212", null, "www.gymfit.com" }
+                    { 1, "88000 Mostar", null, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), "Najbolja ponuda sportskih aktivnosti u GymFit", null, "GymFit1", "38762211211", null, "www.gymfit.com" },
+                    { 2, "88000 Mostar", null, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), "Najbolja ponuda sportskih aktivnosti u GymFit", null, "GymFit2", "38762211212", null, "www.gymfit.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -507,8 +532,8 @@ namespace GymFit.Infrastructure.Migrations
                 columns: new[] { "Id", "CreatedAt", "ModifiedAt", "description", "name", "price" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Standardna clanarina", "Standard", 50m },
-                    { 2, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Premium članarina, neogranicen broj posjeta", "Premium", 70m }
+                    { 1, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Standardna clanarina", "Standard", 50m },
+                    { 2, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Premium članarina, neogranicen broj posjeta", "Premium", 70m }
                 });
 
             migrationBuilder.InsertData(
@@ -516,10 +541,10 @@ namespace GymFit.Infrastructure.Migrations
                 columns: new[] { "Id", "CreatedAt", "ModifiedAt", "PublishDate", "Status", "content", "title" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3072), 0, "Sretnu novu godinu želi vam GymFit", "Sretna nova godina" },
-                    { 2, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3074), 0, "Imamo novog trenera za yogu, pogledajte naše trenere", "Novi trener" },
-                    { 3, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3075), 0, "Imamo novog trenera - Armin Idriz", "Novi trener" },
-                    { 4, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3077), 0, "TEretana GymFit neće raditi 2 dana nakon nove godine", "Neradni dani" }
+                    { 1, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9339), 0, "Sretnu novu godinu želi vam GymFit", "Sretna nova godina" },
+                    { 2, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9341), 0, "Imamo novog trenera za yogu, pogledajte naše trenere", "Novi trener" },
+                    { 3, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9344), 0, "Imamo novog trenera - Armin Idriz", "Novi trener" },
+                    { 4, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9346), 0, "TEretana GymFit neće raditi 2 dana nakon nove godine", "Neradni dani" }
                 });
 
             migrationBuilder.InsertData(
@@ -527,12 +552,12 @@ namespace GymFit.Infrastructure.Migrations
                 columns: new[] { "Id", "CityId", "CreatedAt", "DateOfBirth", "Email", "FirstName", "Gender", "IsActive", "IsVerified", "LastName", "ModifiedAt", "PasswordHash", "PasswordSalt", "PhoneNumber", "PhotoId", "ProfessionalTitle", "Role" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "admin@gmail.com", "GymFIT", 0, true, true, "Admin", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "Admin", 0 },
-                    { 2, null, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "trener@gmail.com", "Trener1", 0, true, true, "Trener1", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "Trener", 2 },
-                    { 3, null, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "trener@gmail.com", "Trener2", 0, true, true, "Trener2", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "Trener", 2 },
-                    { 4, null, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "user@gmail.com", "User", 1, true, true, "User", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "User", 1 },
-                    { 5, null, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "user2@gmail.com", "User2", 0, true, true, "User2", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "User", 1 },
-                    { 6, null, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), "admin2@gmail.com", "Admin2", 1, true, true, "Admin2", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "Admin", 0 }
+                    { 1, null, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), "admin@gmail.com", "GymFIT", 0, true, true, "Admin", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "Admin", 0 },
+                    { 2, null, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), "trener@gmail.com", "Trener1", 0, true, true, "Trener1", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "Trener", 2 },
+                    { 3, null, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), "trener@gmail.com", "Trener2", 0, true, true, "Trener2", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "Trener", 2 },
+                    { 4, null, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), "user@gmail.com", "User", 1, true, true, "User", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "User", 1 },
+                    { 5, null, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), "user2@gmail.com", "User2", 0, true, true, "User2", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "User", 1 },
+                    { 6, null, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), "admin2@gmail.com", "Admin2", 1, true, true, "Admin2", null, "b4I5yA4Mp+0Pg1C3EsKU17sS13eDExGtBjjI07Vh/JM=", "1wQEjdSFeZttx6dlvEDjOg==", "38763321321", null, "Admin", 0 }
                 });
 
             migrationBuilder.InsertData(
@@ -540,9 +565,9 @@ namespace GymFit.Infrastructure.Migrations
                 columns: new[] { "Id", "CountryId", "CreatedAt", "IsActive", "ModifiedAt", "Name", "ZipCode" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Mostar", "88000" },
-                    { 2, 1, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Sarajevo", "77000" },
-                    { 3, 1, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Zenica", "72000" }
+                    { 1, 1, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Mostar", "88000" },
+                    { 2, 1, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Sarajevo", "77000" },
+                    { 3, 1, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), true, null, "Zenica", "72000" }
                 });
 
             migrationBuilder.InsertData(
@@ -550,10 +575,10 @@ namespace GymFit.Infrastructure.Migrations
                 columns: new[] { "Id", "Content", "CreatedAt", "DateRead", "Deleted", "ModifiedAt", "Read", "Seen", "SendOnDate", "UserId" },
                 values: new object[,]
                 {
-                    { 1, "Sretnu novu godinu želi vam GymFit", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3052), 4 },
-                    { 2, "Imamo novog trenera za yogu, pogledajte naše trenere", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3055), 4 },
-                    { 3, "Sretnu novu godinu želi vam GymFit", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3057), 5 },
-                    { 4, "Imamo novog trenera za yogu, pogledajte naše trenere", new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3059), 5 }
+                    { 1, "Sretnu novu godinu želi vam GymFit", new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9307), 4 },
+                    { 2, "Imamo novog trenera za yogu, pogledajte naše trenere", new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9312), 4 },
+                    { 3, "Sretnu novu godinu želi vam GymFit", new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9314), 5 },
+                    { 4, "Imamo novog trenera za yogu, pogledajte naše trenere", new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, false, null, false, null, new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9317), 5 }
                 });
 
             migrationBuilder.InsertData(
@@ -561,22 +586,26 @@ namespace GymFit.Infrastructure.Migrations
                 columns: new[] { "Id", "CreatedAt", "DaysOfWeek", "Description", "Duration", "EndDate", "GymId", "MaxCapacity", "ModifiedAt", "PauseDuration", "ReservationDate", "StartDate", "Status", "TrainerId", "UserId", "isUsed" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Snaga", null, new DateTime(2023, 12, 24, 16, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2023, 12, 24, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 24, 15, 0, 0, 0, DateTimeKind.Unspecified), 4, 3, 4, true },
-                    { 2, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "HIT", null, new DateTime(2023, 12, 24, 16, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2023, 12, 25, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 25, 15, 0, 0, 0, DateTimeKind.Unspecified), 4, 3, 4, true },
-                    { 3, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "CrossFit", null, new DateTime(2023, 12, 28, 19, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2023, 12, 24, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 28, 18, 0, 0, 0, DateTimeKind.Unspecified), 3, 3, 4, false },
-                    { 4, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Individualni", null, new DateTime(2023, 12, 24, 16, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2023, 12, 24, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 24, 15, 0, 0, 0, DateTimeKind.Unspecified), 4, 2, 4, true },
-                    { 5, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Snaga", null, new DateTime(2024, 1, 30, 11, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 1, 30, 10, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 30, 10, 0, 0, 0, DateTimeKind.Unspecified), 2, 2, 4, false },
-                    { 6, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Kardio", null, new DateTime(2024, 1, 29, 19, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 1, 29, 18, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 29, 18, 0, 0, 0, DateTimeKind.Unspecified), 2, 2, 4, false },
-                    { 7, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Kombinovani", null, new DateTime(2024, 2, 3, 19, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 2, 3, 18, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 2, 3, 18, 0, 0, 0, DateTimeKind.Unspecified), 1, 2, 4, false },
-                    { 8, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "CrossFit", null, new DateTime(2024, 2, 4, 10, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 2, 4, 9, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 2, 4, 9, 0, 0, 0, DateTimeKind.Unspecified), 1, 2, 4, false },
-                    { 9, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Yoga", null, new DateTime(2023, 12, 23, 12, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2023, 12, 23, 11, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 23, 11, 0, 0, 0, DateTimeKind.Unspecified), 4, 2, 5, true },
-                    { 10, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Pilates", null, new DateTime(2023, 12, 27, 16, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2023, 12, 27, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 27, 15, 0, 0, 0, DateTimeKind.Unspecified), 4, 2, 5, true },
-                    { 11, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Pilates", null, new DateTime(2023, 12, 29, 21, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2023, 12, 29, 20, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 29, 20, 0, 0, 0, DateTimeKind.Unspecified), 3, 2, 5, false },
-                    { 12, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Pilates", null, new DateTime(2023, 12, 26, 16, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2023, 12, 26, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2023, 12, 26, 15, 0, 0, 0, DateTimeKind.Unspecified), 4, 3, 5, true },
-                    { 13, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Kombinovani", null, new DateTime(2024, 1, 28, 18, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 1, 28, 17, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 28, 17, 0, 0, 0, DateTimeKind.Unspecified), 2, 3, 5, false },
-                    { 14, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Kardio", null, new DateTime(2024, 1, 25, 19, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 1, 25, 18, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 1, 25, 18, 0, 0, 0, DateTimeKind.Unspecified), 2, 2, 5, false },
-                    { 15, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Yoga", null, new DateTime(2024, 2, 5, 9, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 2, 5, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 2, 5, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 2, 5, false },
-                    { 16, new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), null, "Pilates", null, new DateTime(2024, 2, 6, 22, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 2, 6, 21, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 2, 6, 21, 0, 0, 0, DateTimeKind.Unspecified), 1, 3, 5, false }
+                    { 1, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Snaga", null, new DateTime(2024, 3, 10, 16, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 10, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 10, 15, 0, 0, 0, DateTimeKind.Unspecified), 4, 3, 4, true },
+                    { 2, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "HIT", null, new DateTime(2024, 3, 11, 17, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 11, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 11, 16, 0, 0, 0, DateTimeKind.Unspecified), 4, 3, 4, true },
+                    { 3, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "CrossFit", null, new DateTime(2024, 3, 14, 16, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 14, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 14, 15, 0, 0, 0, DateTimeKind.Unspecified), 3, 3, 4, false },
+                    { 4, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Individualni", null, new DateTime(2024, 3, 13, 20, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 13, 19, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 13, 19, 0, 0, 0, DateTimeKind.Unspecified), 4, 2, 4, true },
+                    { 5, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Snaga", null, new DateTime(2024, 3, 18, 19, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 18, 18, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 18, 18, 0, 0, 0, DateTimeKind.Unspecified), 2, 2, 4, false },
+                    { 6, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Kardio", null, new DateTime(2024, 3, 19, 16, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 19, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 19, 15, 0, 0, 0, DateTimeKind.Unspecified), 2, 2, 4, false },
+                    { 7, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Kombinovani", null, new DateTime(2024, 3, 20, 9, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 20, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 20, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 2, 4, false },
+                    { 8, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "CrossFit", null, new DateTime(2024, 3, 21, 11, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 21, 10, 0, 0, 0, DateTimeKind.Unspecified), 1, 2, 4, false },
+                    { 9, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Yoga", null, new DateTime(2024, 3, 11, 12, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 11, 11, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 11, 11, 0, 0, 0, DateTimeKind.Unspecified), 4, 2, 5, true },
+                    { 10, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Pilates", null, new DateTime(2024, 3, 12, 15, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 12, 14, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 12, 14, 0, 0, 0, DateTimeKind.Unspecified), 4, 2, 5, true },
+                    { 11, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Pilates", null, new DateTime(2024, 3, 18, 15, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 18, 14, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 18, 14, 0, 0, 0, DateTimeKind.Unspecified), 3, 2, 5, false },
+                    { 12, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Pilates", null, new DateTime(2024, 3, 13, 16, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 13, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 13, 15, 0, 0, 0, DateTimeKind.Unspecified), 4, 3, 5, true },
+                    { 13, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Kombinovani", null, new DateTime(2024, 3, 20, 16, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 20, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 20, 15, 0, 0, 0, DateTimeKind.Unspecified), 2, 3, 5, false },
+                    { 14, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Kardio", null, new DateTime(2024, 3, 22, 16, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 22, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 22, 15, 0, 0, 0, DateTimeKind.Unspecified), 2, 2, 5, false },
+                    { 15, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Yoga", null, new DateTime(2024, 3, 23, 18, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 23, 17, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 23, 17, 0, 0, 0, DateTimeKind.Unspecified), 1, 2, 5, false },
+                    { 16, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Pilates", null, new DateTime(2024, 3, 23, 21, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 23, 20, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 23, 20, 0, 0, 0, DateTimeKind.Unspecified), 1, 3, 5, false },
+                    { 17, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Pilates", null, new DateTime(2024, 3, 24, 23, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 24, 22, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 24, 22, 0, 0, 0, DateTimeKind.Unspecified), 1, 3, 5, false },
+                    { 18, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Pilates", null, new DateTime(2024, 3, 26, 23, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 26, 22, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 26, 22, 0, 0, 0, DateTimeKind.Unspecified), 1, 2, 5, false },
+                    { 19, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Pilates", null, new DateTime(2024, 3, 19, 23, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 19, 22, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 19, 22, 0, 0, 0, DateTimeKind.Unspecified), 3, 2, 5, false },
+                    { 20, new DateTime(2024, 3, 9, 0, 0, 0, 0, DateTimeKind.Local), null, "Pilates", null, new DateTime(2024, 3, 13, 9, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, null, new DateTime(2024, 3, 13, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 3, 13, 9, 0, 0, 0, DateTimeKind.Unspecified), 4, 2, 5, true }
                 });
 
             migrationBuilder.InsertData(
@@ -584,10 +613,10 @@ namespace GymFit.Infrastructure.Migrations
                 columns: new[] { "Id", "ActivateOnDate", "ActivationDate", "CreatedAt", "ExpirationDate", "Expired", "IsPaused", "ModifiedAt", "PauseDuration", "PausedOnDate", "UserId", "packageId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3014), new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(2980), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2024, 3, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3010), false, false, null, 0, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3016), 4, 1 },
-                    { 2, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3020), new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3017), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2024, 2, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3018), false, false, null, 0, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3022), 5, 1 },
-                    { 3, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3027), new DateTime(2023, 11, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3023), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 12, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3025), true, false, null, 0, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3028), 4, 1 },
-                    { 4, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3033), new DateTime(2023, 11, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3030), new DateTime(2023, 2, 1, 0, 0, 0, 0, DateTimeKind.Local), new DateTime(2023, 12, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3031), true, false, null, 0, new DateTime(2024, 1, 8, 1, 59, 47, 876, DateTimeKind.Local).AddTicks(3034), 5, 1 }
+                    { 1, new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9261), new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9245), new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9199), new DateTime(2024, 5, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9250), false, false, null, 0, new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9264), 4, 1 },
+                    { 2, new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9270), new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9267), new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9266), new DateTime(2024, 4, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9268), false, false, null, 0, new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9272), 5, 1 },
+                    { 3, new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9278), new DateTime(2024, 1, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9275), new DateTime(2024, 1, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9273), new DateTime(2024, 2, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9276), true, false, null, 0, new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9279), 4, 1 },
+                    { 4, new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9285), new DateTime(2024, 1, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9282), new DateTime(2024, 1, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9281), new DateTime(2024, 2, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9283), true, false, null, 0, new DateTime(2024, 3, 8, 1, 56, 41, 796, DateTimeKind.Local).AddTicks(9286), 5, 1 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -643,6 +672,11 @@ namespace GymFit.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Notifications_UserId",
                 table: "Notifications",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NotificationsRabbit_UserId",
+                table: "NotificationsRabbit",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -710,6 +744,9 @@ namespace GymFit.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "NotificationsRabbit");
 
             migrationBuilder.DropTable(
                 name: "Post");

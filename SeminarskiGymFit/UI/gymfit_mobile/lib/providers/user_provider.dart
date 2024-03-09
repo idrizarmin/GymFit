@@ -32,6 +32,21 @@ class UserProvider extends BaseProvider {
     }
   }
 
+Future<List<User>> getRecommended(int id) async {
+    var uri = Uri.parse('$apiUrl/User/Recommended/$id');
+    var headers = Authorization.createHeaders();
+
+
+    final response = await http.get(uri, headers: headers);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      
+      var data = json.decode(response.body);
+      return data.map((d) => fromJson(d)).cast<User>().toList();
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
  
 Future<List<User>> getTrainersPaged(TrainersSearchObject? searchObject) async {
     var uri = Uri.parse('$apiUrl/User/GetTrainersPaged');

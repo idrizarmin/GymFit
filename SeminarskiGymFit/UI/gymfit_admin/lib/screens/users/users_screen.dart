@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gymfit_admin/helpers/constants.dart';
 import 'package:gymfit_admin/helpers/show_error_dialog.dart';
@@ -73,7 +75,10 @@ class _UsersScreenState extends State<UsersScreen> {
 
     _searchController.addListener(() {
       final searchQuery = _searchController.text;
-      loadUsers(UserSearchObject(name: searchQuery,PageNumber: currentPage, PageSize: pageSize), _selectedIsActive,
+      loadUsers(
+          UserSearchObject(
+              name: searchQuery, PageNumber: currentPage, PageSize: pageSize),
+          _selectedIsActive,
           _selectedIsVerified);
     });
   }
@@ -108,7 +113,6 @@ class _UsersScreenState extends State<UsersScreen> {
       setState(() {
         users = usersResponse;
         hasNextPage = users.length;
-       
       });
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
@@ -122,7 +126,6 @@ class _UsersScreenState extends State<UsersScreen> {
   void insertUser() async {
     try {
       if (_pickedFile == null) {
-       
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -133,7 +136,7 @@ class _UsersScreenState extends State<UsersScreen> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context); 
+                    Navigator.pop(context);
                   },
                   child: Text('OK'),
                 ),
@@ -145,7 +148,6 @@ class _UsersScreenState extends State<UsersScreen> {
       }
 
       Map<String, dynamic> userData = {
-        "Id": null,
         'FirstName': _firstNameController.text,
         'LastName': _lastNameController.text,
         'Email': _emailController.text,
@@ -162,18 +164,15 @@ class _UsersScreenState extends State<UsersScreen> {
         'IsActive': _isActive.toString(),
       };
 
-    
       userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
         'ProfilePhoto',
         _pickedFile!.readAsBytesSync(),
         filename: 'profile_photo.jpg',
       );
 
-    
       var response = await _userProvider.insertUser(userData);
 
       if (response == "OK") {
-        
         Navigator.of(context).pop();
         loadUsers(
           UserSearchObject(
@@ -191,11 +190,9 @@ class _UsersScreenState extends State<UsersScreen> {
           selectedGender = null;
         });
       } else {
-       
         showErrorDialog(context, 'Greška prilikom dodavanja');
       }
     } catch (e) {
-     
       showErrorDialog(context, e.toString());
     }
   }
@@ -225,8 +222,18 @@ class _UsersScreenState extends State<UsersScreen> {
           _pickedFile!.readAsBytesSync(),
           filename: 'profile_photo.jpg',
         );
+      } else {
+        final ByteData data =
+            await rootBundle.load('assets/images/notFound.png');
+        List<int> bytes = data.buffer.asUint8List();
+
+        userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+          'ProfilePhoto',
+          bytes,
+          filename: 'notFound.png',
+        );
       }
-     
+
       var response = await _userProvider.updateUser(userData);
 
       if (response == "OK") {
@@ -247,11 +254,9 @@ class _UsersScreenState extends State<UsersScreen> {
           selectedGender = null;
         });
       } else {
-        
         showErrorDialog(context, 'Greška prilikom uređivanja');
       }
     } catch (e) {
-      
       showErrorDialog(context, e.toString());
     }
   }
@@ -544,7 +549,7 @@ class _UsersScreenState extends State<UsersScreen> {
                   );
                 });
           },
-          child:  Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
@@ -573,7 +578,7 @@ class _UsersScreenState extends State<UsersScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                       backgroundColor: dialogColor,
+                      backgroundColor: dialogColor,
                       title: Text("Upozorenje"),
                       content: Text(
                           "Morate odabrati barem jednog klijenta za uređivanje"),
@@ -594,7 +599,7 @@ class _UsersScreenState extends State<UsersScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                       backgroundColor: dialogColor,
+                      backgroundColor: dialogColor,
                       title: Text("Upozorenje"),
                       content: Text(
                           "Odaberite samo jednog klijenta kojeg želite urediti"),
@@ -614,7 +619,7 @@ class _UsersScreenState extends State<UsersScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                       backgroundColor: dialogColor,
+                      backgroundColor: dialogColor,
                       title: Text("Uredi klijenta"),
                       content: AddUserForm(
                           isEditing: true, userToEdit: selectedUsers[0]),
@@ -649,7 +654,7 @@ class _UsersScreenState extends State<UsersScreen> {
                   });
             }
           },
-          child:  Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
@@ -678,7 +683,7 @@ class _UsersScreenState extends State<UsersScreen> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                           backgroundColor: dialogColor,
+                            backgroundColor: dialogColor,
                             title: Text("Upozorenje"),
                             content: Text(
                                 "Morate odabrati klijenta kojeg želite obrisati."),
@@ -701,7 +706,7 @@ class _UsersScreenState extends State<UsersScreen> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                           backgroundColor: dialogColor,
+                          backgroundColor: dialogColor,
                           title: Text("Izbriši klijenta!"),
                           content: SingleChildScrollView(
                             child: Text(
@@ -735,7 +740,7 @@ class _UsersScreenState extends State<UsersScreen> {
                         );
                       });
                 },
-          child:  Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
@@ -845,10 +850,9 @@ class _UsersScreenState extends State<UsersScreen> {
                                             AsyncSnapshot<String> snapshot) {
                                           if (snapshot.connectionState ==
                                               ConnectionState.waiting) {
-                                            return CircularProgressIndicator(); 
+                                            return CircularProgressIndicator();
                                           } else if (snapshot.hasError) {
-                                            return Text(
-                                                '--'); 
+                                            return Text('--');
                                           } else {
                                             final imageUrl = snapshot.data;
 
@@ -856,8 +860,7 @@ class _UsersScreenState extends State<UsersScreen> {
                                                 imageUrl.isNotEmpty) {
                                               return Container(
                                                 padding: EdgeInsets.symmetric(
-                                                    vertical:
-                                                        8.0), 
+                                                    vertical: 8.0),
                                                 child: FadeInImage(
                                                   image: NetworkImage(
                                                     imageUrl,
@@ -957,6 +960,7 @@ class _UsersScreenState extends State<UsersScreen> {
       _isVerified = false;
       _isActive = false;
       _passwordController.text = '';
+
       _pickedFile = null;
     }
 
@@ -1117,7 +1121,40 @@ class _UsersScreenState extends State<UsersScreen> {
                   ),
                   TextFormField(
                     controller: _passwordController,
-                    decoration: InputDecoration(labelText: 'Sifra'),
+                    decoration: InputDecoration(labelText: 'Šifra'),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Unesite šifru!';
+                      }
+
+                      // Check for at least 8 characters
+                      if (value.length < 8) {
+                        return 'Šifra mora sadržavati barem 8 karaktera!';
+                      }
+
+                      // Check for at least one uppercase letter
+                      if (!value.contains(RegExp(r'[A-Z]'))) {
+                        return 'Šifra mora sadržavati barem jedno veliko slovo!';
+                      }
+
+                      // Check for at least one lowercase letter
+                      if (!value.contains(RegExp(r'[a-z]'))) {
+                        return 'Šifra mora sadržavati barem jedno malo slovo!';
+                      }
+
+                      // Check for at least one digit
+                      if (!value.contains(RegExp(r'[0-9]'))) {
+                        return 'Šifra mora sadržavati barem jedan broj!';
+                      }
+
+                      // Check for at least one special character
+                      if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                        return 'Šifra mora sadržavati barem jedan specijalni karakter!';
+                      }
+
+                      return null;
+                    },
                   ),
                 ],
               ),

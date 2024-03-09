@@ -12,6 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:simple_shadow/simple_shadow.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import '../../providers/login_provider.dart';
+
 class TrainersScreen extends StatefulWidget {
   const TrainersScreen({Key? key}) : super(key: key);
 
@@ -23,8 +25,12 @@ class _TrainersScreenState extends State<TrainersScreen> {
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
   late MediaQueryData mediaQueryData;
   List<User> trainers = <User>[];
+  List<User> recommendedTrainers = <User>[];
   late UserProvider _userProvider;
   late PhotoProvider _photoProvider;
+  late UserLoginProvider _loginProvider;
+  User? user;
+
 
   int currentPage = 1;
   int pageSize = 10;
@@ -36,8 +42,25 @@ class _TrainersScreenState extends State<TrainersScreen> {
     super.initState();
     _userProvider = context.read<UserProvider>();
     _photoProvider = context.read<PhotoProvider>();
+    _loginProvider = context.read<UserLoginProvider>();
 
     loadTrainers();
+    loadUser();
+    
+  }
+void loadUser() async {
+    var id = _loginProvider.getUserId();
+    print(id);
+    try {
+      var usersResponse = await _userProvider.getById(id!);
+      setState(() {
+        user = usersResponse;
+      });
+      loadRecomendedTrainers(user!.id);
+      print(recommendedTrainers);
+    } on Exception catch (e) {
+      showErrorDialog(context, e.toString().substring(11));
+    }
   }
 
   void loadTrainers() async {
@@ -48,6 +71,20 @@ class _TrainersScreenState extends State<TrainersScreen> {
       var usersResponse = await _userProvider.getTrainersPaged(searchObject);
       setState(() {
         trainers = usersResponse;
+      });
+    } on Exception catch (e) {
+      showErrorDialog(context, e.toString().substring(11));
+    }
+  }
+
+  void loadRecomendedTrainers(int userId) async {
+    try {
+      TrainersSearchObject searchObject =
+          TrainersSearchObject(PageNumber: currentPage, PageSize: pageSize);
+
+      var usersResponse = await _userProvider.getRecommended(userId);
+      setState(() {
+        recommendedTrainers = usersResponse;
       });
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
