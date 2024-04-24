@@ -3,6 +3,7 @@ using GymFit.Core;
 using GymFit.Infrastructure.Interfaces;
 using GymFit.Infrastructure.Interfaces.SearchObjects;
 using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymFit.Api.Controllers
@@ -12,6 +13,8 @@ namespace GymFit.Api.Controllers
         public ReservationsController(IReservationsService service, ILogger<ReservationsController> logger) : base(service, logger)
         {
         }
+
+        [Authorize]
         [HttpGet("GetAllFiltered")]
         public async Task<IActionResult> GetAllFilteredAsync([FromQuery] ReservationSearchObject reservationSearchObject , CancellationToken cancellationToken)
         {
@@ -27,6 +30,8 @@ namespace GymFit.Api.Controllers
                       return BadRequest();
             }
         }
+
+        [Authorize]
         [HttpGet("GetByMonth")] 
         public async Task<IActionResult> GetReservationsByMonth([FromQuery] BarChartSearchObject searchObject, CancellationToken cancellationToken)
         {
@@ -41,6 +46,8 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [Authorize]
         [HttpGet("GetCountCurrentMonth")]
         public async Task<IActionResult> GetCountOfActiveUsers(CancellationToken cancellationToken)
         {
@@ -56,6 +63,7 @@ namespace GymFit.Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut("status/{id}")]
         public async Task<IActionResult> UpdateReservationStatusByClient(int id, CancellationToken cancellationToken)
         {
@@ -67,6 +75,8 @@ namespace GymFit.Api.Controllers
             return Ok(result);
         }
 
+
+        [Authorize]
         [HttpPut("toCanceled/{id}")]
         public async Task<IActionResult> UpdateReservation(int id, CancellationToken cancellationToken)
         {

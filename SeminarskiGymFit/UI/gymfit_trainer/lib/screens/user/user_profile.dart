@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gymfit_trainer/helpers/app_decoration.dart';
 import 'package:gymfit_trainer/helpers/constants.dart';
 import 'package:gymfit_trainer/helpers/theme_helper.dart';
@@ -114,6 +116,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           filename: 'profile_photo.jpg',
         );
       }
+      if (_pickedFile == null && user!.photo  == null) {
+          final ByteData data =
+            await rootBundle.load('assets/images/notFound.png');
+        List<int> bytes = data.buffer.asUint8List();
+
+        userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+          'ProfilePhoto',
+          bytes,
+          filename: 'notFound.png',
+        );
+       } 
       var response = await _userProvider.updateUser(userData);
 
       if (response == "OK") {
@@ -124,6 +137,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   style: TextStyle(
                     color: Colors.white,
                   ))),
+                 
         );
       } else {
         showErrorDialog(context, 'Greška prilikom uređivanja');
@@ -368,7 +382,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  Widget AddUserForm({bool isEditing = false, User? userToEdit}) {
+Widget AddUserForm({bool isEditing = false, User? userToEdit}) {
     if (userToEdit != null) {
       _firstNameController.text = userToEdit.firstName;
       _lastNameController.text = userToEdit.lastName;
@@ -616,3 +630,4 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 }
+

@@ -99,25 +99,21 @@ Future<List<UserForSelection>> getTrainersForSelection(
     }
   }
 
-  Future<dynamic> updateUser(Map<String, dynamic> updatedUserData) async {
+ Future<dynamic> updateUser(Map<String, dynamic> updatedUserData) async {
   try {
     var uri = Uri.parse('$apiUrl/User');
+    
     Map<String, String> headers = Authorization.createHeaders();
-
     var request = http.MultipartRequest('PUT', uri);
-
-    // Convert dynamic values to strings
+    request.headers.addAll(headers);
     var stringUpdatedUserData = updatedUserData.map((key, value) => MapEntry(key, value.toString()));
-
-    // Add converted fields to the request
     request.fields.addAll(stringUpdatedUserData);
 
-    // Add the photo to the request if it exists in the updated data
     if (updatedUserData.containsKey('ProfilePhoto')) {
       request.files.add(updatedUserData['ProfilePhoto']);
     }
 
-    var response = await http.Response.fromStream(await request.send());
+    var response = await http.Response.fromStream(await request.send());  
 
     if (response.statusCode == 200) {
       return "OK";
@@ -128,6 +124,7 @@ Future<List<UserForSelection>> getTrainersForSelection(
     throw Exception('Error updating user: $e');
   }
 }
+
 
   Future<dynamic> delete(int id) async {
     var uri = Uri.parse('$apiUrl/User/${id}');

@@ -121,30 +121,8 @@ class _TrainerScreenState extends State<TrainerScreen> {
     return await _photoProvider.getPhoto(guidId);
   }
 
-  void insertUser() async {
+ void insertUser() async {
     try {
-      if (_pickedFile == null) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              backgroundColor: dialogColor,
-              title: Text('Upozorenje'),
-              content: Text('Molimo odaberite fotografiju.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
-        return;
-      }
-
       Map<String, dynamic> userData = {
         'FirstName': _firstNameController.text,
         'LastName': _lastNameController.text,
@@ -161,12 +139,24 @@ class _TrainerScreenState extends State<TrainerScreen> {
         'IsVerified': _isVerified.toString(),
         'IsActive': _isActive.toString(),
       };
+       if (_pickedFile == null) {
+          final ByteData data =
+            await rootBundle.load('assets/images/notFound.png');
+        List<int> bytes = data.buffer.asUint8List();
 
-      userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+        userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+          'ProfilePhoto',
+          bytes,
+          filename: 'notFound.png',
+        );
+       } else {
+          userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
         'ProfilePhoto',
         _pickedFile!.readAsBytesSync(),
         filename: 'profile_photo.jpg',
       );
+       }
+      
 
       var response = await _userProvider.insertUser(userData);
 
@@ -184,8 +174,11 @@ class _TrainerScreenState extends State<TrainerScreen> {
           _selectedIsActive,
           _selectedIsVerified,
         );
+        setState(() {
+          selectedGender = null;
+        });
       } else {
-        showErrorDialog(context, 'Error inserting user');
+        showErrorDialog(context, 'Greška prilikom dodavanja');
       }
     } catch (e) {
       showErrorDialog(context, e.toString());
@@ -218,7 +211,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
           filename: 'profile_photo.jpg',
         );
       }
-      else {
+      if (_pickedFile == null && selectedUsers[0].photo == null) {
         final ByteData data =
             await rootBundle.load('assets/images/notFound.png');
         List<int> bytes = data.buffer.asUint8List();
@@ -233,6 +226,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
       var response = await _userProvider.updateUser(userData);
 
       if (response == "OK") {
+        Navigator.of(context).pop();
         loadUsers(
           UserSearchObject(
             name: _searchController.text,
@@ -538,7 +532,6 @@ class _TrainerScreenState extends State<TrainerScreen> {
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor),
                             onPressed: () {
-                              Navigator.of(context).pop();
                             },
                             child: Text("Zatvori",
                                 style: TextStyle(color: white))),
@@ -548,7 +541,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
                             onPressed: () {
                               editUser(selectedUsers[0].id);
                               selectedUsers = [];
-                              Navigator.of(context).pop();
+                             
                             },
                             child:
                                 Text("Spremi", style: TextStyle(color: white))),
@@ -787,7 +780,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
                                                 padding: EdgeInsets.symmetric(
                                                     vertical: 8.0),
                                                 child: Image.asset(
-                                                  'assets/images/user1.jpg',
+                                                  'assets/images/notFound.png',
                                                   width: 80,
                                                   height: 105,
                                                   fit: BoxFit.fill,

@@ -97,30 +97,8 @@ class _AdminScreenState extends State<AdminScreen> {
     }
   }
 
-  void insertUser() async {
+   void insertUser() async {
     try {
-      if (_pickedFile == null) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              backgroundColor: dialogColor,
-              title: Text('Alert'),
-              content: Text('Please select an image.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
-        return;
-      }
-
       Map<String, dynamic> userData = {
         'FirstName': _firstNameController.text,
         'LastName': _lastNameController.text,
@@ -137,12 +115,24 @@ class _AdminScreenState extends State<AdminScreen> {
         'IsVerified': _isVerified.toString(),
         'IsActive': _isActive.toString(),
       };
+       if (_pickedFile == null) {
+          final ByteData data =
+            await rootBundle.load('assets/images/notFound.png');
+        List<int> bytes = data.buffer.asUint8List();
 
-      userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+        userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+          'ProfilePhoto',
+          bytes,
+          filename: 'notFound.png',
+        );
+       } else {
+          userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
         'ProfilePhoto',
         _pickedFile!.readAsBytesSync(),
         filename: 'profile_photo.jpg',
       );
+       }
+      
 
       var response = await _userProvider.insertUser(userData);
 
@@ -158,8 +148,11 @@ class _AdminScreenState extends State<AdminScreen> {
             PageSize: pageSize,
           ),
         );
+        setState(() {
+          selectedGender = null;
+        });
       } else {
-        showErrorDialog(context, 'Error inserting user');
+        showErrorDialog(context, 'Greška prilikom dodavanja');
       }
     } catch (e) {
       showErrorDialog(context, e.toString());
@@ -191,9 +184,9 @@ class _AdminScreenState extends State<AdminScreen> {
           _pickedFile!.readAsBytesSync(),
           filename: 'profile_photo.jpg',
         );
-      }
-      else {
-        final ByteData data =
+       } 
+       if (_pickedFile == null && selectedUsers[0].photo  == null) {
+          final ByteData data =
             await rootBundle.load('assets/images/notFound.png');
         List<int> bytes = data.buffer.asUint8List();
 
@@ -202,8 +195,8 @@ class _AdminScreenState extends State<AdminScreen> {
           bytes,
           filename: 'notFound.png',
         );
-      }
-
+       } 
+    
       var response = await _userProvider.updateUser(userData);
 
       if (response == "OK") {
@@ -228,7 +221,6 @@ class _AdminScreenState extends State<AdminScreen> {
       showErrorDialog(context, e.toString());
     }
   }
-
   void DeleteUser(int id) async {
     try {
       var user = await _userProvider.delete(id);
@@ -651,7 +643,7 @@ class _AdminScreenState extends State<AdminScreen> {
                                                 padding: EdgeInsets.symmetric(
                                                     vertical: 8.0),
                                                 child: Image.asset(
-                                                  'assets/images/user1.jpg',
+                                                  'assets/images/notFound.png',
                                                   width: 80,
                                                   height: 105,
                                                   fit: BoxFit.fill,

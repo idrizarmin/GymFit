@@ -6,6 +6,7 @@ using GymFit.Core;
 using GymFit.Core.Dtos.User;
 using GymFit.Infrastructure.Interfaces;
 using GymFit.Infrastructure.Interfaces.SearchObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymFit.Api.Controllers
@@ -25,6 +26,9 @@ namespace GymFit.Api.Controllers
         public override Task<IActionResult> Put(UserUpsertDto upsertDto, CancellationToken cancellationToken = default) => base.Put(upsertDto, cancellationToken);
 
 
+
+
+        [Authorize]
         [HttpGet("GetCountUsers")]
         public async Task<IActionResult> GetCountOfUsers(CancellationToken cancellationToken)
         {
@@ -39,6 +43,8 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [Authorize]
         [HttpGet("GetCountActiveUsers")]
         public async Task<IActionResult> GetCountOfActiveUsers(CancellationToken cancellationToken)
         {
@@ -53,6 +59,8 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [Authorize]
         [HttpGet("GetCountInactiveUsers")]
         public async Task<IActionResult> GetCountOfInActiveUsers(CancellationToken cancellationToken)
         {
@@ -67,6 +75,8 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [Authorize]
         [HttpGet("GetUsersForSelection")]
         public async Task<IActionResult> GetUsersForSelection(CancellationToken cancellationToken)
         {
@@ -81,6 +91,8 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [Authorize]
         [HttpGet("GetTrainersForSelection")]
         public async Task<IActionResult> GeTrainersForSelection(CancellationToken cancellationToken)
         {
@@ -96,6 +108,7 @@ namespace GymFit.Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("GetAllTrainers")]
         public async Task<IActionResult> GetAllTrainers(CancellationToken cancellationToken)
         {
@@ -111,6 +124,7 @@ namespace GymFit.Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("GetAdminsPaged")]
 
         public async Task<IActionResult> GetAdminsPagedAsync([FromQuery] UserSearchObject searchObject, CancellationToken cancellationToken)
@@ -127,6 +141,8 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [Authorize]
         [HttpGet("GetTrainersPaged")]
 
         public async Task<IActionResult> GetTrainersPagedAsync([FromQuery] UserSearchObject searchObject, CancellationToken cancellationToken)
@@ -143,6 +159,8 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post([FromForm]UserUpsertModel model, CancellationToken cancellationToken = default)
           {
@@ -185,7 +203,7 @@ namespace GymFit.Api.Controllers
         }
 
 
-
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> Put([FromForm]UserUpsertModel model, CancellationToken cancellationToken = default)
         {
@@ -234,6 +252,7 @@ namespace GymFit.Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut("ChangePassword")]
         public async Task<IActionResult> ChangepPassword([FromBody] UserChangePasswordDto dto, CancellationToken cancellationtoken = default)
         {

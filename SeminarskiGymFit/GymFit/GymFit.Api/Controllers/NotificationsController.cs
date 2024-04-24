@@ -2,6 +2,7 @@
 using GymFit.Core;
 using GymFit.Infrastructure.Interfaces.SearchObjects;
 using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymFit.Api.Controllers
@@ -11,6 +12,8 @@ namespace GymFit.Api.Controllers
         public NotificationsController(INotificationsService service, ILogger<NotificationsController> logger) : base(service, logger)
         {
         }
+
+        [Authorize]
         [HttpGet("GetAllNotifications")]
         public async Task<IActionResult> GetAllNotifications([FromQuery] NotificationsSearchObject searchObject, CancellationToken cancellationToken)
         {
@@ -25,6 +28,8 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [Authorize]
         [HttpPut("SetNotificationsAsSeen")]
         public async Task<IActionResult> SetNotificaationAsSeen(int id, CancellationToken cancellationToken)
         {
@@ -39,6 +44,8 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [Authorize]
         [HttpPut("SetNotificationAsDeleted")]
         public async Task<IActionResult> SetNotificaationAsDeleted(int id, CancellationToken cancellationToken)
         {

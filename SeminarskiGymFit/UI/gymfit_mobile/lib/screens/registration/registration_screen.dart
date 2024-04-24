@@ -334,12 +334,38 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             hintText: ".......",
             obscureText: _obscurePassword,
             textInputType: TextInputType.emailAddress,
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Obavezan unos polja';
-              }
-              return null;
-            },
+           validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Unesite šifru!';
+                      }
+
+                      // Check for at least 8 characters
+                      if (value.length < 8) {
+                        return 'Šifra mora sadržavati barem 8 karaktera!';
+                      }
+
+                      // Check for at least one uppercase letter
+                      if (!value.contains(RegExp(r'[A-Z]'))) {
+                        return 'Šifra mora sadržavati barem jedno veliko slovo!';
+                      }
+
+                      // Check for at least one lowercase letter
+                      if (!value.contains(RegExp(r'[a-z]'))) {
+                        return 'Šifra mora sadržavati barem jedno malo slovo!';
+                      }
+
+                      // Check for at least one digit
+                      if (!value.contains(RegExp(r'[0-9]'))) {
+                        return 'Šifra mora sadržavati barem jedan broj!';
+                      }
+
+                      // Check for at least one special character
+                      if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                        return 'Šifra mora sadržavati barem jedan specijalni karakter!';
+                      }
+
+                      return null;
+                    },
           ),
           SizedBox(height: 5),
         ],

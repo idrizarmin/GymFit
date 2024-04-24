@@ -125,28 +125,6 @@ class _UsersScreenState extends State<UsersScreen> {
 
   void insertUser() async {
     try {
-      if (_pickedFile == null) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              backgroundColor: dialogColor,
-              title: Text('Upozorenje'),
-              content: Text('Molimo odaberite fotografiju.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
-        return;
-      }
-
       Map<String, dynamic> userData = {
         'FirstName': _firstNameController.text,
         'LastName': _lastNameController.text,
@@ -163,12 +141,24 @@ class _UsersScreenState extends State<UsersScreen> {
         'IsVerified': _isVerified.toString(),
         'IsActive': _isActive.toString(),
       };
+       if (_pickedFile == null) {
+          final ByteData data =
+            await rootBundle.load('assets/images/notFound.png');
+        List<int> bytes = data.buffer.asUint8List();
 
-      userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+        userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+          'ProfilePhoto',
+          bytes,
+          filename: 'notFound.png',
+        );
+       } else {
+          userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
         'ProfilePhoto',
         _pickedFile!.readAsBytesSync(),
         filename: 'profile_photo.jpg',
       );
+       }
+      
 
       var response = await _userProvider.insertUser(userData);
 
@@ -222,8 +212,9 @@ class _UsersScreenState extends State<UsersScreen> {
           _pickedFile!.readAsBytesSync(),
           filename: 'profile_photo.jpg',
         );
-      } else {
-        final ByteData data =
+       } 
+       if (_pickedFile == null && selectedUsers[0].photo  == null) {
+          final ByteData data =
             await rootBundle.load('assets/images/notFound.png');
         List<int> bytes = data.buffer.asUint8List();
 
@@ -232,8 +223,8 @@ class _UsersScreenState extends State<UsersScreen> {
           bytes,
           filename: 'notFound.png',
         );
-      }
-
+       } 
+    
       var response = await _userProvider.updateUser(userData);
 
       if (response == "OK") {
@@ -878,13 +869,12 @@ class _UsersScreenState extends State<UsersScreen> {
                                                 ),
                                               );
                                             } else {
-                                              // Učitaj podrazumevanu sliku iz assetsa ako je userItem.photo null
                                               return Container(
                                                 padding: EdgeInsets.symmetric(
                                                     vertical:
-                                                        8.0), // Prilagodi vrednost prema potrebi
+                                                        8.0),
                                                 child: Image.asset(
-                                                  'assets/images/user1.jpg',
+                                                  'assets/images/notFound.png',
                                                   width: 80,
                                                   height: 105,
                                                   fit: BoxFit.fill,

@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gymfit_mobile/helpers/app_decoration.dart';
 import 'package:gymfit_mobile/helpers/constants.dart';
 import 'package:gymfit_mobile/helpers/theme_helper.dart';
@@ -119,6 +121,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           filename: 'profile_photo.jpg',
         );
       }
+      if (_pickedFile == null && user!.photo  == null) {
+          final ByteData data =
+            await rootBundle.load('assets/images/notFound.png');
+        List<int> bytes = data.buffer.asUint8List();
+
+        userData['ProfilePhoto'] = http.MultipartFile.fromBytes(
+          'ProfilePhoto',
+          bytes,
+          filename: 'notFound.png',
+        );
+       } 
       var response = await _userProvider.updateUser(userData);
 
       if (response == "OK") {

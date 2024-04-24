@@ -3,6 +3,7 @@ using GymFit.Core;
 using GymFit.Infrastructure.Interfaces;
 using GymFit.Infrastructure.Interfaces.SearchObjects;
 using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymFit.Api.Controllers
@@ -13,6 +14,8 @@ namespace GymFit.Api.Controllers
         {
         }
 
+
+        [Authorize]
         [HttpGet("GetAllPaged")]
         public async Task<IActionResult> GetallPagedAsync([FromQuery] UserPackageSearchObject searchObject, CancellationToken cancellationToken)
         {
@@ -29,6 +32,8 @@ namespace GymFit.Api.Controllers
             }
         }
 
+
+        [Authorize]
         [HttpGet("GetByMonth")]
         public async Task<IActionResult> GetUserPckagesByMonth([FromQuery] BarChartSearchObject searchObject, CancellationToken cancellationToken)
         {
@@ -43,6 +48,8 @@ namespace GymFit.Api.Controllers
                 return BadRequest();
             }
         }
+
+
 
         [HttpPost("setExpired")]
         public ActionResult setExpired()

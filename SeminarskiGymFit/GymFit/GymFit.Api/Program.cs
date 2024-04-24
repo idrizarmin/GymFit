@@ -23,7 +23,6 @@ builder.Services.AddControllersWithViews()
 var connectionStringConfig = builder.BindConfig<ConnectionStringConfig>("ConnectionStrings");
 var jwtTokenConfig = builder.BindConfig<JwtTokenConfig>("JwtToken");
 
-//StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
 builder.Services.AddMapper();
 builder.Services.AddValidators();
@@ -32,7 +31,9 @@ builder.Services.AddInfrastructure();
 builder.Services.AddDatabase(connectionStringConfig);
 builder.Services.AddAuthenticationAndAuthorization(jwtTokenConfig);
 builder.Services.AddOther();
+builder.Services.AddResponseCaching();
 builder.Services.AddControllers();
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -62,41 +63,38 @@ builder.Services.AddHangfireServer();
 
 
 
-//builder.Services.Configure<ApiBehaviorOptions>(options =>
-//{
-//    options.SuppressModelStateInvalidFilter = true;
-//});
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy("CorsPolicy",
-//        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-//});
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+});
 
-//builder.Services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
-
-
+builder.Services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
 
 
-//if (builder.Environment.IsDevelopment())
-//{
-//    builder.Services.AddSwagger();
-//}
+
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddSwagger();
+}
 
 var app = builder.Build();
 
 
 
 
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-app.UseSwagger();
-app.UseSwaggerUI();
-
-//app.UseCors("CorsPolicy");
+app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();
 
@@ -106,17 +104,17 @@ app.UseAuthorization();
 app.MapControllers();
 
 
-//app.UseHangfireDashboard();
-//app.MapHangfireDashboard();
+app.UseHangfireDashboard();
+app.MapHangfireDashboard();
 
 
-//app.UseHangfireDashboard("/test/gymfit", new DashboardOptions
-//{
-//    DashboardTitle = "Hangfire gymFit Application",
-//    DarkModeEnabled = true,
-//    DisplayStorageConnectionString = false
+app.UseHangfireDashboard("/test/gymfit", new DashboardOptions
+{
+    DashboardTitle = "Hangfire gymFit Application",
+    DarkModeEnabled = true,
+    DisplayStorageConnectionString = false
 
-//});
+});
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
@@ -151,7 +149,7 @@ var factory = new ConnectionFactory
     Password = password,
     VirtualHost = virtualHost,
 };
-using var connection = factory.CreateConnection();
+ using var connection = factory.CreateConnection();
 using var channel = connection.CreateModel();
 
 

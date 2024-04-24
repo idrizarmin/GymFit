@@ -99,7 +99,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         'Gender': selectedGender.toString(),
         'DateOfBirth':
             DateTime.parse(_birthDateController.text).toUtc().toIso8601String(),
-        'Role': '1',
+        'Role': '0',
         'LastSignInAt': DateTime.now().toUtc().toIso8601String(),
         'IsVerified': "true",
         'IsActive': "true",

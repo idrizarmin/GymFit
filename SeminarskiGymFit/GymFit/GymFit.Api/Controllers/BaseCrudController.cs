@@ -1,6 +1,7 @@
 ﻿using GymFit.Application.Interfaces;
 using GymFit.Core;
 using GymFit.Infrastructure.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -19,6 +20,7 @@ namespace GymFit.Api.Controllers
             Service = service;
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public virtual async Task<IActionResult> Get(int id, CancellationToken cancellationToken = default)
         {
@@ -34,6 +36,7 @@ namespace GymFit.Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("GetPaged")]
         public virtual async Task<IActionResult> GetPaged([FromQuery] TSearchObject searchObject, CancellationToken cancellationToken = default)
         {
@@ -49,6 +52,7 @@ namespace GymFit.Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         public virtual async Task<IActionResult> Post([FromBody] TUpsertDto upsertDto, CancellationToken cancellationToken = default)
         {
@@ -70,6 +74,7 @@ namespace GymFit.Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut]
         public virtual async Task<IActionResult> Put([FromBody] TUpsertDto upsertDto, CancellationToken cancellationToken = default)
         {
@@ -90,6 +95,7 @@ namespace GymFit.Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public virtual async Task<IActionResult> Delete(int id, CancellationToken cancellationToken = default)
         {

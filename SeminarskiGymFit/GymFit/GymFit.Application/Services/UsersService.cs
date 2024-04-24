@@ -144,9 +144,9 @@ namespace GymFit.Application
         }
 
 
-        public  List<UserDto> Recommend(int userId)
+        public List<UserDto> Recommend(int userId)
         {
-            var userReservations =  _db.Reservations
+            var userReservations = _db.Reservations
                 .Include(r => r.Trainer)
                 .Where(r => r.UserId == userId && r.Trainer != null && !string.IsNullOrEmpty(r.Description))
                 .ToList();
@@ -194,7 +194,7 @@ namespace GymFit.Application
 
                 if (userPredictions != null)
                 {
-                    var recommendedTrainer =  _db.Users.Find(userPredictions.TrainerId);
+                    var recommendedTrainer = _db.Users.Find(userPredictions.TrainerId);
                     if (recommendedTrainer != null)
                         recommendedTrainers.Add(recommendedTrainer);
                 }
@@ -210,8 +210,28 @@ namespace GymFit.Application
                 .Where(t => t.Role == Role.Trener && t.TrainerReservations.Any(r => r.Description == mostCommonDescription))
                 .ToList();
 
+            // If no trainers are recommended, find a trainer with the most trainings matching the user's preferences
+            if (filteredTrainers.Count == 0)
+            {
+                var mostFrequentTrainer = userReservations
+                    .GroupBy(r => r.TrainerId)
+                    .OrderByDescending(g => g.Count())
+                    .FirstOrDefault()?
+                    .Key;
+
+                if (mostFrequentTrainer.HasValue)
+                {
+                    var trainerWithMostTrainings = _db.Users.FirstOrDefault(u => u.Id == mostFrequentTrainer && u.Role == Role.Trener);
+                    if (trainerWithMostTrainings != null)
+                    {
+                        return new List<UserDto> { Mapper.Map<UserDto>(trainerWithMostTrainings) };
+                    }
+                }
+            }
+
             return Mapper.Map<List<UserDto>>(filteredTrainers);
         }
+
         public class ReservationEntry
         {
             [KeyType(count: 10)]

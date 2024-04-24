@@ -50,13 +50,12 @@ class _TrainersScreenState extends State<TrainersScreen> {
   }
 void loadUser() async {
     var id = _loginProvider.getUserId();
-    print(id);
     try {
       var usersResponse = await _userProvider.getById(id!);
       setState(() {
         user = usersResponse;
       });
-      loadRecomendedTrainers(user!.id);
+      loadRecomendedTrainers(id);
       print(recommendedTrainers);
     } on Exception catch (e) {
       showErrorDialog(context, e.toString().substring(11));
@@ -121,6 +120,20 @@ Widget build(BuildContext context) {
             ),
             _buildTrainersWithInfo(context),
             _buildPagination(),
+            SizedBox(height: 10,),
+            Container(
+              alignment: Alignment.center,
+              width: double.maxFinite,
+              padding: EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 2,
+              ),
+              child: Text(
+                "Preporučeni treneri",
+                style: TextStyle(fontSize: 16, color: white),
+              ),
+            ),
+            _buildRecommendedTrainersWithInfo(context)
           ],
         ),
       ),
@@ -249,55 +262,158 @@ Widget _buildTrainersWithInfo(BuildContext context) {
   );
 }
 
- List<Widget> _buildUserList(List<User> users) {
-  return users
-      .map((user) => Column(
+//  List<Widget> _buildUserList(List<User> users) {
+//   return users
+//       .map((user) => Column(
+//             children: [
+//               InkWell(
+//                 onTap: () {
+//                   // Add your navigation logic here
+//                   // Navigator.pushNamed(context, UserDetailsScreen.routeName, arguments: {'user': user});
+//                 },
+//                 child: user.photo != null
+//                     ? SimpleShadow(
+//                         sigma: 4,
+//                         child: ClipRRect(
+//                             borderRadius: BorderRadius.circular(6),
+//                             child: FadeInImage(
+//                               image: NetworkImage(
+//                                 // loadPhoto(user.photo!.guidId)
+//                                 '$apiUrl/Photos/GetbyId?id=${user.photo!.guidId}&original=true',
+//                                 headers: Authorization.createHeaders(),
+//                               ),
+//                               placeholder: MemoryImage(kTransparentImage),
+//                               height: 210,
+//                               fadeInDuration: const Duration(milliseconds: 300),
+//                             ),
+//                           ),
+//                         )
+//                       : const Placeholder(
+//                           fallbackHeight: 210,
+//                         ),
+//                 ),
+//               const SizedBox(
+//                 height: 12,
+//               ),
+//               Text(
+//                 '${user.firstName} ${user.lastName}',
+//                 style: const TextStyle(
+//                   fontSize: 15,
+//                   fontWeight: FontWeight.w400,
+//                 ),
+//                 textAlign: TextAlign.center,
+//               ),
+//               const SizedBox(height: 6),         
+//             ],
+//           ))
+//       .toList();
+// }
+
+Widget _buildRecommendedTrainersWithInfo(BuildContext context) {
+  if (recommendedTrainers.isEmpty) {
+    return Container(
+      margin: EdgeInsets.all(10),
+      padding: EdgeInsets.all(10),
+      decoration: AppDecoration.fillBlack.copyWith(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Text(
+        'Nema preporučenih trenera',
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  return Container(
+    margin: EdgeInsets.all(10),
+    padding: EdgeInsets.all(10),
+    decoration: AppDecoration.fillBlack.copyWith(
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: ListView.builder(
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: recommendedTrainers.length,
+      itemBuilder: (context, index) {
+        final trainer = recommendedTrainers[index];
+
+        return Container(
+          margin: EdgeInsets.only(bottom: 10),
+          padding: EdgeInsets.all(4),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              InkWell(
-                onTap: () {
-                  // Add your navigation logic here
-                  // Navigator.pushNamed(context, UserDetailsScreen.routeName, arguments: {'user': user});
-                },
-                child: user.photo != null
-                    ? SimpleShadow(
-                        sigma: 4,
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(6),
-                            child: FadeInImage(
-                              image: NetworkImage(
-                                // loadPhoto(user.photo!.guidId)
-                                '$apiUrl/Photos/GetbyId?id=${user.photo!.guidId}&original=true',
-                                headers: Authorization.createHeaders(),
-                              ),
-                              placeholder: MemoryImage(kTransparentImage),
-                              height: 210,
-                              fadeInDuration: const Duration(milliseconds: 300),
-                            ),
-                          ),
-                        )
-                      : const Placeholder(
-                          fallbackHeight: 210,
-                        ),
+              Padding(
+                padding: EdgeInsets.only(right: 8.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Container(
+                    width: 90,
+                    height: 120,
+                    color: primary,
+                    child: FutureBuilder<String>(
+                      future: trainer.photo != null
+                          ? loadPhoto(trainer.photo!.guidId!)
+                          : null,
+                      builder:
+                          (BuildContext context, AsyncSnapshot<String> snapshot) {
+                        final imageUrl = snapshot.data;
+
+                        return FadeInImage(
+                          image: imageUrl != null && imageUrl.isNotEmpty
+                              ? NetworkImage(
+                                  imageUrl,
+                                  headers: Authorization.createHeaders(),
+                                )
+                              : AssetImage('assets/images/notFound.png')
+                                  as ImageProvider<Object>,
+                          placeholder: MemoryImage(kTransparentImage),
+                          fadeInDuration: const Duration(milliseconds: 100),
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                  ),
                 ),
-              const SizedBox(
-                height: 12,
               ),
-              Text(
-                '${user.firstName} ${user.lastName}',
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
+              SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 5),
+                    Text(
+                      '${trainer.firstName} ${trainer.lastName}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Broj telefona: ${trainer.phoneNumber!}',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      'Email: ${trainer.email}',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
-                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 6),
-            
             ],
-          ))
-      .toList();
+          ),
+        );
+      },
+    ),
+  );
 }
-
-
 
 
 

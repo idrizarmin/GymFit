@@ -2,11 +2,13 @@ class Authorization {
   static String? token;
 
   static Map<String, String> createHeaders() {
-    String token = Authorization.token ?? '';
+    String jwt = Authorization.token ?? '';
+
+    String jwtAuth = "Bearer $token";
 
     var headers = {
       "Content-Type": "application/json",
-      "Authorization": 'Bearer $token'
+      "Authorization": jwtAuth
     };
     return headers;
   }

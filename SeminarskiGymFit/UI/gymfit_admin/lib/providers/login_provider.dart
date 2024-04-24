@@ -37,7 +37,7 @@ class LoginProvider extends BaseProvider {
     return null; 
   }
 
-  Future<LoginUser> loginAsync(String email, String password) async {
+ Future<LoginUser> loginAsync(String email, String password) async {
     var url = '$apiUrl/Access/SignIn';
     final response = await http.post(
       Uri.parse(url),
@@ -52,13 +52,17 @@ class LoginProvider extends BaseProvider {
     if (response.statusCode == 200) {
       Map<String, dynamic> decodedToken = JwtDecoder.decode(response.body);
       user = LoginUser.fromJson(decodedToken);
-      Authorization.token = user!.token;
+       var data = json.decode(response.body);
+      var token=data['token'];
+      Authorization.token= token;
       notifyListeners();
-      return user!;
+      return user!; 
     } else {
       throw Exception(response.body);
     }
   }
+
+
 
   Future registerAsync(Register data) async {
     var url = '$apiUrl/Access/SignUp';

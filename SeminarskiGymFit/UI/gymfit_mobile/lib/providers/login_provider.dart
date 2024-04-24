@@ -53,9 +53,12 @@ class UserLoginProvider extends BaseProvider  {
     if (response.statusCode == 200) {
       Map<String, dynamic> decodedToken = JwtDecoder.decode(response.body);
       user = UserLogin.fromJson(decodedToken);
-      Authorization.token = user!.token;
+       var data = json.decode(response.body);
+      var token=data['token'];
+
+      Authorization.token= token;
       notifyListeners();
-      return user!;
+      return user!; 
     } else {
       throw Exception(response.body);
     }
