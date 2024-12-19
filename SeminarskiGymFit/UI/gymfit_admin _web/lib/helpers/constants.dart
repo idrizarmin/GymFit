@@ -6,8 +6,8 @@ const apiUrl2 = String.fromEnvironment('baseUrl', defaultValue: 'http://localhos
 
 const primaryColor = Colors.teal;
 const secondaryColor = Color.fromARGB(255, 11, 12, 19);
-const bgColor = Color.fromARGB(186, 37, 46, 83);
-const dialogColor = Color.fromARGB(255, 29, 36, 65);
+const bgColor = Color.fromARGB(185, 4, 17, 70);
+const dialogColor = Color.fromARGB(255, 10, 14, 31);
 const myWhite = Color.fromARGB(185, 255, 255, 255);
 const white = Colors.white;
 const green = Color.fromRGBO(36, 228, 19, 1);

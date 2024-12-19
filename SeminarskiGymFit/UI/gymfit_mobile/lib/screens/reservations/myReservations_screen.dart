@@ -75,6 +75,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
+              backgroundColor: black,
               title: Text('Rezervacija otkazana'),
               content: const Text('Uspješno ste otkazali vašu rezervaciju.'),
               actions: [
@@ -93,6 +94,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
+              backgroundColor: black,
               title: Text('Upozorenje'),
               content: const Text(
                   'Nije moguće otkazati rezervaciju manje od 3 sata prije termina.'),
@@ -113,6 +115,7 @@ class _MyReservationsScreenState extends State<MyReservationsScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            backgroundColor: black,
             title: Text('Otkazivanje rezervacije'),
             content:
                 const Text('Da li ste sigurni da želite otkazati rezervaciju?'),

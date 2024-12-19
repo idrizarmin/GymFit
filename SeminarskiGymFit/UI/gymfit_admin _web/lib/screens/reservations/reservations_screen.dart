@@ -247,6 +247,39 @@ class _ReservationScreenState extends State<ReservationScreen> {
     } catch (e) {
       showErrorDialog(context, e.toString().substring(11));
     }
+
+
+
+      // startDate = DateTime(selectedDate.year, selectedDate.month,
+      //       selectedDate.day, (selectedStartHour + 1));
+      //   endDate = DateTime(selectedDate.year, selectedDate.month,
+      //       selectedDate.day, (selectedEndHour + 1));
+
+      //   var newReservation = {
+      //     "id": 0,
+      //     "description": _descriptionController.text,
+      //     "reservationDate": selectedDate.toUtc().toIso8601String(),
+      //     "startDate": startDate.toUtc().toIso8601String(),
+      //     "endDate": endDate.toUtc().toIso8601String(),
+      //     "duration": 0,
+      //     "status": 1,
+      //     "pauseDuration": 0,
+      //     "maxCapacity": 0,
+      //     "daysOfWeek": "string",
+      //     "isUsed": false,
+      //     "gymId": 2,
+      //     "userId": selectedUserToAdd!.id,
+      //     "trainerId": selectedTrainerToAdd?.id
+      //   };
+
+      //   var notification = await _reservationProvider.insert(newReservation);
+
+      //   if (notification == "OK") {
+      //     loadReservations();
+      //     Navigator.of(context).pop();
+      //   }
+
+
   }
 
   @override

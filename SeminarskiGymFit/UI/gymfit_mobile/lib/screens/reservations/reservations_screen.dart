@@ -128,12 +128,14 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
+                            backgroundColor: black,
+
               title: Text("Greška"),
               content: Text("Odabrani datum nije validan."),
               actions: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: teal,
+                    backgroundColor: black,
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -149,12 +151,13 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
+              backgroundColor: teal,
               title: Text("Greška"),
               content: Text("Pokusajte se ponovno prijaviti."),
               actions: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: teal,
+                    backgroundColor: black,
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -170,6 +173,8 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
+                         backgroundColor: black,
+
               title: Text("Greška"),
               content: Text("Niste odabrali trenera."),
               actions: [
@@ -192,12 +197,13 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
+              backgroundColor: appTheme.bgcolor,
               title: Text("Greška"),
               content: Text("Nepravilno odabrano vrijeme treninga."),
               actions: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: teal,
+                    backgroundColor: black,
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -218,6 +224,8 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
+              backgroundColor: black,
+
               title: const Text("Greška"),
               content: const Text(
                   "Vrijeme rezervacije treba biti minimalno 3 sata od trenutnog vremena!"),
